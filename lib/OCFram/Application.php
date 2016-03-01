@@ -48,7 +48,7 @@ abstract class Application {
 			}
 			catch (\RuntimeException $e) {
 				if ($e->getCode() == Router::NO_ROUTE) {
-					// Si aucune route ne correspond, alors la page demandée n'existe passthru
+					// Si aucune route ne correspond, alors la page demandée n'existe pas
 					$this->httpResponse->redirect404();
 				}
 			}
