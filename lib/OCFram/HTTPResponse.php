@@ -1,7 +1,7 @@
 <?php
 namespace OCFram;
 
-class HTTPRequest {
+class HTTPRequest extends ApplicationComponent {
 	protected $page;
 	
 	public function addHeader ($header){
