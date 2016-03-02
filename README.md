@@ -25,3 +25,4 @@ Formation PHP
 * Le Frontend
     * L'application : OK
     * Le module de news : en cours
+        * Question sur le namespace utilisé vs OCFram
