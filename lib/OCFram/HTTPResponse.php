@@ -1,25 +1,30 @@
 <?php
 namespace OCFram;
 
-class HTTPRequest extends ApplicationComponent {
+class HTTPResponse extends ApplicationComponent {
 	protected $page;
-	
-	public function addHeader ($header){
+
+	public function addHeader($header) {
 		header($header);
 	}
+
 	public function redirect($location) {
-		header('Location: '.$location);
+		header('Location: ' . $location);
 		exit;
 	}
-	public function redirect404() {}
+
+	public function redirect404() { }
+
 	public function send() {
-		exit($this->page->getGeneratedPage ());
+		exit($this->page->getGeneratedPage());
 	}
+
 	public function setPage(Page $page) {
 		$this->page = $page;
 	}
+
 	public function setCookie($name, $value = '', $expire = 0, $path = NULL, $domain = NULL,
-	$secure = false, $httpOnly = true) {
-		setcookie ($name, $value, $expire, $path, $domain, $secure, $httpOnly);
+							  $secure = false, $httpOnly = true) {
+		setcookie($name, $value, $expire, $path, $domain, $secure, $httpOnly);
 	}
 }
