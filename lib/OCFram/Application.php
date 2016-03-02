@@ -6,27 +6,23 @@ abstract class Application {
 	protected $httpResponse;
 	protected $name;
 	protected $user;
+	protected $config;
 
 	public function __construct() {
 		$this->httpRequest = new HTTPRequest($this);
 		$this->httpResponse = new HTTPResponse($this);
 		$this->name = '';
 		$this->user = new User($this);
+		$this->config = new Config($this);
 	}
 
 	abstract public function run();
 
-	public function name() {
-		return $this->name;
-	}
-
-	public function httpRequest() {
-		return $this->httpRequest;
-	}
-
-	public function httpResponse() {
-		return $this->httpResponse;
-	}
+	public function name() { return $this->name; }
+	public function httpRequest() { return $this->httpRequest; }
+	public function httpResponse() { return $this->httpResponse; }
+	public function user() { return $this->user; }
+	public function config() { return $this->config; }
 
 	public function getController() {
 		$router = new Router;
