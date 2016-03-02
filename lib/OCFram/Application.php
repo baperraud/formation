@@ -25,34 +25,34 @@ abstract class Application {
 	public function getConfig() { return $this->Config; }
 
 	public function getController() {
-		$router = new Router;
+		$Router = new Router;
 
-		$xml = new \DOMDocument;
-		$xml->load(__DIR__ . '/../../App/' . $this->name . 'Config/routes.xml');
+		$Xml = new \DOMDocument;
+		$Xml->load(__DIR__ . '/../../App/' . $this->name . 'Config/routes.xml');
 
-		/** @var \DOMElement[] $routes */
-		$routes = $xml->getElementsByTagName('route');
+		/** @var \DOMElement[] $Routes_a */
+		$Routes_a = $Xml->getElementsByTagName('route');
 
 		// Pour chaque route dans routes.xml
-		foreach ($routes as $route) {
-			$vars = [];
+		foreach ($Routes_a as $Route) {
+			$vars_a = [];
 
 			// Si des variables sont présentes dans l'URL
-			if ($route->hasAttribute('vars')) {
-				$vars = explode(',', $route->getAttribute('vars'));
+			if ($Route->hasAttribute('vars')) {
+				$vars_a = explode(',', $Route->getAttribute('vars'));
 			}
 
 			// On ajoute la route au routeur
-			$router->addRoute(new Route(
-				$route->getAttribute('url'),
-				$route->getAttribute('module'),
-				$route->getAttribute('action'),
-				$vars));
+			$Router->addRoute(new Route(
+				$Route->getAttribute('url'),
+				$Route->getAttribute('module'),
+				$Route->getAttribute('action'),
+				$vars_a));
 		}
 
 		try {
 			// On récupère la route correspondante à l'URL
-			$matchedRoute = $router->getRoute($this->Http_request->getRequestURI());
+			$matchedRoute = $Router->getRoute($this->Http_request->getRequestURI());
 		} catch (\RuntimeException $e) {
 			if ($e->getCode() == Router::NO_ROUTE) {
 				// Si aucune route ne correspond, alors la page demandée n'existe pas
