@@ -2,35 +2,32 @@
 namespace OCFram;
 
 class HTTPRequest extends ApplicationComponent {
-	public function cookieData($key) {
-		return $this->cookieExists($key) ? $_COOKIE[$key] : NULL;
-	}
-
 	public function cookieExists($key) {
 		return isset($_COOKIE[$key]);
 	}
+	public function getCookieData($key) {
+		return $this->cookieExists($key) ? $_COOKIE[$key] : NULL;
+	}
 
-	public function method() {
+	public function getMethod() {
 		return $_SERVER['REQUEST METHOD'];
 	}
 
 	public function getExists($key) {
 		return isset($_GET[$key]);
 	}
-
-	public function getData($key) {
+	public function getGetData($key) {
 		return $this->getExists($key) ? $_GET[$key] : NULL;
-	}
-
-	public function postData($key) {
-		return $this->postExists($key) ? $_POST[$key] : NULL;
 	}
 
 	public function postExists($key) {
 		return isset($_POST[$key]);
 	}
+	public function getPostData($key) {
+		return $this->postExists($key) ? $_POST[$key] : NULL;
+	}
 
-	public function requestURI() {
+	public function getRequestURI() {
 		return $_SERVER['REQUEST_URI'];
 	}
 }

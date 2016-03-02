@@ -4,15 +4,15 @@ namespace OCFram;
 abstract class BackController extends ApplicationComponent {
 	protected $action = '';
 	protected $module = '';
-	protected $page = NULL;
+	protected $Page = NULL;
 	protected $view = '';
-	protected $managers = NULL;
+	protected $Managers = NULL;
 
 	public function __construct(Application $app, $module, $action) {
 		parent::__construct($app);
 
-		$this->managers = new Managers('PDO', PDOFactory::getMysqlConnexion());
-		$this->page = new Page($app);
+		$this->Managers = new Managers('PDO', PDOFactory::getMysqlConnexion());
+		$this->Page = new Page($app);
 
 		$this->setModule($module);
 		$this->setAction($action);
@@ -38,12 +38,10 @@ abstract class BackController extends ApplicationComponent {
 			throw new \InvalidArgumentexception('La vue doit être une chaîne de caractères valide');
 		}
 		$this->view = $view;
-		$this->page->setContentFile(__DIR__ . '/../../App/' . $this->app->name() . '/Modules/' . $this->module . '/Views/' . $this->view . '.php');
+		$this->Page->setContentFile(__DIR__ . '/../../App/' . $this->App->getName() . '/Modules/' . $this->module . '/Views/' . $this->view . '.php');
 	}
 
-	public function page() {
-		return $this->page;
-	}
+	public function getPage() { return $this->Page; }
 
 	public function execute() {
 		$method = 'execute' . ucfirst($this->action);
@@ -52,6 +50,6 @@ abstract class BackController extends ApplicationComponent {
 			throw new \RuntimeException('L\'action "' . $this->action . '" n\'est pas définie sur ce module');
 		}
 
-		$this->$method($this->app->httpRequest());
+		$this->$method($this->App->getHttpRequest());
 	}
 }

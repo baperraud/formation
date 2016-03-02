@@ -3,13 +3,13 @@ namespace OCFram;
 
 class Page extends ApplicationComponent {
 	protected $contentFile;
-	protected $vars = [];
+	protected $vars_a = [];
 
 	public function addVar($var, $value) {
 		if (!is_string($var) || is_numeric($var) || empty($var)) {
 			throw new \InvalidArgumentException('Le nom de la variable doit être une chaîne de caractères non nulle');
 		}
-		$this->vars[$var] = $value;
+		$this->vars_a[$var] = $value;
 	}
 
 	public function getGeneratedPage() {
@@ -17,14 +17,14 @@ class Page extends ApplicationComponent {
 			throw new \RuntimeException('La vue spécifiée n\'existe pas');
 		}
 
-		extract($this->vars);
+		extract($this->vars_a);
 
 		ob_start();
 		require $this->contentFile;
 		$content = ob_get_clean();
 
 		ob_start();
-		require __DIR__ . '/../../App/' . $this->app->name() . '/Templates/layout.php';
+		require __DIR__ . '/../../App/' . $this->App->getName() . '/Templates/layout.php';
 		return ob_get_clean();
 	}
 

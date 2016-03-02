@@ -2,21 +2,21 @@
 namespace OCFram;
 
 class Config extends ApplicationComponent {
-	protected $vars = [];
+	protected $vars_a = [];
 
 	public function get($var) {
-		if (!$this->vars) {
+		if (!$this->vars_a) {
 			$xml = new \DOMDocument;
-			$xml->load(__DIR__ . '/../../App/' . $this->app->name() . '/Config/app.xml');
+			$xml->load(__DIR__ . '/../../App/' . $this->App->getName() . '/Config/app.xml');
 
-			/** @var \DOMElement[] $elements */
-			$elements = $xml->getElementsByTagName('define');
+			/** @var \DOMElement[] $Elements */
+			$Elements = $xml->getElementsByTagName('define');
 
-			foreach ($elements as $element) {
-				$this->vars[$element->getAttribute('var')] = $element->getAttribute('value');
+			foreach ($Elements as $Element) {
+				$this->vars_a[$Element->getAttribute('var')] = $Element->getAttribute('value');
 			}
 		}
 
-		return (isset($this->vars[$var])) ? $this->vars[$var] : NULL;
+		return (isset($this->vars_a[$var])) ? $this->vars_a[$var] : NULL;
 	}
 }

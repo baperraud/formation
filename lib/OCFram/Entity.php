@@ -2,23 +2,27 @@
 namespace OCFram;
 
 abstract class Entity implements \ArrayAccess {
-	protected $erreurs = [], $id;
+	protected $erreurs_a = [], $id;
 
 	public function __construct(array $donnees = []) {
-		if (!empty($donnees)) { $this->hydrate($donnees); }
+		if (!empty($donnees)) {
+			$this->hydrate($donnees);
+		}
 	}
 
 	public function isNew() { return empty($this->id); }
 
-	public function erreurs() { return $this->erreurs; }
+	public function getErreurs_a() { return $this->erreurs_a; }
 	public function id() { return $this->id; }
 
-	public function setId($id) { $this->id = (int) $id; }
+	public function setId($id) { $this->id = (int)$id; }
 
 	public function hydrate(array $donnees) {
 		foreach ($donnees as $attribut => $valeur) {
 			$methode = 'set' . ucfirst($attribut);
-			if (is_callable([$this, $methode])) { $this->$methode($valeur); }
+			if (is_callable([$this, $methode])) {
+				$this->$methode($valeur);
+			}
 		}
 	}
 

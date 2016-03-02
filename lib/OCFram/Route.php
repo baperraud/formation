@@ -5,19 +5,17 @@ class Route {
 	protected $action;
 	protected $module;
 	protected $url;
-	protected $varsNames;
-	protected $vars = [];
+	protected $vars_names_a;
+	protected $vars_a = [];
 
-	public function __construct($url, $module, $action, array $varsNames) {
+	public function __construct($url, $module, $action, array $vars_names_a) {
 		$this->setUrl($url);
 		$this->setModule($module);
 		$this->setAction($action);
-		$this->setVarsNames($varsNames);
+		$this->setVarsNames($vars_names_a);
 	}
 
-	public function hasVars() {
-		return !empty($this->varsNames);
-	}
+	public function hasVars() { return !empty($this->vars_names_a); }
 
 	public function match($url) {
 		if (preg_match('`^' . $this->url . '$`', $url, $matches)) {
@@ -45,27 +43,12 @@ class Route {
 		}
 	}
 
-	public function setVarsNames(array $varsNames) {
-		$this->varsNames = $varsNames;
-	}
+	public function setVarsNames(array $vars_names_a) { $this->vars_names_a = $vars_names_a; }
 
-	public function setVars(array $vars) {
-		$this->vars = $vars;
-	}
+	public function setVars(array $vars_a) { $this->vars_a = $vars_a; }
 
-	public function action() {
-		return $this->action;
-	}
-
-	public function module() {
-		return $this->module;
-	}
-
-	public function vars() {
-		return $this->vars;
-	}
-
-	public function varsNames() {
-		return $this->varsNames;
-	}
+	public function getAction() { return $this->action; }
+	public function getModule() { return $this->module; }
+	public function getVars_a() { return $this->vars_a; }
+	public function getVarsNames_a() { return $this->vars_names_a; }
 }

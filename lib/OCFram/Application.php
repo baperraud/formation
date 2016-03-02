@@ -2,27 +2,27 @@
 namespace OCFram;
 
 abstract class Application {
-	protected $httpRequest;
-	protected $httpResponse;
+	protected $Http_request;
+	protected $Http_response;
 	protected $name;
-	protected $user;
-	protected $config;
+	protected $User;
+	protected $Config;
 
 	public function __construct() {
-		$this->httpRequest = new HTTPRequest($this);
-		$this->httpResponse = new HTTPResponse($this);
+		$this->Http_request = new HTTPRequest($this);
+		$this->Http_response = new HTTPResponse($this);
 		$this->name = '';
-		$this->user = new User($this);
-		$this->config = new Config($this);
+		$this->User = new User($this);
+		$this->Config = new Config($this);
 	}
 
 	abstract public function run();
 
-	public function name() { return $this->name; }
-	public function httpRequest() { return $this->httpRequest; }
-	public function httpResponse() { return $this->httpResponse; }
-	public function user() { return $this->user; }
-	public function config() { return $this->config; }
+	public function getName() { return $this->name; }
+	public function getHttpRequest() { return $this->Http_request; }
+	public function getHttpResponse() { return $this->Http_response; }
+	public function getUser() { return $this->User; }
+	public function getConfig() { return $this->Config; }
 
 	public function getController() {
 		$router = new Router;
@@ -52,21 +52,21 @@ abstract class Application {
 
 		try {
 			// On récupère la route correspondante à l'URL
-			$matchedRoute = $router->getRoute($this->httpRequest->requestURI());
+			$matchedRoute = $router->getRoute($this->Http_request->getRequestURI());
 		} catch (\RuntimeException $e) {
 			if ($e->getCode() == Router::NO_ROUTE) {
 				// Si aucune route ne correspond, alors la page demandée n'existe pas
-				$this->httpResponse->redirect404();
+				$this->Http_response->redirect404();
 			}
 		}
 
 		// On ajoute les variables de l'URL au tableau $_GET
 		/** @var Route $matchedRoute */
-		$_GET = array_merge($_GET, $matchedRoute->vars());
+		$_GET = array_merge($_GET, $matchedRoute->getVars_a());
 
 		// On instancie le contrôleur
-		$controllerClass = 'App\\' . $this->name . '\\Modules\\' . $matchedRoute->module() .
-			'\\' . $matchedRoute->module() . 'Controller';
-		return new $controllerClass ($this, $matchedRoute->module(), $matchedRoute->action());
+		$controllerClass = 'App\\' . $this->name . '\\Modules\\' . $matchedRoute->getModule() .
+			'\\' . $matchedRoute->getModule() . 'Controller';
+		return new $controllerClass ($this, $matchedRoute->getModule(), $matchedRoute->getAction());
 	}
 }

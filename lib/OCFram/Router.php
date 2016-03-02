@@ -2,39 +2,41 @@
 namespace OCFram;
 
 class Router {
-	/** @var Route[] $routes */
-	protected $routes = [];
+	/** @var Route[] $Routes_a */
+	protected $Routes_a = [];
 
 	const NO_ROUTE = 1;
 
-	public function addRoute(Route $route) {
-		if (!in_array($route, $this->routes)) {
-			$this->routes[] = $route;
+	public function addRoute(Route $Route) {
+		if (!in_array($Route, $this->Routes_a)) {
+			$this->Routes_a[] = $Route;
 		}
 	}
 
 	public function getRoute($url) {
-		foreach ($this->routes as $route) {
+		foreach ($this->Routes_a as $Route) {
 			// Si la route correspond à l'URL
-			if (($varsValues = $route->match($url)) !== false) {
+
+			/** Route[] $vars_values */
+			if (($vars_values = $Route->match($url)) !== false) {
 				// Si elle a des variables
-				if ($route->hasVars()) {
-					$varsNames = $route->varsNames();
-					$listVars = [];
+				if ($Route->hasVars()) {
+					$varsNames = $Route->getVarsNames_a();
+					$list_vars_a = [];
 
 					// Nouveau tableau clé/valeur
-					foreach ($varsValues as $key => $value) {
+					foreach ($vars_values as $key => $value) {
 						// La première valeur contient entièrement la chaîne capturée
 						if ($key !== 0) {
-							$listVars[$varsNames[$key - 1]] = $value;
+							$list_vars_a[$varsNames[$key - 1]] = $value;
 						}
 					}
 
 					// On assigne ce tableau de variables à la route
-					$route->setVars($listVars);
+					$Route->setVars($list_vars_a);
 				}
 
-				return $route;
+				return $Route;
 			}
 		}
 

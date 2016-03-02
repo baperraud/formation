@@ -3,12 +3,12 @@ namespace OCFram;
 
 class Managers {
 	protected $api = NULL;
-	protected $dao = NULL;
+	protected $Dao = NULL;
 	protected $managers = [];
 
-	public function __construct($api, $dao) {
+	public function __construct($api, $Dao) {
 		$this->api = $api;
-		$this->dao = $dao;
+		$this->Dao = $Dao;
 	}
 
 	public function getManagerOf($module) {
@@ -19,7 +19,7 @@ class Managers {
 		if (!isset($this->managers[$module])) {
 			$manager = '\\Model' . $module . 'Manager' . $this->api;
 
-			$this->managers[$module] = new $manager($this->dao);
+			$this->managers[$module] = new $manager($this->Dao);
 		}
 
 		return $this->managers[$module];
