@@ -5,7 +5,7 @@ use \Entity\News;
 
 class NewsManagerPDO extends NewsManager {
 	public function getList($debut = -1, $limite = -1) {
-		$select_query = 'SELECT NNC_id, NNC_author, NNC_title, NNC_content, NNC_dateadd, NNC_dateupdate FROM T_NEWS_newsc ORDER BY NNC_id DESC';
+		$select_query = 'SELECT NNC_id id, NNC_author auteur, NNC_title titre, NNC_content contenu, NNC_dateadd date_ajout, NNC_dateupdate date_modif FROM T_NEW_newsc ORDER BY NNC_id DESC';
 
 		if ($debut != -1 || $limite != -1) {
 			$select_query .= ' LIMIT ' . (int)$limite . ' OFFSET ' . (int)$debut;

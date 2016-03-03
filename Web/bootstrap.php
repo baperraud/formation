@@ -1,6 +1,8 @@
 <?php
 const DEFAULT_APP = 'Frontend';
 
+date_default_timezone_set('UTC');
+
 // Si l'application n'est pas valide, on charge celle par défaut qui générera une erreur 404
 if (!isset($_GET['app']) || !file_exists(__DIR__ . '/../App/' . $_GET['app']))
 	$_GET['app'] = DEFAULT_APP;

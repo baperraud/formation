@@ -13,13 +13,14 @@ abstract class Entity implements \ArrayAccess {
 	public function isNew() { return empty($this->id); }
 
 	public function getErreurs_a() { return $this->erreurs_a; }
-	public function id() { return $this->id; }
+	public function getId() { return $this->id; }
 
 	public function setId($id) { $this->id = (int)$id; }
 
 	public function hydrate(array $donnees_a) {
 		foreach ($donnees_a as $attribut => $valeur) {
-			$methode = 'set' . ucfirst($attribut);
+			$methode = ltrim(strtolower(preg_replace('/[A-Z]/', '_$0', 'set' . ucfirst($attribut))), '_');
+//			$methode = 'set' . ucfirst($attribut);
 			if (is_callable([$this, $methode])) {
 				$this->$methode($valeur);
 			}
@@ -27,8 +28,8 @@ abstract class Entity implements \ArrayAccess {
 	}
 
 	public function offsetGet($var) {
-		if (isset($this->$var) && is_callable([$this, $var])) {
-			return $this->$var();
+		if (isset($this->$var) && is_callable([$this, $method = 'get' . ucfirst($var)])) {
+			return $this->$method();
 		}
 		return NULL;
 	}

@@ -28,7 +28,7 @@ abstract class Application {
 		$Router = new Router;
 
 		$Xml = new \DOMDocument;
-		$Xml->load(__DIR__ . '/../../App/' . $this->name . 'Config/routes.xml');
+		$Xml->load(__DIR__ . '/../../App/' . $this->name . '/Config/routes.xml');
 
 		/** @var \DOMElement[] $Routes_a */
 		$Routes_a = $Xml->getElementsByTagName('route');

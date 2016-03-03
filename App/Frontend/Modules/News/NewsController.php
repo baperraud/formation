@@ -1,7 +1,8 @@
 <?php
 namespace App\Frontend\Modules\News;
 
-use Entity\News;
+use \Entity\News;
+use \Model\NewsManager;
 use \OCFram\BackController;
 use \OCFram\HTTPRequest;
 
@@ -17,7 +18,9 @@ class NewsController extends BackController {
 		$Manager = $this->Managers->getManagerOf('News');
 
 		// Récupération des 5 dernières news
-		/** @var News[] $Liste_news_a */
+		/** @var News[] $Liste_news_a
+		 *  @var NewsManager $Manager
+		 */
 		$Liste_news_a = $Manager->getList(0, $nombre_news);
 
 		// On assigne aux news 200 caractères max
@@ -31,5 +34,19 @@ class NewsController extends BackController {
 
 		// On envoie la liste des news à la vue
 		$this->Page->addVar('Liste_news_a', $Liste_news_a);
+	}
+
+	public function executeShow(HTTPRequest $request) {
+		// On récupère le manager des news
+		$Manager = $this->Managers->getManagerOf('News');
+
+		// On récupère la news de la requête
+		/** @var News $News */
+		$News = $Manager->getUnique($request->getGetData('id'));
+
+		if (empty($News)) { $this->App->getHttpResponse()->redirect404(); }
+
+		$this->Page->addVar('title', $News->getTitre());
+		$this->Page->addVar('news', $News);
 	}
 }
