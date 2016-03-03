@@ -5,7 +5,7 @@ Formation PHP
 
 ### Lectures POO : OK
 
-### Pratique : En Cours
+### Pratique : En cours
 
 * Description de l'application
     * Question sur le fonctionnement global
@@ -24,5 +24,8 @@ Formation PHP
 * Le Frontend
     * L'application : OK
     * Le module de news : OK
-    * Ajout des commentaires : en cours
+    * Ajout des commentaires : OK
+
+* Le Backend
+    * L'application : En cours
 
