@@ -4,9 +4,9 @@ namespace OCFram;
 abstract class Entity implements \ArrayAccess {
 	protected $erreurs_a = [], $id;
 
-	public function __construct(array $donnees = []) {
-		if (!empty($donnees)) {
-			$this->hydrate($donnees);
+	public function __construct(array $donnees_a = []) {
+		if (!empty($donnees_a)) {
+			$this->hydrate($donnees_a);
 		}
 	}
 
@@ -17,8 +17,8 @@ abstract class Entity implements \ArrayAccess {
 
 	public function setId($id) { $this->id = (int)$id; }
 
-	public function hydrate(array $donnees) {
-		foreach ($donnees as $attribut => $valeur) {
+	public function hydrate(array $donnees_a) {
+		foreach ($donnees_a as $attribut => $valeur) {
 			$methode = 'set' . ucfirst($attribut);
 			if (is_callable([$this, $methode])) {
 				$this->$methode($valeur);
