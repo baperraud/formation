@@ -2,7 +2,8 @@
 namespace OCFram;
 
 abstract class Entity implements \ArrayAccess {
-	protected $erreurs_a = [], $id;
+	protected $id;
+	protected $erreurs_a = [];
 
 	public function __construct(array $donnees_a = []) {
 		if (!empty($donnees_a)) {
