@@ -16,7 +16,6 @@ Formation PHP
         * Question par rapport à getRoute et match (comportement et type retourné)
     * Le back controller
         * Question sur le rôle de la *vue* du back controller
-        * Question sur le fonctionnement de Entity (id, isNew)
     * La page
         * Question sur getGeneratedPage()
     * L'utilisateur : OK
@@ -25,4 +24,4 @@ Formation PHP
 * Le Frontend
     * L'application : OK
     * Le module de news : en cours
-        * Question sur le namespace utilisé vs OCFram
+
