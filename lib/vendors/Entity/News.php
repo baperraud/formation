@@ -37,4 +37,6 @@ class News extends Entity {
 	public function getContenu() { return $this->contenu; }
 	public function getAjout() { return $this->date_ajout; }
 	public function getModif() { return $this->date_modif; }
+	public function getDateAjout() { return $this->date_ajout; }
+	public function getDateModif() { return $this->date_modif; }
 }
