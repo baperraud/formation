@@ -21,7 +21,7 @@ class NewsController extends BackController {
 		/** @var News[] $Liste_news_a
 		 *  @var NewsManager $Manager
 		 */
-		$Liste_news_a = $Manager->getList(0, $nombre_news);
+		$Liste_news_a = $Manager->getNewscSortByIdDesc_a(0, $nombre_news);
 
 		// On assigne aux news 200 caractères max
 		foreach ($Liste_news_a as $News) {
@@ -41,12 +41,15 @@ class NewsController extends BackController {
 		$Manager = $this->Managers->getManagerOf('News');
 
 		// On récupère la news de la requête
-		/** @var News $News */
-		$News = $Manager->getUnique($request->getGetData('id'));
+		/** @var News $News
+		 *  @var NewsManager $Manager
+		 */
+		$News = $Manager->getNewscUsingId($request->getGetData('id'));
 
 		if (empty($News)) { $this->App->getHttpResponse()->redirect404(); }
 
+		// On envoie la news à la vue
 		$this->Page->addVar('title', $News->getTitre());
-		$this->Page->addVar('news', $News);
+		$this->Page->addVar('News', $News);
 	}
 }

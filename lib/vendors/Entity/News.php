@@ -4,7 +4,7 @@ namespace Entity;
 use OCFram\Entity;
 
 class News extends Entity {
-	protected $id, $auteur, $titre, $contenu, $date_ajout, $date_modif;
+	protected $id, $auteur, $titre, $contenu, $Date_ajout, $Date_modif;
 	const AUTEUR_INVALIDE = 1, TITRE_INVALIDE = 2, CONTENU_INVALIDE = 3;
 
 	public function isValid() {
@@ -29,14 +29,14 @@ class News extends Entity {
 		}
 		$this->contenu = $contenu;
 	}
-	public function setDateAjout(\DateTime $date_ajout) { $this->date_ajout = $date_ajout; }
-	public function setDateModif(\DateTime $date_modif) { $this->date_modif = $date_modif; }
+	public function setDateAjout(\DateTime $Date_ajout) { $this->Date_ajout = $Date_ajout; }
+	public function setDateModif(\DateTime $Date_modif) { $this->Date_modif = $Date_modif; }
 
 	public function getAuteur() { return $this->auteur; }
 	public function getTitre() { return $this->titre; }
 	public function getContenu() { return $this->contenu; }
-	public function getAjout() { return $this->date_ajout; }
-	public function getModif() { return $this->date_modif; }
-	public function getDateAjout() { return $this->date_ajout; }
-	public function getDateModif() { return $this->date_modif; }
+	public function getAjout() { return $this->Date_ajout; }
+	public function getModif() { return $this->Date_modif; }
+	public function getDate_ajout() { return $this->Date_ajout; }
+	public function getDate_modif() { return $this->Date_modif; }
 }
