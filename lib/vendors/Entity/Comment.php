@@ -17,13 +17,13 @@ class Comment extends Entity {
 	public function setNews($news) { $this->news = (int)$news; }
 	public function setAuteur($auteur) {
 		if (!is_string($auteur) || empty($auteur)) {
-			$this->erreurs_a[] = self::AUTEUR_INVALIDE;
+			$this->erreur_a[] = self::AUTEUR_INVALIDE;
 		}
 		$this->auteur = $auteur;
 	}
 	public function setContenu($contenu) {
 		if (!is_string($contenu) || empty($contenu)) {
-			$this->erreurs_a[] = self::CONTENU_INVALIDE;
+			$this->erreur_a[] = self::CONTENU_INVALIDE;
 		}
 		$this->contenu = $contenu;
 	}
