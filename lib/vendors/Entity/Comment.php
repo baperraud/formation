@@ -4,7 +4,10 @@ namespace Entity;
 use OCFram\Entity;
 
 class Comment extends Entity {
-	protected $news, $auteur, $contenu, $Date;
+	protected $news;
+	protected $auteur;
+	protected $contenu;
+	protected $Date;
 	const AUTEUR_INVALIDE = 1, CONTENU_INVALIDE = 2;
 
 	public function isValid() {
