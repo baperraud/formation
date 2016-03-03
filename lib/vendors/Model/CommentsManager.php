@@ -24,4 +24,11 @@ abstract class CommentsManager extends Manager {
 	 * @return void
 	 */
 	abstract public function add(Comment $Comment);
+
+	/**
+	 * Méthode permettant de récupérer la liste des commentaires d'une news spécifique
+	 * @param $news int La news dont on veut récupérer les commentaires
+	 * @return array
+	 */
+	abstract public function getCommentcUsingNewscIdSortByDateDesc_a($news);
 }

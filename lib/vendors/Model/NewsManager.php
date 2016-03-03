@@ -12,6 +12,7 @@ abstract class NewsManager extends Manager {
 	 * @return array La liste des news.
 	 */
 	abstract public function getNewscSortByIdDesc_a($debut = -1, $limite = -1);
+
 	/**
 	 * Méthode retournant une news précise
 	 * @param $id int L'id de la news à récupérer

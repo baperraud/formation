@@ -52,6 +52,8 @@ class NewsController extends BackController {
 		// On envoie la news à la vue
 		$this->Page->addVar('title', $News->getTitre());
 		$this->Page->addVar('News', $News);
+		// On envoie les commentaires associés également
+		$this->Page->addVar('Comment_a', $this->Managers->getManagerOf('Comments')->getCommentcUsingNewscIdSortByDateDesc_a($News->getId()));
 	}
 
 	public function executeInsertComment(HTTPRequest $Request) {
@@ -71,7 +73,7 @@ class NewsController extends BackController {
 
 				$this->App->getHttpResponse()->redirect('news-' . $Request->getGetData('news') . '.html');
 			} else {
-				$this->Page->addVar('erreurs', $Comment->getErreurs_a());
+				$this->Page->addVar('erreurs', $Comment->getErreur_a());
 			}
 
 			$this->Page->addVar('comment', $Comment);
