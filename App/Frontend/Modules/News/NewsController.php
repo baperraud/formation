@@ -1,6 +1,7 @@
 <?php
 namespace App\Frontend\Modules\News;
 
+use Entity\Comment;
 use \Entity\News;
 use \Model\NewsManager;
 use \OCFram\BackController;
@@ -36,7 +37,7 @@ class NewsController extends BackController {
 		$this->Page->addVar('Liste_news_a', $Liste_news_a);
 	}
 
-	public function executeShow(HTTPRequest $request) {
+	public function executeShow(HTTPRequest $Request) {
 		// On récupère le manager des news
 		$Manager = $this->Managers->getManagerOf('News');
 
@@ -44,12 +45,36 @@ class NewsController extends BackController {
 		/** @var News $News
 		 *  @var NewsManager $Manager
 		 */
-		$News = $Manager->getNewscUsingId($request->getGetData('id'));
+		$News = $Manager->getNewscUsingId($Request->getGetData('id'));
 
 		if (empty($News)) { $this->App->getHttpResponse()->redirect404(); }
 
 		// On envoie la news à la vue
 		$this->Page->addVar('title', $News->getTitre());
 		$this->Page->addVar('News', $News);
+	}
+
+	public function executeInsertComment(HTTPRequest $Request) {
+		$this->Page->addVar('title', 'Ajout d\'un commentaire');
+
+		if ($Request->postExists('pseudo')) {
+			$Comment = new Comment([
+				'news' => $Request->getGetData('news'),
+				'auteur' => $Request->getPostData('pseudo'),
+				'contenu' => $Request->getPostData('contenu')
+			]);
+
+			if ($Comment->isValid()) {
+				$this->Managers->getManagerOf('Comments')->save($Comment);
+
+				$this->App->getUser()->setFlash('Le commentaire a bien été ajouté :)');
+
+				$this->App->getHttpResponse()->redirect('news-' . $Request->getGetData('news') . '.html');
+			} else {
+				$this->Page->addVar('erreurs', $Comment->getErreurs_a());
+			}
+
+			$this->Page->addVar('comment', $Comment);
+		}
 	}
 }
