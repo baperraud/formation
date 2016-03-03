@@ -23,5 +23,6 @@ Formation PHP
 
 * Le Frontend
     * L'application : OK
-    * Le module de news : en cours
+    * Le module de news : OK
+    * Ajout des commentaires : en cours
 
