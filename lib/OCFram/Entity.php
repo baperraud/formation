@@ -19,8 +19,7 @@ abstract class Entity implements \ArrayAccess {
 
 	public function hydrate(array $donnees_a) {
 		foreach ($donnees_a as $attribut => $valeur) {
-			$methode = ltrim(strtolower(preg_replace('/[A-Z]/', '_$0', 'set' . ucfirst($attribut))), '_');
-//			$methode = 'set' . ucfirst($attribut);
+			$methode = 'set' . ucfirst($attribut);
 			if (is_callable([$this, $methode])) {
 				$this->$methode($valeur);
 			}
