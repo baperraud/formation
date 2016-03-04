@@ -66,10 +66,11 @@ class NewsController extends BackController {
 
 			if ($Request->getExists('id')) {
 				$News->setId($Request->getGetData('id'));
-			} else {
+			}
+		} else {
 				// L'identifiant de la news est transmis si on veut la modifier
 				if ($Request->getExists('id')) {
-					$Manager->getNewscUsingId($Request->getGetData('id'));
+					$News = $Manager->getNewscUsingId($Request->getGetData('id'));
 				} else {
 					$News = new News;
 				}
@@ -90,7 +91,6 @@ class NewsController extends BackController {
 
 			$this->Page->addVar('Form', $Form->createView());
 		}
-	}
 
 	public function executeUpdateComment(HTTPRequest $Request) {
 		$this->Page->addVar('title', 'Modification d\'un commentaire');
@@ -102,7 +102,7 @@ class NewsController extends BackController {
 		if ($Request->getMethod() == 'POST') {
 			$Comment = new Comment([
 				'id' => $Request->getGetData('id'),
-				'auteur' => $Request->getPostData('pseudo'),
+				'auteur' => $Request->getPostData('auteur'),
 				'contenu' => $Request->getPostData('contenu')
 			]);
 		} else {
