@@ -17,15 +17,18 @@ Formation PHP
     * L'utilisateur : OK
     * La configuration : OK
 
-* Le Frontend
+* Le Frontend : OK
     * L'application : OK
     * Le module de news : OK
     * Ajout des commentaires : OK
 
-* Le Backend
+* Le Backend : OK
     * L'application : OK
     * Le module de connexion : OK
-    * Le module de news : En cours
+    * Le module de news : OK
+    * Les commentaires : OK
+
+* Les formulaires : En cours
 
 ## Questions
 
