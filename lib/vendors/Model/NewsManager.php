@@ -6,10 +6,16 @@ use \OCFram\Manager;
 
 abstract class NewsManager extends Manager {
 	/**
+	 * Méthode retournant le nombre de news existantes
+	 * @return int Le nombre de news
+	 */
+	abstract public function countNewsc();
+
+	/**
 	 * Méthode retournant une liste de news
 	 * @param $debut int La première news à sélectionner
 	 * @param $limite int Le nombre de news à sélectionner
-	 * @return array La liste des news.
+	 * @return array La liste des news
 	 */
 	abstract public function getNewscSortByIdDesc_a($debut = -1, $limite = -1);
 

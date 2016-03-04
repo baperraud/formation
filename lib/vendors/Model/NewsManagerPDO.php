@@ -4,6 +4,10 @@ namespace Model;
 use \Entity\News;
 
 class NewsManagerPDO extends NewsManager {
+	public function countNewsc() {
+		return $this->Dao->query('SELECT COUNT(*) FROM T_NEW_newsc')->fetchColumn();
+	}
+
 	public function getNewscSortByIdDesc_a($debut = -1, $limite = -1) {
 		$select_query = 'SELECT NNC_id id, NNC_author auteur, NNC_title titre, NNC_content contenu, NNC_dateadd Date_ajout, NNC_dateupdate Date_modif FROM T_NEW_newsc ORDER BY NNC_id DESC';
 
@@ -11,7 +15,6 @@ class NewsManagerPDO extends NewsManager {
 			$select_query .= ' LIMIT ' . (int)$limite . ' OFFSET ' . (int)$debut;
 		}
 
-		/** @var \PDOStatement $select_query_result */
 		$select_query_result = $this->Dao->query($select_query);
 		$select_query_result->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\News');
 
