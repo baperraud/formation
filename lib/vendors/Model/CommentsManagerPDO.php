@@ -8,6 +8,10 @@ class CommentsManagerPDO extends CommentsManager {
 		$this->Dao->exec('DELETE FROM T_NEW_commentc WHERE NCC_id = ' . (int)$comment_id);
 	}
 
+	public function deleteCommentcUsingNewcId($news_id) {
+		$this->Dao->exec('DELETE FROM T_NEW_commentc WHERE NCC_fk_NNC = ' . (int)$news_id);
+	}
+
 	protected function addCommentc(Comment $Comment) {
 		$insert_query = 'INSERT INTO T_NEW_commentc (NCC_fk_NNC, NCC_author, NCC_content, NCC_date) VALUES (:news, :auteur, :content, NOW())';
 
