@@ -20,7 +20,7 @@ abstract class NewsManager extends Manager {
 	abstract protected function updateNewsc(News $News);
 
 	/**
-	 * Méthode permettant d'enreigster une news.
+	 * Méthode permettant d'enreigster une news
 	 * @param $News News La news à enregistrer
 	 * @see self::add()
 	 * @see self::modify()
@@ -35,7 +35,7 @@ abstract class NewsManager extends Manager {
 	}
 
 	/**
-	 * Méthode permettant de supprimer une news.
+	 * Méthode permettant de supprimer une news
 	 * @param $new_id int L'id de la news à supprimer
 	 * @return void
 	 */

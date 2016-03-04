@@ -26,6 +26,7 @@ class NewsController extends BackController {
 		// On récupère le manager des news
 		/** @var NewsManager $Manager */
 		$Manager = $this->Managers->getManagerOf('News');
+
 		$Manager->deleteNewscUsingId($Request->getGetData('id'));
 
 		$this->App->getUser()->setFlash('La news a bien été supprimée !');
@@ -111,5 +112,17 @@ class NewsController extends BackController {
 		} else {
 			$this->Page->addVar('Comment', $Manager->getCommentcUsingCommentcId($Request->getGetData('id')));
 		}
+	}
+
+	public function executeDeleteComment(HTTPRequest $Request) {
+		// On récupère le manager des commentaires
+		/** @var CommentsManager $Manager */
+		$Manager = $this->Managers->getManagerOf('Comments');
+
+		$Manager->deleteCommentcUsingId($Request->getGetData('id'));
+
+		$this->App->getUser()->setFlash('Le commentaire a bien été supprimé !');
+
+		$this->App->getHttpResponse()->redirect('.');
 	}
 }

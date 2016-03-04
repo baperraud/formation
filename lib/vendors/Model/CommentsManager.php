@@ -45,4 +45,11 @@ abstract class CommentsManager extends Manager {
 	 * @return Comment
 	 */
 	abstract public function getCommentcUsingCommentcId($comment_id);
+
+	/**
+	 * Méthode permettant de supprimer un commentaire
+	 * @param $comment_id int L'id du commentaire à supprimer
+	 * @return void
+	 */
+	abstract public function deleteCommentcUsingId($comment_id);
 }
