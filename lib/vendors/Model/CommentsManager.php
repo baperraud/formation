@@ -30,5 +30,5 @@ abstract class CommentsManager extends Manager {
 	 * @param $news int La news dont on veut récupérer les commentaires
 	 * @return array
 	 */
-	abstract public function getCommentcUsingNewscIdSortByDateDesc_a($news);
+	abstract public function getCommentcUsingNewscIdSortByDateDesc_a($news_id);
 }
