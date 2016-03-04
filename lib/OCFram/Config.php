@@ -6,13 +6,13 @@ class Config extends ApplicationComponent {
 
 	public function get($var) {
 		if (!$this->vars_a) {
-			$xml = new \DOMDocument;
-			$xml->load(__DIR__ . '/../../App/' . $this->App->getName() . '/Config/app.xml');
+			$Xml = new \DOMDocument;
+			$Xml->load(__DIR__ . '/../../App/' . $this->App->getName() . '/Config/app.xml');
 
-			/** @var \DOMElement[] $Elements */
-			$Elements = $xml->getElementsByTagName('define');
+			/** @var \DOMElement[] $Element_a */
+			$Element_a = $Xml->getElementsByTagName('define');
 
-			foreach ($Elements as $Element) {
+			foreach ($Element_a as $Element) {
 				$this->vars_a[$Element->getAttribute('var')] = $Element->getAttribute('value');
 			}
 		}

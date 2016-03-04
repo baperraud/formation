@@ -1,7 +1,7 @@
 <?php
 namespace App\Frontend\Modules\News;
 
-use Entity\Comment;
+use \Entity\Comment;
 use \Entity\News;
 use \Model\NewsManager;
 use \OCFram\BackController;

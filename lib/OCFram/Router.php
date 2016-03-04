@@ -3,18 +3,18 @@ namespace OCFram;
 
 class Router {
 	/** @var Route[] $Routes_a */
-	protected $Routes_a = [];
+	protected $Route_a = [];
 
 	const NO_ROUTE = 1;
 
 	public function addRoute(Route $Route) {
-		if (!in_array($Route, $this->Routes_a)) {
-			$this->Routes_a[] = $Route;
+		if (!in_array($Route, $this->Route_a)) {
+			$this->Route_a[] = $Route;
 		}
 	}
 
 	public function getRoute($url) {
-		foreach ($this->Routes_a as $Route) {
+		foreach ($this->Route_a as $Route) {
 			// Si la route correspond à l'URL
 
 			/** Route[] $vars_values */
