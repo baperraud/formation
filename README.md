@@ -1,4 +1,4 @@
-# formation
+# Formation
 Formation PHP
 
 ## Avancement Exercice 1
@@ -7,17 +7,13 @@ Formation PHP
 
 ### Pratique : En cours
 
-* Description de l'application
-    * Question sur le fonctionnement global
+* Description de l'application : OK
 
-* Développement de la bibliothèque
+* Développement de la bibliothèque : OK
     * L'application : OK
-    * Le routeur
-        * Question par rapport à getRoute et match (comportement et type retourné)
-    * Le back controller
-        * Question sur le rôle de la *vue* du back controller
-    * La page
-        * Question sur getGeneratedPage()
+    * Le routeur : OK
+    * Le back controller : OK
+    * La page : OK
     * L'utilisateur : OK
     * La configuration : OK
 
@@ -27,5 +23,10 @@ Formation PHP
     * Ajout des commentaires : OK
 
 * Le Backend
-    * L'application : En cours
+    * L'application : OK
+    * Le module de connexion : OK
+    * Le module de news : En cours
 
+## Questions
+
+- Convention de nommage des méthodes des managers abstraits/PDO : délégation depuis l'abstrait vers des méthodes PDO au nom formaté ?
