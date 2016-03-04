@@ -1,5 +1,5 @@
 <?php
-namespace App\Frontend\Modules\Connexion;
+namespace App\Backend\Modules\Connexion;
 
 use \OCFram\BackController;
 use \OCFram\HTTPRequest;
