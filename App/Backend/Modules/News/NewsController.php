@@ -1,8 +1,10 @@
 <?php
 namespace App\Backend\Modules\News;
 
+use \Entity\Comment;
 use \Entity\News;
 use \Model\NewsManager;
+use \Model\CommentsManager;
 use \OCFram\BackController;
 use \OCFram\HTTPRequest;
 
@@ -60,7 +62,6 @@ class NewsController extends BackController {
 		/** @var NewsManager $Manager */
 		$Manager = $this->Managers->getManagerOf('News');
 
-
 		$News = new News([
 			'auteur' => $Request->getPostData('auteur'),
 			'titre' => $Request->getPostData('titre'),
@@ -81,5 +82,34 @@ class NewsController extends BackController {
 		}
 
 		$this->Page->addVar('News', $News);
+	}
+
+	public function executeUpdateComment(HTTPRequest $Request) {
+		$this->Page->addVar('title', 'Modification d\'un commentaire');
+
+		// On récupère le manager des commentaires
+		/** @var CommentsManager $Manager */
+		$Manager = $this->Managers->getManagerOf('Comments');
+
+		// Si le formulaire a été envoyé
+		if ($Request->postExists('pseudo')) {
+			$Comment = new Comment([
+				'id' => $Request->getGetData('id'),
+				'auteur' => $Request->getPostData('pseudo'),
+				'contenu' => $Request->getPostData('contenu')
+			]);
+
+			if ($Comment->isValid()) {
+				$Manager->save($Comment);
+				$this->App->getUser()->setFlash('Le commentaire a bien été modifié');
+				$this->App->getHttpResponse()->redirect('/news-' . $Request->getPostData('news') . '.html');
+			} else {
+				$this->Page->addVar('erreur_a', $Comment->getErreur_a());
+			}
+
+			$this->Page->addVar('Comment', $Comment);
+		} else {
+			$this->Page->addVar('Comment', $Manager->getCommentcUsingCommentcId($Request->getGetData('id')));
+		}
 	}
 }

@@ -12,7 +12,7 @@ abstract class CommentsManager extends Manager {
 	 */
 	public function save(Comment $Comment) {
 		if ($Comment->isValid()) {
-			$Comment->isNew() ? $this->add($Comment) : $this->modify($Comment);
+			$Comment->isNew() ? $this->addCommentc($Comment) : $this->updateCommentc($Comment);
 		} else {
 			throw new \RuntimeException('Le commentaire doit être validé pour être enregistré');
 		}
@@ -23,7 +23,14 @@ abstract class CommentsManager extends Manager {
 	 * @param $Comment Comment Le commentaire à ajouter
 	 * @return void
 	 */
-	abstract protected function add(Comment $Comment);
+	abstract protected function addCommentc(Comment $Comment);
+
+	/**
+	 * Méthode permettant de modifier un commentaire
+	 * @param $Comment Comment Le commentaire à ajouter
+	 * @return void
+	 */
+	abstract protected function updateCommentc(Comment $Comment);
 
 	/**
 	 * Méthode permettant de récupérer la liste des commentaires d'une news spécifique
@@ -31,4 +38,11 @@ abstract class CommentsManager extends Manager {
 	 * @return array
 	 */
 	abstract public function getCommentcUsingNewscIdSortByDateDesc_a($news_id);
+
+	/**
+	 * Méthode permettant de récupérer un commentaire spécifique
+	 * @param $comment_id int L'id du commentaire à récupérer
+	 * @return Comment
+	 */
+	abstract public function getCommentcUsingCommentcId($comment_id);
 }

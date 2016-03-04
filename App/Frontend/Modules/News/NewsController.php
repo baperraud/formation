@@ -76,7 +76,7 @@ class NewsController extends BackController {
 				$this->Page->addVar('erreur_a', $Comment->getErreur_a());
 			}
 
-			$this->Page->addVar('comment', $Comment);
+			$this->Page->addVar('Comment', $Comment);
 		}
 	}
 }

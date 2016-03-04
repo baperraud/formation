@@ -1,4 +1,10 @@
-<?php /** @var \Entity\News $News */ ?>
+<?php
+/**
+ * @var \Entity\News $News
+ * @var \OCFram\User $User
+ */
+?>
+
 <p>Par <em><?= $News['auteur'] ?></em>, le <?= $News['Date_ajout']->format('d/m/Y à H\hi') ?></p>
 
 <h2><?= $News['titre'] ?></h2>
@@ -19,6 +25,9 @@ if (empty($Comment_a)) { ?>
 		<fieldset>
 			<legend>
 				Posté par <strong><?= htmlspecialchars($Comment['auteur']) ?></strong> le <?= $Comment['Date']->format('d/m/Y à H\hi') ?>
+				<?php if ($User->isAuthenticated()) { ?>
+					<a href="admin/comment-update-<?= $Comment['id'] ?>.html">Modifier</a> |
+				<?php } ?>
 			</legend>
 			<p><?= nl2br(htmlspecialchars($Comment['contenu'])) ?></p>
 		</fieldset>

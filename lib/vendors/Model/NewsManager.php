@@ -39,7 +39,7 @@ abstract class NewsManager extends Manager {
 	 * @param $new_id int L'id de la news à supprimer
 	 * @return void
 	 */
-	abstract protected function deleteNewscUsingId($new_id);
+	abstract public function deleteNewscUsingId($new_id);
 
 	/**
 	 * Méthode retournant le nombre de news existantes
