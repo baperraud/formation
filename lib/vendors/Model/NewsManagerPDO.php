@@ -4,7 +4,19 @@ namespace Model;
 use \Entity\News;
 
 class NewsManagerPDO extends NewsManager {
-	public function add(News $News) {
+	protected function updateNewsc(News $News) {
+		$update_query = 'UPDATE T_NEW_newsc SET NNC_author = :auteur, NNC_title = :titre, NNC_content = :contenu, NNC_dateupdate = NOW() WHERE NNC_id = :id';
+
+		$update_query_result = $this->Dao->prepare($update_query);
+		$update_query_result->bindValue(':titre', $News->getTitre());
+		$update_query_result->bindValue(':auteur', $News->getAuteur());
+		$update_query_result->bindValue(':contenu', $News->getContenu());
+		$update_query_result->bindValue(':id', $News->getId(), \PDO::PARAM_INT);
+
+		$update_query_result->execute();
+	}
+
+	protected function addNewsc(News $News) {
 		$insert_query = 'INSERT INTO T_NEW_newsc (NNC_author, NNC_title, NNC_content, NNC_dateadd, NNC_dateupdate) VALUES (:auteur, :titre, :contenu, NOW(), NOW())';
 
 		$insert_query_result = $this->Dao->prepare($insert_query);

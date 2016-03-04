@@ -11,9 +11,7 @@
 
 		<?= isset($erreur_a) && in_array(\Entity\News::CONTENU_INVALIDE, $erreur_a) ? 'Le contenu est invalide.<br />' : '' ?>
 		<label>Contenu</label>
-		<textarea name="contenu" rows="8" cols="60">
-			<?= isset($News) ? $News['contenu'] : '' ?>
-		</textarea><br />
+		<textarea name="contenu" rows="8" cols="60"><?= isset($News) ? $News['contenu'] : '' ?></textarea><br />
 
 <?php
 	if (isset($News) && !$News->isNew()) { ?>

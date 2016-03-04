@@ -30,6 +30,21 @@ class NewsController extends BackController {
 		}
 	}
 
+	public function executeUpdate(HTTPRequest $Request) {
+		$this->Page->addVar('title', 'Modification d\'une news');
+
+		// On récupère le manager des news
+		/** @var NewsManager $Manager */
+		$Manager = $this->Managers->getManagerOf('News');
+
+		// Si le formulaire a été envoyé
+		if ($Request->postExists('auteur')) {
+			$this->processForm($Request);
+		} else {
+			$this->Page->addVar('News', $Manager->getNewscUsingId($Request->getGetData('id')));
+		}
+	}
+
 	public function processForm(HTTPRequest $Request) {
 		// On récupère le manager des news
 		/** @var NewsManager $Manager */
@@ -39,7 +54,7 @@ class NewsController extends BackController {
 		$News = new News([
 			'auteur' => $Request->getPostData('auteur'),
 			'titre' => $Request->getPostData('titre'),
-			'contenu' => trim($Request->getPostData('contenu'))
+			'contenu' => $Request->getPostData('contenu')
 		]);
 
 		// L'identifiant de la news est transmis si l'on veut la modifier
@@ -55,6 +70,6 @@ class NewsController extends BackController {
 			$this->Page->addVar('erreur_a', $News->getErreur_a());
 		}
 
-		$this->Page->addVar('news', $News);
+		$this->Page->addVar('News', $News);
 	}
 }

@@ -4,7 +4,7 @@ namespace Model;
 use \Entity\Comment;
 
 class CommentsManagerPDO extends CommentsManager {
-	public function add(Comment $Comment) {
+	protected function add(Comment $Comment) {
 		$insert_query = 'INSERT INTO T_NEW_commentc (NCC_fk_NNC, NCC_author, NCC_content, NCC_date) VALUES (:news, :auteur, :content, NOW())';
 
 		$insert_query_result = $this->Dao->prepare($insert_query);

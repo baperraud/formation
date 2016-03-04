@@ -8,9 +8,7 @@
 
 		<?= isset($erreur_a) && in_array(\Entity\Comment::CONTENU_INVALIDE, $erreur_a) ? 'Le contenu est invalide.<br />' : '' ?>
 		<label>Contenu</label>
-		<textarea name="contenu" rows="7" cols="50">
-			<?= isset($Comment) ? htmlspecialchars($Comment['contenu']) : '' ?>
-		</textarea><br />
+		<textarea name="contenu" rows="7" cols="50"><?= isset($Comment) ? htmlspecialchars($Comment['contenu']) : '' ?></textarea><br />
 
 		<input type="submit" value="Envoyer" />
 	</p>
