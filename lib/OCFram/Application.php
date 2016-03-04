@@ -30,11 +30,11 @@ abstract class Application {
 		$Xml = new \DOMDocument;
 		$Xml->load(__DIR__ . '/../../App/' . $this->name . '/Config/routes.xml');
 
-		/** @var \DOMElement[] $Routes_a */
-		$Routes_a = $Xml->getElementsByTagName('route');
+		/** @var \DOMElement[] $Route_a */
+		$Route_a = $Xml->getElementsByTagName('route');
 
 		// Pour chaque route dans routes.xml
-		foreach ($Routes_a as $Route) {
+		foreach ($Route_a as $Route) {
 			$vars_a = [];
 
 			// Si des variables sont présentes dans l'URL
@@ -67,6 +67,6 @@ abstract class Application {
 		// On instancie le contrôleur
 		$controllerClass = 'App\\' . $this->name . '\\Modules\\' . $matchedRoute->getModule() .
 			'\\' . $matchedRoute->getModule() . 'Controller';
-		return new $controllerClass ($this, $matchedRoute->getModule(), $matchedRoute->getAction());
+		return new $controllerClass($this, $matchedRoute->getModule(), $matchedRoute->getAction());
 	}
 }

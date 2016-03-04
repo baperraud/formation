@@ -17,6 +17,12 @@ class Route {
 
 	public function hasVars() { return !empty($this->vars_names_a); }
 
+	/**
+	 * Méthode permettant de déterminer si la route correspond à l'url fournie
+	 * Renvoie la liste des variables si c'est le cas, false sinon
+	 * @param $url string L'url fournie
+	 * @return string[] | boolean
+	 */
 	public function match($url) {
 		if (preg_match('`^' . $this->url . '$`', $url, $matches)) {
 			return $matches;

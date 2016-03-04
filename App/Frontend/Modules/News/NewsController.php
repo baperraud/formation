@@ -63,7 +63,7 @@ class NewsController extends BackController {
 			$Comment = new Comment([
 				'news' => $Request->getGetData('news'),
 				'auteur' => $Request->getPostData('pseudo'),
-				'contenu' => $Request->getPostData('contenu')
+				'contenu' => trim($Request->getPostData('contenu'))
 			]);
 
 			if ($Comment->isValid()) {
@@ -73,7 +73,7 @@ class NewsController extends BackController {
 
 				$this->App->getHttpResponse()->redirect('news-' . $Request->getGetData('news') . '.html');
 			} else {
-				$this->Page->addVar('erreurs', $Comment->getErreur_a());
+				$this->Page->addVar('erreur_a', $Comment->getErreur_a());
 			}
 
 			$this->Page->addVar('comment', $Comment);
