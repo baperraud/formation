@@ -11,7 +11,7 @@ class Form {
 	}
 
 	public function add(Field $Field) {
-		$attr = $Field->getName(); // On récupère le nom du champ
+		$attr = 'get' . ucfirst($Field->getName()); // On récupère le nom du champ
 		$Field->setValue($this->Entity->$attr()); // On assigne la valeur correspondante au champ
 
 		$this->Field_a[] = $Field;

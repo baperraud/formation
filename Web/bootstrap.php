@@ -23,6 +23,9 @@ $Model_loader->register();
 $Entity_loader = new SplClassLoader('Entity', __DIR__ . '/../lib/vendors');
 $Entity_loader->register();
 
+$Form_builder_loader = new SplClassLoader('FormBuilder', __DIR__ . '/../lib/vendors');
+$Form_builder_loader->register();
+
 // On déduit enfin le nom de la classe avant de l'instancier
 $app_class_name = 'App\\' . $_GET['app'] . '\\' . $_GET['app'] . 'Application';
 /** @var \OCFram\Application $App */

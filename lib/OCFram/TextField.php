@@ -17,6 +17,10 @@ class TextField extends Field {
 
 		if (!empty($this->rows)) { $widget .= ' rows="' . $this->rows . '"'; }
 
+		$widget .= '>';
+
+		if (!empty($this->value)) { $widget .= htmlspecialchars($this->value); }
+
 		$widget .= '</textarea>';
 		return $widget;
 	}

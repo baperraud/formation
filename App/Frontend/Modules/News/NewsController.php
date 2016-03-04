@@ -3,6 +3,8 @@ namespace App\Frontend\Modules\News;
 
 use \Entity\Comment;
 use \Entity\News;
+use FormBuilder\CommentFormBuilder;
+use Model\CommentsManager;
 use \Model\NewsManager;
 use \OCFram\BackController;
 use OCFram\Form;
@@ -41,13 +43,12 @@ class NewsController extends BackController {
 	}
 
 	public function executeShow(HTTPRequest $Request) {
+		/** @var NewsManager $Manager */
 		// On récupère le manager des news
 		$Manager = $this->Managers->getManagerOf('News');
 
 		// On récupère la news de la requête
-		/** @var News $News
-		 *  @var NewsManager $Manager
-		 */
+		/** @var News $News */
 		$News = $Manager->getNewscUsingId($Request->getGetData('id'));
 
 		if (empty($News)) { $this->App->getHttpResponse()->redirect404(); }
@@ -60,7 +61,11 @@ class NewsController extends BackController {
 	}
 
 	public function executeInsertComment(HTTPRequest $Request) {
-		// Si le formulaire a été envoyé, on crée le commentaire avec les valeurs du formulaire
+		/** @var CommentsManager $Manager */
+		// On récupère le manager des commentaires
+		$Manager = $this->Managers->getManagerOf('Comments');
+
+		// Si le formulaire a été envoyé
 		if ($Request->getMethod() == 'POST') {
 			$Comment = new Comment([
 				'news' => $Request->getGetData('news'),
@@ -71,21 +76,15 @@ class NewsController extends BackController {
 			$Comment = new Comment;
 		}
 
-		$Form = new Form($Comment);
+		$Form_builder = new CommentFormBuilder($Comment);
+		$Form_builder->build();
 
-		$Form->add(new StringField([
-			'label' => 'Auteur',
-			'name' => 'auteur',
-			'max_length' => 50
-		]))->add(new TextField([
-			'label' => 'Contenu',
-			'name' => 'contenu',
-			'rows' => 7,
-			'cols' => 50
-		]));
+		$Form = $Form_builder->getForm();
 
-		if ($Form->isValid()) {
-			// On enregistre le commentaire
+		if ($Request->getMethod() == 'POST' && $Form->isValid()) {
+			$Manager->save($Comment);
+			$this->App->getUser()->setFlash('Le commentaire a bien été ajouté, merci !');
+			$this->App->getHttpResponse()->redirect('news-' . $Request->getGetData('news') . '.html');
 		}
 
 		$this->Page->addVar('Comment', $Comment);

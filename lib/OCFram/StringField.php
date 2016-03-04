@@ -14,7 +14,7 @@ class StringField extends Field {
 
 		if (!empty($this->value)) { $widget .= ' value="' . htmlspecialchars($this->value) . '"'; }
 
-		if (!empty($this->max_length)) { $widget .= ' max_length="' . $this->max_length . '"'; }
+		if (!empty($this->max_length)) { $widget .= ' maxlength="' . $this->max_length . '"'; }
 
 		$widget .= ' />';
 		return $widget;
