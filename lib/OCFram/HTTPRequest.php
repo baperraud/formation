@@ -10,7 +10,7 @@ class HTTPRequest extends ApplicationComponent {
 	}
 
 	public function getMethod() {
-		return $_SERVER['REQUEST METHOD'];
+		return $_SERVER['REQUEST_METHOD'];
 	}
 
 	public function getExists($key) {

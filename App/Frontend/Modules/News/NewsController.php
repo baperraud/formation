@@ -3,14 +3,12 @@ namespace App\Frontend\Modules\News;
 
 use \Entity\Comment;
 use \Entity\News;
-use FormBuilder\CommentFormBuilder;
-use Model\CommentsManager;
+use \FormBuilder\CommentFormBuilder;
+use \Model\CommentsManager;
 use \Model\NewsManager;
 use \OCFram\BackController;
-use OCFram\Form;
+use \OCFram\FormHandler;
 use \OCFram\HTTPRequest;
-use OCFram\StringField;
-use OCFram\TextField;
 
 class NewsController extends BackController {
 	public function executeIndex() {
@@ -69,7 +67,7 @@ class NewsController extends BackController {
 		if ($Request->getMethod() == 'POST') {
 			$Comment = new Comment([
 				'news' => $Request->getGetData('news'),
-				'auteur' => $Request->getPostData('pseudo'),
+				'auteur' => $Request->getPostData('auteur'),
 				'contenu' => $Request->getPostData('contenu')
 			]);
 		} else {
@@ -81,8 +79,10 @@ class NewsController extends BackController {
 
 		$Form = $Form_builder->getForm();
 
-		if ($Request->getMethod() == 'POST' && $Form->isValid()) {
-			$Manager->save($Comment);
+		// On récupère le gestionnaire de formulaire
+		$Form_handler = new FormHandler($Form, $Manager, $Request);
+
+		if ($Form_handler->process()) {
 			$this->App->getUser()->setFlash('Le commentaire a bien été ajouté, merci !');
 			$this->App->getHttpResponse()->redirect('news-' . $Request->getGetData('news') . '.html');
 		}

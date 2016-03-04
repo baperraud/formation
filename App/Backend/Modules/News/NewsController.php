@@ -8,6 +8,7 @@ use \FormBuilder\NewsFormBuilder;
 use \Model\NewsManager;
 use \Model\CommentsManager;
 use \OCFram\BackController;
+use \OCFram\FormHandler;
 use \OCFram\HTTPRequest;
 
 class NewsController extends BackController {
@@ -79,8 +80,10 @@ class NewsController extends BackController {
 
 			$Form = $Form_builder->getForm();
 
-			if ($Request->getMethod() == 'POST' && $Form->isValid()) {
-				$Manager->save($News);
+			// On récupère le gestionnaire de formulaire
+			$Form_handler = new FormHandler($Form, $Manager, $Request);
+
+			if ($Form_handler->process()) {
 				$this->App->getUser()->setFlash($News->isNew() ? 'La news a bien été ajoutée !' : 'La news a bien été modifiée !');
 				$this->App->getHttpResponse()->redirect('/admin/');
 			}
@@ -111,8 +114,10 @@ class NewsController extends BackController {
 
 		$Form = $Form_builder->getForm();
 
-		if ($Request->getMethod() == 'POST' && $Form->isValid()) {
-			$Manager->save($Comment);
+		// On récupère le gestionnaire de formulaire
+		$Form_handler = new FormHandler($Form, $Manager, $Request);
+
+		if ($Form_handler->process()) {
 			$this->App->getUser()->setFlash('Le commentaire a bien été modifié');
 			$this->App->getHttpResponse()->redirect('/admin/');
 		}
