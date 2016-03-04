@@ -4,6 +4,10 @@ namespace Model;
 use \Entity\News;
 
 class NewsManagerPDO extends NewsManager {
+	public function deleteNewscUsingId($new_id) {
+		$this->Dao->exec('DELETE FROM T_NEW_newsc WHERE NNC_id = ' . (int)$new_id);
+	}
+
 	protected function updateNewsc(News $News) {
 		$update_query = 'UPDATE T_NEW_newsc SET NNC_author = :auteur, NNC_title = :titre, NNC_content = :contenu, NNC_dateupdate = NOW() WHERE NNC_id = :id';
 

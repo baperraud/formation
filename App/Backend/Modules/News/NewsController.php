@@ -20,6 +20,16 @@ class NewsController extends BackController {
 		$this->Page->addVar('nombre_news', $Manager->countNewsc());
 	}
 
+	public function executeDelete(HTTPRequest $Request) {
+		// On récupère le manager des news
+		/** @var NewsManager $Manager */
+		$Manager = $this->Managers->getManagerOf('News');
+		$Manager->deleteNewscUsingId($Request->getGetData('id'));
+
+		$this->App->getUser()->setFlash('La news a bien été supprimée !');
+
+		$this->App->getHttpResponse()->redirect('.');
+	}
 
 	public function executeInsert(HTTPRequest $Request) {
 		$this->Page->addVar('title', 'Ajout d\'une news');
