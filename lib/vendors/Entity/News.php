@@ -18,19 +18,19 @@ class News extends Entity {
 
 	public function setAuteur($auteur) {
 		if (!is_string($auteur) || empty($auteur)) {
-			$this->erreurs_a[] = self::AUTEUR_INVALIDE;
+			$this->erreur_a[] = self::AUTEUR_INVALIDE;
 		}
 		$this->auteur = $auteur;
 	}
 	public function setTitre($titre) {
 		if (!is_string($titre) || empty($titre)) {
-			$this->erreurs_a[] = self::TITRE_INVALIDE;
+			$this->erreur_a[] = self::TITRE_INVALIDE;
 		}
 		$this->titre = $titre;
 	}
 	public function setContenu($contenu) {
 		if (!is_string($contenu) || empty($contenu)) {
-			$this->erreurs_a[] = self::CONTENU_INVALIDE;
+			$this->erreur_a[] = self::CONTENU_INVALIDE;
 		}
 		$this->contenu = $contenu;
 	}

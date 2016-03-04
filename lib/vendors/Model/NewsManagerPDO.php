@@ -4,6 +4,17 @@ namespace Model;
 use \Entity\News;
 
 class NewsManagerPDO extends NewsManager {
+	public function add(News $News) {
+		$insert_query = 'INSERT INTO T_NEW_newsc (NNC_author, NNC_title, NNC_content, NNC_dateadd, NNC_dateupdate) VALUES (:auteur, :titre, :contenu, NOW(), NOW())';
+
+		$insert_query_result = $this->Dao->prepare($insert_query);
+		$insert_query_result->bindValue(':auteur', $News->getAuteur());
+		$insert_query_result->bindValue(':titre', $News->getTitre());
+		$insert_query_result->bindValue(':contenu', $News->getContenu());
+
+		$insert_query_result->execute();
+	}
+
 	public function countNewsc() {
 		return $this->Dao->query('SELECT COUNT(*) FROM T_NEW_newsc')->fetchColumn();
 	}
