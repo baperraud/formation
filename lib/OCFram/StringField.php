@@ -2,7 +2,7 @@
 
 namespace OCFram;
 
-abstract class StringField extends Field {
+class StringField extends Field {
 	protected $max_length;
 
 	public function buildWidget() {

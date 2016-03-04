@@ -2,7 +2,7 @@
 
 namespace OCFram;
 
-abstract class TextField extends Field {
+class TextField extends Field {
 	protected $cols;
 	protected $rows;
 
