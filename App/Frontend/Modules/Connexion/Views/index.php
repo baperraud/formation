@@ -1,4 +1,4 @@
-<h2>Connexion admin</h2>
+<h2>Connexion</h2>
 
 <form action="" method="post">
 	<label>Pseudo</label>

@@ -1,6 +1,7 @@
 <?php
 namespace App\Backend;
 
+use \App\Backend\Modules\Connexion\ConnexionController;
 use \OCFram\Application;
 use \OCFram\BackController;
 
@@ -18,7 +19,7 @@ class BackendApplication extends Application {
 			$controller = $this->getController();
 		} else {
 			// Sinon, instanciation du contrôleur du module de connexion
-			$controller = new Modules\Connexion\ConnexionController($this, 'Connexion', 'index');
+			$controller = new ConnexionController($this, 'Connexion', 'index');
 		}
 
 		// On exécute le contrôleur

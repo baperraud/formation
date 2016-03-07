@@ -1,11 +1,18 @@
 <?php
-namespace App\Backend\Modules\Connexion;
 
+namespace App\Frontend\Modules\Connexion;
+
+use \Model\UsersManager;
 use \OCFram\BackController;
 use \OCFram\HTTPRequest;
 
 class ConnexionController extends BackController {
 	public function executeIndex(HTTPRequest $Request) {
+
+		// On récupère le manager des utilisateurs
+		/** @var UsersManager $Manager */
+		$Manager = $this->Managers->getManagerOf('Users');
+
 		$this->Page->addVar('title', 'Connexion');
 
 		// Si le formulaire a été envoyé
@@ -14,9 +21,8 @@ class ConnexionController extends BackController {
 			$password = $Request->getPostData('password');
 
 			// Si les informations d'identification sont correctes
-			if ($login == $this->App->getConfig()->get('login') && $password == $this->App->getConfig()->get('pass')) {
+			if ($Manager->existsUsercUsingPseudoAndPassword($login, $password)) {
 				$this->App->getUser()->setAuthenticated(true);
-				$this->App->getUser()->setAttribute('admin', true);
 				$this->App->getHttpResponse()->redirect('.');
 			} else {
 				$this->App->getUser()->setFlash('Le pseudo ou le mot de passe est incorrect.');
