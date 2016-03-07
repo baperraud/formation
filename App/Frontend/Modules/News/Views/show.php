@@ -7,9 +7,9 @@
 
 <p>Par <em><?= $News['auteur'] ?></em>, le <?= $News['Date_ajout']->format('d/m/Y à H\hi') ?></p>
 
-<h2><?= $News['titre'] ?></h2>
+<h2 class="overflow_hidden"><?= $News['titre'] ?></h2>
 
-<p><?= nl2br($News['contenu']) ?></p>
+<p class="overflow_hidden"><?= nl2br($News['contenu']) ?></p>
 
 <?php if ($News['Date_ajout'] != $News['Date_modif']): ?>
 	<p style="text-align: right;">
@@ -28,14 +28,13 @@ if (empty($Comment_a)): ?>
 			<legend>
 				Posté par <strong><?= htmlspecialchars($Comment['auteur']) ?></strong>
 				le <?= $Comment['Date']->format('d/m/Y à H\hi') ?>
-				<?php if ($User->isAuthenticated()
-					&& $User->isAdmin()
+				<?php if ($User->isAuthenticated() && $User->isAdmin()
 				): ?> -
 					<a href="admin/comment-update-<?= $Comment['id'] ?>.html">Modifier</a> |
 					<a href="admin/comment-delete-<?= $Comment['id'] ?>.html">Supprimer</a>
 				<?php endif; ?>
 			</legend>
-			<p><?= nl2br(htmlspecialchars($Comment['contenu'])) ?></p>
+			<p class="overflow_hidden"><?= nl2br(htmlspecialchars($Comment['contenu'])) ?></p>
 		</fieldset>
 		<?php
 	endforeach;

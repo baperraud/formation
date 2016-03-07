@@ -8,8 +8,6 @@ class DeviceController extends BackController {
 	public function executeIndex() {
 		$this->Page->addVar('title', 'Device utilisé');
 
-		$device = '';
-
 		$Detect = new \Mobile_Detect();
 
 		if ($Detect->isTablet()) {
