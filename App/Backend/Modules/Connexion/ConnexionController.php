@@ -28,6 +28,14 @@ class ConnexionController extends BackController {
 
 		// Si l'utilisateur est connecté
 		if ($this->App->getUser()->isAuthenticated()) {
+
+			// On détruit les variables de notre session
+			session_unset();
+			// On détruit notre session
+			session_destroy();
+
+			// Puis on relance une session vierge
+			session_start();
 			$this->App->getUser()->setAuthenticated(false);
 			$this->App->getUser()->setFlash('Vous avez bien été déconnecté !');
 
