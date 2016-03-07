@@ -28,8 +28,13 @@ Formation PHP
     * Le module de news : OK
     * Les commentaires : OK
 
-* Les formulaires : En cours
+* Les formulaires : OK
+    * Le formulaire : OK
+    * Les validateurs : OK
+    * Le constructeur de formulaires : OK
+    * Le gestionnaire de formulaires : OK
 
 ## Questions
 
 - Convention de nommage des méthodes des managers abstraits/PDO : délégation depuis l'abstrait vers des méthodes PDO au nom formaté ?
+- Instanciation d'une application à chaque requête ?
