@@ -25,7 +25,7 @@ class User extends ApplicationComponent {
 		if (!is_bool($authenticated)) {
 			throw new \InvalidArgumentException('La valeur spécifiée à la méthode User::setAuthenticated() doit être un boolean');
 		}
-		$_SESSION['auth'] = true;
+		$_SESSION['auth'] = $authenticated;
 	}
 
 	public function setFlash($value) { $_SESSION['flash'] = $value; }

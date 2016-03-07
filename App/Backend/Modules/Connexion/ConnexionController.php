@@ -22,4 +22,16 @@ class ConnexionController extends BackController {
 			}
 		}
 	}
+
+	public function executeLogout(HTTPRequest $Request) {
+		$this->Page->addVar('title', 'Déconnexion');
+
+		// Si l'utilisateur est connecté
+		if ($this->App->getUser()->isAuthenticated()) {
+			$this->App->getUser()->setAuthenticated(false);
+			$this->App->getUser()->setFlash('Vous avez bien été déconnecté !');
+
+			$this->App->getHttpResponse()->redirect('/');
+		}
+	}
 }

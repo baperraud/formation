@@ -20,10 +20,11 @@
 	<nav>
 		<ul>
 			<li><a href="/">Accueil</a></li>
-			<?php if ($User->isAuthenticated()) { ?>
+			<?php if ($User->isAuthenticated()): ?>
 				<li><a href="/admin/">Admin</a></li>
 				<li><a href="/admin/news-insert.html">Ajouter une news</a></li>
-			<?php } ?>
+				<li><a href="/admin/logout.html">Se déconnecter</a></li>
+			<?php endif; ?>
 		</ul>
 	</nav>
 
