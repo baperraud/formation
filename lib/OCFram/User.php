@@ -1,9 +1,12 @@
 <?php
 namespace OCFram;
 
+use \Model\UsersManager;
+
 session_start();
 
 class User extends ApplicationComponent {
+
 	public function getAttribute($attr) {
 		return isset($_SESSION[$attr]) ? $_SESSION[$attr] : NULL;
 	}
@@ -29,4 +32,8 @@ class User extends ApplicationComponent {
 	}
 
 	public function setFlash($value) { $_SESSION['flash'] = $value; }
+
+	public function isAdmin() {
+		return ($this->getAttribute('admin') == UsersManager::ROLE_ADMIN ? true : false);
+	}
 }

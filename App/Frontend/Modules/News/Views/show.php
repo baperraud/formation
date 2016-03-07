@@ -12,7 +12,9 @@
 <p><?= nl2br($News['contenu']) ?></p>
 
 <?php if ($News['Date_ajout'] != $News['Date_modif']): ?>
-	<p style="text-align: right;"><small><em>Modifiée le <?= $News['Date_modif']->format('d/m/Y à H\hi') ?></em></small></p>
+	<p style="text-align: right;">
+		<small><em>Modifiée le <?= $News['Date_modif']->format('d/m/Y à H\hi') ?></em></small>
+	</p>
 <?php endif; ?>
 
 <p><a href="commenter-<?= $News['id'] ?>.html">Ajouter un commentaire</a></p>
@@ -24,15 +26,18 @@ if (empty($Comment_a)): ?>
 	foreach ($Comment_a as $Comment): ?>
 		<fieldset>
 			<legend>
-				Posté par <strong><?= htmlspecialchars($Comment['auteur']) ?></strong> le <?= $Comment['Date']->format('d/m/Y à H\hi') ?>
-				<?php if ($User->isAuthenticated()): ?> -
+				Posté par <strong><?= htmlspecialchars($Comment['auteur']) ?></strong>
+				le <?= $Comment['Date']->format('d/m/Y à H\hi') ?>
+				<?php if ($User->isAuthenticated()
+					&& $User->isAdmin()
+				): ?> -
 					<a href="admin/comment-update-<?= $Comment['id'] ?>.html">Modifier</a> |
 					<a href="admin/comment-delete-<?= $Comment['id'] ?>.html">Supprimer</a>
 				<?php endif; ?>
 			</legend>
 			<p><?= nl2br(htmlspecialchars($Comment['contenu'])) ?></p>
 		</fieldset>
-	<?php
+		<?php
 	endforeach;
 endif; ?>
 
