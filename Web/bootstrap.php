@@ -26,6 +26,13 @@ $Entity_loader->register();
 $Form_builder_loader = new SplClassLoader('FormBuilder', __DIR__ . '/../lib/vendors');
 $Form_builder_loader->register();
 
+//$Composer_loader = new Composer\Autoload\ClassLoader();
+//// register classes with namespaces
+//$loader->add('', __DIR__ . '/../vendors/mobiledetect');
+//// activate the autoloader
+//$Composer_loader->register();
+require __DIR__ . '/../vendor/autoload.php';
+
 // On déduit enfin le nom de la classe avant de l'instancier
 $app_class_name = 'App\\' . $_GET['app'] . '\\' . $_GET['app'] . 'Application';
 /** @var \OCFram\Application $App */

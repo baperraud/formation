@@ -1,37 +1,41 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title><?= isset($title) ? $title : 'Mon super site' ?></title>
-		<meta charset="utf-8" />
-		<link rel="stylesheet" href="/css/Envision.css" type="text/css" />
-	</head>
+<head>
+	<title>
+		<?= isset($title) ? $title : 'Mon super site' ?>
+	</title>
 
-	<body>
-		<div id="wrap">
-			<header>
-				<h1><a href="/">Mon super site</a></h1>
+	<meta charset="utf-8" />
 
-				<p>Comment ça, il n'y a presque rien ?</p>
-			</header>
+	<link rel="stylesheet" href="/css/Envision.css" type="text/css" />
+</head>
 
-			<nav>
-				<ul>
-					<li><a href="/">Accueil</a></li>
-					<?php /** @var \OCFram\User $User */
-					if ($User->isAuthenticated()) { ?>
-					<li><a href="/admin/">Admin</a></li>
-					<li><a href="/admin/news-insert.html">Ajouter une news</a></li>
-					<?php } ?>
-				</ul>
-			</nav>
+<body>
+<div id="wrap">
+	<header>
+		<h1><a href="/">Mon super site</a></h1>
+		<p>Comment ça, il n'y a presque rien ?</p>
+	</header>
 
-			<div id="content-wrap">
-				<section id="main">
-					<?php if ($User->hasFlash()) echo '<p style="text-align: center;">', $User->getFlash(), '</p>'; ?>
+	<nav>
+		<ul>
+			<li><a href="/">Accueil</a></li>
+			<?php if ($User->isAuthenticated()) { ?>
+				<li><a href="/admin/">Admin</a></li>
+				<li><a href="/admin/news-insert.html">Ajouter une news</a></li>
+			<?php } ?>
+		</ul>
+	</nav>
 
-					<?= $content ?>
-				</section>
-			</div>
-		</div>
-	</body>
+	<div id="content-wrap">
+		<section id="main">
+			<?php if ($User->hasFlash()) echo '<p style="text-align: center;">', $User->getFlash(), '</p>'; ?>
+
+			<?= $content ?>
+		</section>
+	</div>
+
+	<footer></footer>
+</div>
+</body>
 </html>

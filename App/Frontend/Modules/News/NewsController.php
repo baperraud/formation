@@ -55,7 +55,9 @@ class NewsController extends BackController {
 		$this->Page->addVar('title', $News->getTitre());
 		$this->Page->addVar('News', $News);
 		// On envoie les commentaires associés également
-		$this->Page->addVar('Comment_a', $this->Managers->getManagerOf('Comments')->getCommentcUsingNewscIdSortByDateDesc_a($News->getId()));
+		/** @var CommentsManager $Manager */
+		$Manager = $this->Managers->getManagerOf('Comments');
+		$this->Page->addVar('Comment_a', $Manager->getCommentcUsingNewscIdSortByDateDesc_a($News->getId()));
 	}
 
 	public function executeInsertComment(HTTPRequest $Request) {
