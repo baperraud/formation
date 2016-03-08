@@ -4,12 +4,25 @@ namespace Model;
 use \Entity\News;
 
 class NewsManagerPDO extends NewsManager {
+	/**
+	 * Méthode permettant de supprimer une news
+	 * @param $new_id int L'id de la news à supprimer
+	 * @return void
+	 */
 	public function deleteNewscUsingId($new_id) {
 		$this->Dao->exec('DELETE FROM T_NEW_newsc WHERE NNC_id = ' . (int)$new_id);
 	}
 
+	/**
+	 * Méthode permettant de modifier une news.
+	 * @param $News News La news à ajouter
+	 * @return void
+	 */
 	protected function updateNewsc(News $News) {
-		$update_query = 'UPDATE T_NEW_newsc SET NNC_author = :auteur, NNC_title = :titre, NNC_content = :contenu, NNC_dateupdate = NOW() WHERE NNC_id = :id';
+		$update_query = '
+			UPDATE T_NEW_newsc
+			SET NNC_author = :auteur, NNC_title = :titre, NNC_content = :contenu, NNC_dateupdate = NOW()
+			WHERE NNC_id = :id';
 
 		$update_query_result = $this->Dao->prepare($update_query);
 		$update_query_result->bindValue(':titre', $News->getTitre());
@@ -20,8 +33,15 @@ class NewsManagerPDO extends NewsManager {
 		$update_query_result->execute();
 	}
 
+	/**
+	 * Méthode permettant d'ajouter une news.
+	 * @param $News News La news à ajouter
+	 * @return void
+	 */
 	protected function addNewsc(News $News) {
-		$insert_query = 'INSERT INTO T_NEW_newsc (NNC_author, NNC_title, NNC_content, NNC_dateadd, NNC_dateupdate) VALUES (:auteur, :titre, :contenu, NOW(), NOW())';
+		$insert_query = '
+			INSERT INTO T_NEW_newsc (NNC_author, NNC_title, NNC_content, NNC_dateadd, NNC_dateupdate)
+			VALUES (:auteur, :titre, :contenu, NOW(), NOW())';
 
 		$insert_query_result = $this->Dao->prepare($insert_query);
 		$insert_query_result->bindValue(':auteur', $News->getAuteur());
@@ -31,12 +51,25 @@ class NewsManagerPDO extends NewsManager {
 		$insert_query_result->execute();
 	}
 
+	/**
+	 * Méthode retournant le nombre de news existantes
+	 * @return int Le nombre de news
+	 */
 	public function countNewsc() {
 		return $this->Dao->query('SELECT COUNT(*) FROM T_NEW_newsc')->fetchColumn();
 	}
 
+	/**
+	 * Méthode retournant une liste de news
+	 * @param $debut int La première news à sélectionner
+	 * @param $limite int Le nombre de news à sélectionner
+	 * @return array La liste des news
+	 */
 	public function getNewscSortByIdDesc_a($debut = -1, $limite = -1) {
-		$select_query = 'SELECT NNC_id id, NNC_author auteur, NNC_title titre, NNC_content contenu, NNC_dateadd Date_ajout, NNC_dateupdate Date_modif FROM T_NEW_newsc ORDER BY NNC_id DESC';
+		$select_query = '
+			SELECT NNC_id id, NNC_author auteur, NNC_title titre, NNC_content contenu, NNC_dateadd Date_ajout, NNC_dateupdate Date_modif
+			FROM T_NEW_newsc
+			ORDER BY NNC_id DESC';
 
 		if ($debut != -1 || $limite != -1) {
 			$select_query .= ' LIMIT ' . (int)$limite . ' OFFSET ' . (int)$debut;
@@ -58,8 +91,16 @@ class NewsManagerPDO extends NewsManager {
 		return $Liste_news_a;
 	}
 
+	/**
+	 * Méthode retournant une news précise
+	 * @param $id int L'id de la news à récupérer
+	 * @return News La news demandée
+	 */
 	public function getNewscUsingId($id) {
-		$select_query = 'SELECT NNC_id id, NNC_author auteur, NNC_title titre, NNC_content contenu, NNC_dateadd Date_ajout, NNC_dateupdate Date_modif FROM T_NEW_newsc WHERE NNC_id = :id';
+		$select_query = '
+			SELECT NNC_id id, NNC_author auteur, NNC_title titre, NNC_content contenu, NNC_dateadd Date_ajout, NNC_dateupdate Date_modif
+			FROM T_NEW_newsc
+			WHERE NNC_id = :id';
 
 		/** @var \PDOStatement $select_query_result */
 		$select_query_result = $this->Dao->prepare($select_query);

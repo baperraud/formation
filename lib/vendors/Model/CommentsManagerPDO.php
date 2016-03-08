@@ -4,16 +4,33 @@ namespace Model;
 use \Entity\Comment;
 
 class CommentsManagerPDO extends CommentsManager {
+	/**
+	 * Méthode permettant de supprimer un commentaire
+	 * @param $comment_id int L'id du commentaire à supprimer
+	 * @return void
+	 */
 	public function deleteCommentcUsingId($comment_id) {
 		$this->Dao->exec('DELETE FROM T_NEW_commentc WHERE NCC_id = ' . (int)$comment_id);
 	}
 
+	/**
+	 * Méthode permettant de supprimer tous les commentaires liés à une news
+	 * @param $news_id int L'id de la news à laquelle sont rattachés les commentaires
+	 * @return void
+	 */
 	public function deleteCommentcUsingNewcId($news_id) {
 		$this->Dao->exec('DELETE FROM T_NEW_commentc WHERE NCC_fk_NNC = ' . (int)$news_id);
 	}
 
+	/**
+	 * Méthode permettant d'ajouter un commentaire en BDD
+	 * @param $Comment Comment Le commentaire à ajouter
+	 * @return void
+	 */
 	protected function addCommentc(Comment $Comment) {
-		$insert_query = 'INSERT INTO T_NEW_commentc (NCC_fk_NNC, NCC_author, NCC_content, NCC_date) VALUES (:news, :auteur, :content, NOW())';
+		$insert_query = '
+			INSERT INTO T_NEW_commentc (NCC_fk_NNC, NCC_author, NCC_content, NCC_date)
+			VALUES (:news, :auteur, :content, NOW())';
 
 		$insert_query_result = $this->Dao->prepare($insert_query);
 		$insert_query_result->bindValue(':news', (int)$Comment->getNews(), \PDO::PARAM_INT);
@@ -25,8 +42,16 @@ class CommentsManagerPDO extends CommentsManager {
 		$Comment->setId($this->Dao->lastInsertId());
 	}
 
+	/**
+	 * Méthode permettant de modifier un commentaire
+	 * @param $Comment Comment Le commentaire à ajouter
+	 * @return void
+	 */
 	protected function updateCommentc(Comment $Comment) {
-		$update_query = 'UPDATE T_NEW_commentc SET NCC_author = :auteur, NCC_content = :contenu WHERE NCC_id = :id';
+		$update_query = '
+			UPDATE T_NEW_commentc
+			SET NCC_author = :auteur, NCC_content = :contenu
+			WHERE NCC_id = :id';
 
 		$update_query_result = $this->Dao->prepare($update_query);
 		$update_query_result->bindValue(':auteur', $Comment->getAuteur());
@@ -36,8 +61,16 @@ class CommentsManagerPDO extends CommentsManager {
 		$update_query_result->execute();
 	}
 
+	/**
+	 * Méthode permettant de récupérer un commentaire spécifique
+	 * @param $comment_id int L'id du commentaire à récupérer
+	 * @return Comment
+	 */
 	public function getCommentcUsingCommentcId($comment_id) {
-		$select_query = 'SELECT NCC_id id, NCC_fk_NNC news, NCC_author auteur, NCC_content contenu FROM T_NEW_commentc WHERE NCC_id = :id';
+		$select_query = '
+			SELECT NCC_id id, NCC_fk_NNC news, NCC_author auteur, NCC_content contenu
+			FROM T_NEW_commentc
+			WHERE NCC_id = :id';
 
 		$select_query_result = $this->Dao->prepare($select_query);
 		$select_query_result->bindValue(':id', (int)$comment_id, \PDO::PARAM_INT);
@@ -49,12 +82,21 @@ class CommentsManagerPDO extends CommentsManager {
 		return $select_query_result->fetch();
 	}
 
+	/**
+	 * Méthode permettant de récupérer la liste des commentaires d'une news spécifique
+	 * @param $news_id int L'id de la news dont on veut récupérer les commentaires
+	 * @return array
+	 */
 	public function getCommentcUsingNewscIdSortByDateDesc_a($news_id) {
 		if (!ctype_digit($news_id)) {
 			throw new \InvalidArgumentException('L\'identifiant de la news passée doit être un entier valide');
 		}
 
-		$select_query = 'SELECT NCC_id id, NCC_author auteur, NCC_content contenu, NCC_date Date FROM T_NEW_commentc WHERE NCC_fk_NNC = :news ORDER BY NCC_date DESC';
+		$select_query = '
+			SELECT NCC_id id, NCC_author auteur, NCC_content contenu, NCC_date Date
+			FROM T_NEW_commentc
+			WHERE NCC_fk_NNC = :news
+			ORDER BY NCC_date DESC';
 
 		$select_query_result = $this->Dao->prepare($select_query);
 		$select_query_result->bindValue(':news', (int)$news_id, \PDO::PARAM_INT);
@@ -75,8 +117,16 @@ class CommentsManagerPDO extends CommentsManager {
 		return $Comment_a;
 	}
 
+	/**
+	 * Méthode permettant de récupérer l'id de la news d'un commentaire
+	 * @param $comment_id int L'id du commentaire
+	 * @return int
+	 */
 	public function getNewsIdUsingCommentcId($comment_id) {
-		$select_query = 'SELECT NCC_fk_NNC FROM T_NEW_commentc WHERE NCC_id = :id';
+		$select_query = '
+			SELECT NCC_fk_NNC
+			FROM T_NEW_commentc
+			WHERE NCC_id = :id';
 
 		$select_query_result = $this->Dao->prepare($select_query);
 		$select_query_result->bindValue(':id', (int)$comment_id, \PDO::PARAM_INT);

@@ -2,8 +2,6 @@
 namespace Model;
 
 class UsersManagerPDO extends UsersManager {
-
-
 	/**
 	 * Méthode permettant de récupérer l'id, le rôle et le statut
 	 * d'un utilisateur s'il existe avec les identifiants fournis
