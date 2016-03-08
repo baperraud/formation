@@ -26,6 +26,7 @@ $Entity_loader->register();
 $Form_builder_loader = new SplClassLoader('FormBuilder', __DIR__ . '/../lib/vendors');
 $Form_builder_loader->register();
 
+// On charge l'autoload de Composer
 require __DIR__ . '/../vendor/autoload.php';
 
 // On déduit enfin le nom de la classe avant de l'instancier

@@ -26,6 +26,7 @@ class NewsController extends BackController {
 		 *  @var NewsManager $Manager
 		 */
 		$News_a = $Manager->getNewscSortByIdDesc_a(0, $nombre_news);
+		$news_url_a = [];
 
 		// On assigne aux news 200 caractères max
 		foreach ($News_a as $News) {
@@ -38,10 +39,15 @@ class NewsController extends BackController {
 				}
 				$News->setContenu($debut);
 			}
+
+			// On récupère l'url de la news (show)
+			$news_url_a[$News->getId()] = $this->getRoute($this->getModule(), 'show', array($News['id']));
 		}
 
-		// On envoie la liste des news à la vue
+		// On envoie la liste des news à la vue ainsi que leur url
 		$this->Page->addVar('News_a', $News_a);
+		$this->Page->addVar('news_url_a', $news_url_a);
+
 	}
 
 	public function executeShow(HTTPRequest $Request) {
