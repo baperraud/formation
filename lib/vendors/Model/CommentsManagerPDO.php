@@ -66,8 +66,6 @@ class CommentsManagerPDO extends CommentsManager {
 		/** @var Comment[] $Comment_a */
 		foreach ($Comment_a as $Comment) {
 			$Comment->setDate(new \DateTime($Comment->getDate()));
-			$Comment->setAuteur(htmlspecialchars($Comment->getAuteur()));
-			$Comment->setContenu(htmlspecialchars($Comment->getContenu()));
 		}
 
 		$select_query_result->closeCursor();

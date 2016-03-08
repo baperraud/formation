@@ -5,11 +5,11 @@
  */
 ?>
 
-<p>Par <em><?= $News['auteur'] ?></em>, le <?= $News['Date_ajout']->format('d/m/Y à H\hi') ?></p>
+<p>Par <em><?= htmlspecialchars($News['auteur']) ?></em>, le <?= $News['Date_ajout']->format('d/m/Y à H\hi') ?></p>
 
-<h2 class="overflow_hidden"><?= $News['titre'] ?></h2>
+<h2 class="overflow_hidden"><?= htmlspecialchars($News['titre']) ?></h2>
 
-<p class="overflow_hidden"><?= nl2br($News['contenu']) ?></p>
+<p class="overflow_hidden"><?= nl2br(htmlspecialchars($News['contenu'])) ?></p>
 
 <?php if ($News['Date_ajout'] != $News['Date_modif']): ?>
 	<p style="text-align: right;">

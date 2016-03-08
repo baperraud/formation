@@ -9,8 +9,8 @@
 		foreach ($News_a as $News) {
 			echo '
 				<tr>
-					<td>', $News['auteur'], '</td>
-					<td>', $News['titre'], '</td>
+					<td>', htmlspecialchars($News['auteur']), '</td>
+					<td>', htmlspecialchars($News['titre']), '</td>
 					<td>', $News['Date_ajout']->format('d/m/Y à H\hi'), '</td>
 					<td>', ($News['Date_ajout'] == $News['Date_modif'] ? '-' : 'le ' . $News['Date_modif']->format('d/m/Y à H\hi')), '</td>
 					<td><a href="news-update-', $News['id'], '.html"><img src="/images/update.png" alt="Modifier" /></a> <a href="news-delete-', $News['id'], '.html"><img src="/images/delete.png" alt="Supprimer" /></a></td>
