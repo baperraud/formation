@@ -22,13 +22,13 @@ class NewsController extends BackController {
 		$Manager = $this->Managers->getManagerOf('News');
 
 		// Récupération des 5 dernières news
-		/** @var News[] $Liste_news_a
+		/** @var News[] $News_a
 		 *  @var NewsManager $Manager
 		 */
-		$Liste_news_a = $Manager->getNewscSortByIdDesc_a(0, $nombre_news);
+		$News_a = $Manager->getNewscSortByIdDesc_a(0, $nombre_news);
 
 		// On assigne aux news 200 caractères max
-		foreach ($Liste_news_a as $News) {
+		foreach ($News_a as $News) {
 			if (strlen($News->getContenu()) > $nombre_caracteres) {
 				$debut = substr($News->getContenu(), 0, $nombre_caracteres);
 				if (strrpos($debut, ' ') === false) {
@@ -41,7 +41,7 @@ class NewsController extends BackController {
 		}
 
 		// On envoie la liste des news à la vue
-		$this->Page->addVar('Liste_news_a', $Liste_news_a);
+		$this->Page->addVar('Liste_news_a', $News_a);
 	}
 
 	public function executeShow(HTTPRequest $Request) {

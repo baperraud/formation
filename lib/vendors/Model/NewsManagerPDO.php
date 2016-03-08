@@ -10,7 +10,11 @@ class NewsManagerPDO extends NewsManager {
 	 * @return void
 	 */
 	public function deleteNewscUsingId($new_id) {
-		$this->Dao->exec('DELETE FROM T_NEW_newsc WHERE NNC_id = ' . (int)$new_id);
+		$delete_query = 'DELETE FROM T_NEW_newsc WHERE NNC_id = :id';
+		$delete_query_result = $this->Dao->prepare($delete_query);
+		$delete_query_result->bindValue(':id', $new_id, \PDO::PARAM_INT);
+
+		$delete_query_result->execute();
 	}
 
 	/**
@@ -79,16 +83,16 @@ class NewsManagerPDO extends NewsManager {
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$select_query_result->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\News');
 
-		$Liste_news_a = $select_query_result->fetchAll();
-		/** @var News[] $Liste_news_a */
-		foreach ($Liste_news_a as $News) {
+		$News_a = $select_query_result->fetchAll();
+		/** @var News[] $News_a */
+		foreach ($News_a as $News) {
 			$News->setDateAjout(new \DateTime($News->getDate_ajout()));
 			$News->setDateModif(new \DateTime($News->getDate_modif()));
 		}
 
 		$select_query_result->closeCursor();
 
-		return $Liste_news_a;
+		return $News_a;
 	}
 
 	/**

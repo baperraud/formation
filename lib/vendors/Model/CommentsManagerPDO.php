@@ -10,7 +10,11 @@ class CommentsManagerPDO extends CommentsManager {
 	 * @return void
 	 */
 	public function deleteCommentcUsingId($comment_id) {
-		$this->Dao->exec('DELETE FROM T_NEW_commentc WHERE NCC_id = ' . (int)$comment_id);
+		$delete_query = 'DELETE FROM T_NEW_commentc WHERE NCC_id = :id';
+		$delete_query_result = $this->Dao->prepare($delete_query);
+		$delete_query_result->bindValue(':id', $comment_id, \PDO::PARAM_INT);
+
+		$delete_query_result->execute();
 	}
 
 	/**
@@ -19,7 +23,11 @@ class CommentsManagerPDO extends CommentsManager {
 	 * @return void
 	 */
 	public function deleteCommentcUsingNewcId($news_id) {
-		$this->Dao->exec('DELETE FROM T_NEW_commentc WHERE NCC_fk_NNC = ' . (int)$news_id);
+		$delete_query = 'DELETE FROM T_NEW_commentc WHERE NCC_fk_NNC = :id';
+		$delete_query_result = $this->Dao->prepare($delete_query);
+		$delete_query_result->bindValue(':id', $news_id, \PDO::PARAM_INT);
+
+		$delete_query_result->execute();
 	}
 
 	/**
