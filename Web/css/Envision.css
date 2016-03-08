@@ -464,10 +464,6 @@ footer a {
 
 .middle { vertical-align: middle; }
 
-fieldset {
-	width: 100px;
-}
-
 .overflow_hidden {
 	max-width: 100%;
 	display: block;
@@ -492,4 +488,8 @@ table td {
 	white-space: -moz-pre-wrap; /* Mozilla */
 	white-space: -hp-pre-wrap;  /* HP Printers */
 	word-wrap: break-word;      /* IE 5+ */
+}
+
+fieldset {
+	min-width: 0;
 }
