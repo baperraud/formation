@@ -66,10 +66,22 @@ class CommentsManagerPDO extends CommentsManager {
 		/** @var Comment[] $Comment_a */
 		foreach ($Comment_a as $Comment) {
 			$Comment->setDate(new \DateTime($Comment->getDate()));
+			$Comment->setAuteur(htmlspecialchars($Comment->getAuteur()));
+			$Comment->setContenu(htmlspecialchars($Comment->getContenu()));
 		}
 
 		$select_query_result->closeCursor();
 
 		return $Comment_a;
+	}
+
+	public function getNewsIdUsingCommentcId($comment_id) {
+		$select_query = 'SELECT NCC_fk_NNC FROM T_NEW_commentc WHERE NCC_id = :id';
+
+		$select_query_result = $this->Dao->prepare($select_query);
+		$select_query_result->bindValue(':id', (int)$comment_id, \PDO::PARAM_INT);
+		$select_query_result->execute();
+
+		return $select_query_result->fetchColumn();
 	}
 }

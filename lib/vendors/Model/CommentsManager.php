@@ -59,4 +59,11 @@ abstract class CommentsManager extends Manager {
 	 * @return void
 	 */
 	abstract public function deleteCommentcUsingNewcId($news_id);
+
+	/**
+	 * Méthode permettant de récupérer l'id de la news d'un commentaire
+	 * @param $comment_id int L'id du commentaire
+	 * @return int
+	 */
+	abstract public function getNewsIdUsingCommentcId($comment_id);
 }

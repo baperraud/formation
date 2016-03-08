@@ -86,7 +86,7 @@ class NewsController extends BackController {
 
 			if ($Form_handler->process()) {
 				$this->App->getUser()->setFlash($News->isNew() ? 'La news a bien été ajoutée !' : 'La news a bien été modifiée !');
-				$this->App->getHttpResponse()->redirect('/admin/');
+				$this->App->getHttpResponse()->redirect('/news-' . $News->getId() . '.html');
 			}
 
 			$this->Page->addVar('Form', $Form->createView());
@@ -119,7 +119,10 @@ class NewsController extends BackController {
 
 		if ($Form_handler->process()) {
 			$this->App->getUser()->setFlash('Le commentaire a bien été modifié');
-			$this->App->getHttpResponse()->redirect('/admin/');
+
+			$Comment->setNews($Manager->getNewsIdUsingCommentcId($Comment->getId()));
+
+			$this->App->getHttpResponse()->redirect('/news-' . $Comment->getNews() . '.html');
 		}
 
 		$this->Page->addVar('Form', $Form->createView());
@@ -130,10 +133,12 @@ class NewsController extends BackController {
 		/** @var CommentsManager $Manager */
 		$Manager = $this->Managers->getManagerOf('Comments');
 
+		$news_id = $Manager->getNewsIdUsingCommentcId($Request->getGetData('id'));
+
 		$Manager->deleteCommentcUsingId($Request->getGetData('id'));
 
 		$this->App->getUser()->setFlash('Le commentaire a bien été supprimé !');
 
-		$this->App->getHttpResponse()->redirect('.');
+		$this->App->getHttpResponse()->redirect('/news-' . $news_id . '.html');
 	}
 }

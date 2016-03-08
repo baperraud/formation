@@ -31,7 +31,7 @@ class NewsController extends BackController {
 		foreach ($Liste_news_a as $News) {
 			if (strlen($News->getContenu()) > $nombre_caracteres) {
 				$debut = substr($News->getContenu(), 0, $nombre_caracteres);
-				if (strrpos($debut, ' ') == false) {
+				if (strrpos($debut, ' ') === false) {
 					$debut .= '...';
 				} else {
 					$debut = substr($debut, 0, strrpos($debut, ' ')) . '...';

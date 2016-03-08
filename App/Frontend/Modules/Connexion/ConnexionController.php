@@ -52,7 +52,7 @@ class ConnexionController extends BackController {
 		}
 	}
 
-	public function executeLogout(HTTPRequest $Request) {
+	public function executeLogout() {
 		$this->Page->addVar('title', 'Déconnexion');
 
 		// Si l'utilisateur est connecté
@@ -65,7 +65,6 @@ class ConnexionController extends BackController {
 
 			// Puis on relance une session vierge
 			session_start();
-			$this->App->getUser()->setAuthenticated(false);
 			$this->App->getUser()->setFlash('Vous avez bien été déconnecté !');
 
 			$this->App->getHttpResponse()->redirect('/');
