@@ -41,7 +41,7 @@ class NewsController extends BackController {
 		}
 
 		// On envoie la liste des news à la vue
-		$this->Page->addVar('Liste_news_a', $News_a);
+		$this->Page->addVar('News_a', $News_a);
 	}
 
 	public function executeShow(HTTPRequest $Request) {
