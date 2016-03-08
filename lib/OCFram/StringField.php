@@ -8,13 +8,19 @@ class StringField extends Field {
 	public function buildWidget() {
 		$widget = '';
 
-		if (!empty($this->error_message)) { $widget .= $this->error_message . '<br />'; }
+		if (!empty($this->error_message)) {
+			$widget .= $this->error_message . '<br />';
+		}
 
 		$widget .= '<label>' . $this->label . '</label><input type="text" name="' . $this->name . '"';
 
-		if (!empty($this->value)) { $widget .= ' value="' . htmlspecialchars($this->value) . '"'; }
+		if (!empty($this->value)) {
+			$widget .= ' value="' . htmlspecialchars($this->value) . '"';
+		}
 
-		if (!empty($this->max_length)) { $widget .= ' maxlength="' . $this->max_length . '"'; }
+		if (!empty($this->max_length)) {
+			$widget .= ' maxlength="' . $this->max_length . '"';
+		}
 
 		$widget .= ' />';
 

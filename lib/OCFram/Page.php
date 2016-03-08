@@ -17,15 +17,20 @@ class Page extends ApplicationComponent {
 			throw new \RuntimeException('La vue spécifiée n\'existe pas');
 		}
 
+		/** @var User $User */
+		/** @noinspection PhpUnusedLocalVariableInspection */
 		$User = $this->App->getUser();
 
 		extract($this->vars_a);
 
 		ob_start();
+		/** @noinspection PhpIncludeInspection */
 		require $this->contentFile;
+		/** @noinspection PhpUnusedLocalVariableInspection */
 		$content = ob_get_clean();
 
 		ob_start();
+		/** @noinspection PhpIncludeInspection */
 		require __DIR__ . '/../../App/' . $this->App->getName() . '/Templates/layout.php';
 		return ob_get_clean();
 	}

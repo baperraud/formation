@@ -34,6 +34,7 @@ class User extends ApplicationComponent {
 	public function setFlash($value) { $_SESSION['flash'] = $value; }
 
 	public function isAdmin() {
-		return ($this->getAttribute('admin') == UsersManager::ROLE_ADMIN ? true : false);
+		if (!$this->isAuthenticated()) return false;
+		return ($this->getAttribute('admin') == UsersManager::ROLE_ADMIN);
 	}
 }

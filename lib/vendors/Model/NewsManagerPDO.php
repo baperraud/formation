@@ -43,6 +43,7 @@ class NewsManagerPDO extends NewsManager {
 		}
 
 		$select_query_result = $this->Dao->query($select_query);
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$select_query_result->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\News');
 
 		$Liste_news_a = $select_query_result->fetchAll();
@@ -65,6 +66,7 @@ class NewsManagerPDO extends NewsManager {
 		$select_query_result->bindValue(':id', (int)$id, \PDO::PARAM_INT);
 		$select_query_result->execute();
 
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$select_query_result->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\News');
 
 		if ($News = $select_query_result->fetch()) {

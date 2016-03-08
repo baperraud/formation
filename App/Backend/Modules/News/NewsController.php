@@ -89,7 +89,7 @@ class NewsController extends BackController {
 				$this->App->getHttpResponse()->redirect($News->isNew() ? '/admin/' : '/news-' . $News->getId(). '.html');
 			}
 
-			$this->Page->addVar('Form', $Form->createView());
+			$this->Page->addVar('form', $Form->createView());
 		}
 
 	public function executeUpdateComment(HTTPRequest $Request) {
@@ -125,7 +125,7 @@ class NewsController extends BackController {
 			$this->App->getHttpResponse()->redirect('/news-' . $Comment->getNews() . '.html');
 		}
 
-		$this->Page->addVar('Form', $Form->createView());
+		$this->Page->addVar('form', $Form->createView());
 	}
 
 	public function executeDeleteComment(HTTPRequest $Request) {

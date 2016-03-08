@@ -29,8 +29,7 @@ class HTTPResponse extends ApplicationComponent {
 
 	public function setPage(Page $Page) { $this->Page = $Page; }
 
-	public function setCookie($name, $value = '', $expire = 0, $path = NULL, $domain = NULL,
-							  $secure = false, $http_only = true) {
+	public function setCookie($name, $value = '', $expire = 0, $path = NULL, $domain = NULL, $secure = false, $http_only = true) {
 		setcookie($name, $value, $expire, $path, $domain, $secure, $http_only);
 	}
 }

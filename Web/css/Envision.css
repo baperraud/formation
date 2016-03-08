@@ -36,7 +36,7 @@ a:hover {
 
 /* headers */
 h1, h2, h3 {
-	font-family: 'Trebuchet MS', Tahoma, Sans-serif;
+	font-family: 'Trebuchet MS', Tahoma, sans-serif;
 }
 
 h1 {
@@ -62,11 +62,11 @@ img {
 }
 
 img.float-right {
-	margin: 5px 0px 10px 10px;
+	margin: 5px 0 10px 10px;
 }
 
 img.float-left {
-	margin: 5px 10px 10px 0px;
+	margin: 5px 10px 10px 0;
 }
 
 h1, h2, h3, p {
@@ -145,7 +145,7 @@ form td {
 }
 
 td.first, th.first {
-	border-left: 0px;
+	border-left: 0;
 }
 
 tr.row-a {
@@ -464,6 +464,7 @@ footer a {
 
 .middle { vertical-align: middle; }
 
+/*noinspection CssOverwrittenProperties*/
 .overflow_hidden {
 	max-width: 100%;
 	display: block;
@@ -471,22 +472,19 @@ footer a {
 	white-space: pre;           /* CSS 2.0 */
 	white-space: pre-wrap;      /* CSS 2.1 */
 	white-space: pre-line;      /* CSS 3.0 */
-	white-space: -pre-wrap;     /* Opera 4-6 */
 	white-space: -o-pre-wrap;   /* Opera 7 */
 	white-space: -moz-pre-wrap; /* Mozilla */
-	white-space: -hp-pre-wrap;  /* HP Printers */
 	word-wrap: break-word;      /* IE 5+ */
 }
 
+/*noinspection CssOverwrittenProperties*/
 table td {
 	max-width: 96px;
 	white-space: pre;           /* CSS 2.0 */
 	white-space: pre-wrap;      /* CSS 2.1 */
 	white-space: pre-line;      /* CSS 3.0 */
-	white-space: -pre-wrap;     /* Opera 4-6 */
 	white-space: -o-pre-wrap;   /* Opera 7 */
 	white-space: -moz-pre-wrap; /* Mozilla */
-	white-space: -hp-pre-wrap;  /* HP Printers */
 	word-wrap: break-word;      /* IE 5+ */
 }
 

@@ -3,7 +3,7 @@
 namespace OCFram;
 
 abstract class Validator {
-	protected  $error_message;
+	protected $error_message;
 
 	public function __construct($error_message) {
 		$this->setError_message($error_message);

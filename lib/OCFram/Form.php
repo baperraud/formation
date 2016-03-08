@@ -4,6 +4,7 @@ namespace OCFram;
 
 class Form {
 	protected $Entity;
+	/** @var Field[] $Field_a */
 	protected $Field_a = [];
 
 	public function __construct(Entity $Entity) {
@@ -34,7 +35,9 @@ class Form {
 
 		// On vérifie que tous les champs sont valides
 		foreach ($this->Field_a as $Field) {
-			if (!$Field->isValid()) { $valid = false; }
+			if (!$Field->isValid()) {
+				$valid = false;
+			}
 		}
 
 		return $valid;
@@ -42,5 +45,5 @@ class Form {
 
 	public function getEntity() { return $this->Entity; }
 
-	public function setEntity (Entity $Entity) { $this->Entity = $Entity; }
+	public function setEntity(Entity $Entity) { $this->Entity = $Entity; }
 }

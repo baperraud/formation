@@ -10,7 +10,7 @@ abstract class Field {
 	protected $label;
 	protected $name;
 	protected $value;
-	/** @var Validator[] $Validator_a*/
+	/** @var Validator[] $Validator_a */
 	protected $Validator_a = [];
 
 	public function __construct(array $option_a = []) {
@@ -19,7 +19,7 @@ abstract class Field {
 		}
 	}
 
-	abstract  public function buildWidget();
+	abstract public function buildWidget();
 
 	public function isValid() {
 		foreach ($this->Validator_a as $Validator) {

@@ -43,6 +43,7 @@ class CommentsManagerPDO extends CommentsManager {
 		$select_query_result->bindValue(':id', (int)$comment_id, \PDO::PARAM_INT);
 		$select_query_result->execute();
 
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$select_query_result->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\Comment');
 
 		return $select_query_result->fetch();
@@ -59,6 +60,7 @@ class CommentsManagerPDO extends CommentsManager {
 		$select_query_result->bindValue(':news', (int)$news_id, \PDO::PARAM_INT);
 		$select_query_result->execute();
 
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$select_query_result->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\Comment');
 
 		$Comment_a = $select_query_result->fetchAll();

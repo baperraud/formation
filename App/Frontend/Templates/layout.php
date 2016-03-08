@@ -1,4 +1,9 @@
-<?php /** @var \OCFram\User $User */ ?>
+<?php
+/**
+ * @var \OCFram\User $User
+ * @var string $content
+ */
+?>
 
 <!DOCTYPE html>
 <html>

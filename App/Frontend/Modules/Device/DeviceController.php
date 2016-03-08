@@ -12,19 +12,19 @@ class DeviceController extends BackController {
 
 		if ($Detect->isTablet()) {
 			$device = 'TABLET';
+			/** @noinspection PhpUndefinedMethodInspection */
 			if ($Detect->isiOS()) {
 				$device .= ' (iOS)';
-			}
-			elseif($Detect->isAndroidOS()) {
+			} /** @noinspection PhpUndefinedMethodInspection */ elseif($Detect->isAndroidOS()) {
 				$device .= ' (Android)';
 			}
 		}
 		elseif ($Detect->isMobile() && !$Detect->isTablet()){
 			$device = 'PHONE';
+			/** @noinspection PhpUndefinedMethodInspection */
 			if ($Detect->isiOS()) {
 				$device .= ' (iOS)';
-			}
-			elseif($Detect->isAndroidOS()) {
+			} /** @noinspection PhpUndefinedMethodInspection */ elseif($Detect->isAndroidOS()) {
 				$device .= ' (Android)';
 			}
 		}

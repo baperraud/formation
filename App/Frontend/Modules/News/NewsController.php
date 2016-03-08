@@ -95,7 +95,7 @@ class NewsController extends BackController {
 
 		$this->Page->addVar('Comment', $Comment);
 		// On passe le formulaire généré à la vue
-		$this->Page->addVar('Form', $Form->createView());
+		$this->Page->addVar('form', $Form->createView());
 		$this->Page->addVar('title', 'Ajout d\'un commentaire');
 	}
 }

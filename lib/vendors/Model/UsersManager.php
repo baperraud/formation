@@ -12,7 +12,7 @@ abstract class UsersManager extends Manager {
 	/**
 	 * Méthode permettant de récupérer l'id, le rôle et le statut
 	 * d'un utilisateur s'il existe avec les identifiants fournis
-	 * @param $pseudo Le pseudonyme de l'utilisateur
+	 * @param $pseudo string Le pseudonyme de l'utilisateur
 	 * @return array | bool
 	 */
 	abstract public function getUsercUsingPseudo($pseudo);

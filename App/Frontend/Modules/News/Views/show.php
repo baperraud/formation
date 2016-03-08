@@ -1,6 +1,7 @@
 <?php
 /**
  * @var \Entity\News $News
+ * @var \Entity\Comment $Comment
  * @var \OCFram\User $User
  */
 ?>

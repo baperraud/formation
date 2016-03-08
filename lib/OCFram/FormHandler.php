@@ -2,10 +2,13 @@
 
 namespace OCFram;
 
+use \Model\CommentsManager;
+use \Model\NewsManager;
+
 class FormHandler {
 	/** @var  Form */
 	protected $Form;
-	/** @var  Manager */
+	/** @var  NewsManager | CommentsManager */
 	protected $Manager;
 	/** @var  HTTPRequest */
 	protected $Request;
@@ -29,5 +32,4 @@ class FormHandler {
 	public function setForm(Form $Form) { $this->Form = $Form; }
 	public function setManager(Manager $Manager) { $this->Manager = $Manager; }
 	public function setRequest(HTTPRequest $Request) { $this->Request = $Request; }
-
 }

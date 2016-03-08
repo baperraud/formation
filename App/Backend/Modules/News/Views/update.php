@@ -1,7 +1,11 @@
+<?php
+/** @var string $form */
+?>
+
 <h2>Modifier une news</h2>
 <form action="" method="post">
 	<p>
-		<?= $Form ?>
+		<?= $form ?>
 
 		<input type="submit" value="Modifier" />
 	</p>
