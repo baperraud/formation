@@ -9,10 +9,13 @@
 
 use \OCFram\Application;
 use \OCFram\Session;
-
 ?>
 
-	<p>Par <em><?= htmlspecialchars($News['auteur']) ?></em>, le <?= $News['Date_ajout']->format('d/m/Y à H\hi') ?></p>
+	<p>Par <em>
+			<?php
+			$user_profil_url = Application::getRoute('Frontend', 'User', 'show', array($News['auteur']));
+			echo '<a href="', $user_profil_url ,'">', htmlspecialchars($News['auteur']) ,'</a>';
+			?></em>, le <?= $News['Date_ajout']->format('d/m/Y à H\hi') ?></p>
 
 	<h2 class="overflow_hidden"><?= htmlspecialchars($News['titre']) ?></h2>
 

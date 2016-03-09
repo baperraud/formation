@@ -106,11 +106,12 @@ class CommentsManagerPDO extends CommentsManager {
 		$select_query = '
 			SELECT NCC_id id, NCC_fk_NNC news, NCC_author pseudonym, NCC_email email, NCC_content contenu, NCC_date Date, 2 owner_type
 			FROM T_NEW_commentc
-			WHERE NCC_fk_NNC = 23 AND NCC_fk_NUC IS NULL
+			WHERE NCC_fk_NNC = :news AND NCC_fk_NUC IS NULL
 			UNION
 			SELECT NCC_id id, NCC_fk_NNC news, NUC_pseudonym pseudonym, NULL email, NCC_content contenu, NCC_date Date, 1 owner_type
 			FROM T_NEW_commentc
 			INNER JOIN T_NEW_userc ON NUC_id = NCC_fk_NUC
+			WHERE NCC_fk_NNC = :news
 			ORDER BY date DESC';
 
 		$select_query_result = $this->Dao->prepare($select_query);
