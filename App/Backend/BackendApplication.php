@@ -3,6 +3,7 @@ namespace App\Backend;
 
 use \OCFram\Application;
 use \OCFram\BackController;
+use \OCFram\Session;
 
 class BackendApplication extends Application {
 	public function __construct() {
@@ -12,7 +13,7 @@ class BackendApplication extends Application {
 
 	public function run() {
 		// Si l'utilisateur est authentifié en tant qu'admin
-		if ($this->getSession()->isAdmin()) {
+		if (Session::isAdmin()) {
 			// Obtention du contrôleur
 			/** @var BackController $controller */
 			$controller = $this->getController();
@@ -27,12 +28,12 @@ class BackendApplication extends Application {
 			$this->Http_response->send();
 
 		} // Si l'utilisateur n'a pas les droits
-		elseif ($this->getSession()->isAuthenticated()) {
-			$this->getSession()->setFlash('Vous devez vous reconnecter en tant qu\'administrateur pour accéder à cette page.');
+		elseif (Session::isAuthenticated()) {
+			Session::setFlash('Vous devez vous reconnecter en tant qu\'administrateur pour accéder à cette page.');
 			$this->getHttpResponse()->redirect('/');
 		} // Sinon, redirection vers la page de connexion
 		else {
-			$this->getSession()->setFlash('Vous devez vous connecter en tant qu\'administrateur pour accéder à cette page.');
+			Session::setFlash('Vous devez vous connecter en tant qu\'administrateur pour accéder à cette page.');
 			$this->getHttpResponse()->redirect('/login.html');
 		}
 	}

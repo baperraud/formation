@@ -7,4 +7,5 @@
     <route url="/device\.html" module="Device" action="index" ></route>
     <route url="/login\.html" module="Connexion" action="index" ></route>
     <route url="/logout\.html" module="Connexion" action="logout" ></route>
+    <route url="/profil/(.+)" module="User" action="show" vars="pseudo"></route>
 </routes>

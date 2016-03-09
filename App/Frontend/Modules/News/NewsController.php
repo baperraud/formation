@@ -10,6 +10,7 @@ use \OCFram\Application;
 use \OCFram\BackController;
 use \OCFram\FormHandler;
 use \OCFram\HTTPRequest;
+use \OCFram\Session;
 
 class NewsController extends BackController {
 	public function executeIndex() {
@@ -69,7 +70,22 @@ class NewsController extends BackController {
 		// On envoie les commentaires associés également
 		/** @var CommentsManager $Manager */
 		$Manager = $this->Managers->getManagerOf('Comments');
-		$this->Page->addVar('Comment_a', $Manager->getCommentcUsingNewscIdSortByDateDesc_a($News->getId()));
+		/** @var Comment[] $Comment_a */
+		$Comment_a = $Manager->getCommentcUsingNewscIdSortByDateDesc_a($News->getId());
+		$this->Page->addVar('Comment_a', $Comment_a);
+
+		// On récupère les routes de modification/suppression de commentaires
+		// puis on les envoie à la vue
+		$comment_update_url_a = [];
+		$comment_delete_url_a = [];
+
+		foreach ($Comment_a as $Comment) {
+			$comment_update_url_a[$Comment->getId()] = Application::getRoute('Backend', $this->getModule(), 'updateComment', array($Comment['id']));
+			$comment_delete_url_a[$Comment->getId()] = Application::getRoute('Backend', $this->getModule(), 'deleteComment', array($Comment['id']));
+		}
+
+		$this->Page->addVar('comment_update_url_a', $comment_update_url_a);
+		$this->Page->addVar('comment_delete_url_a', $comment_delete_url_a);
 
 		// On envoie le lien pour commenter la news
 		$comment_news_url = Application::getRoute($this->App->getName(), $this->getModule(), 'insertComment', array($News['id']));
@@ -102,7 +118,7 @@ class NewsController extends BackController {
 		$Form_handler = new FormHandler($Form, $Manager, $Request);
 
 		if ($Form_handler->process()) {
-			$this->App->getSession()->setFlash('Le commentaire a bien été ajouté, merci !');
+			Session::setFlash('Le commentaire a bien été ajouté, merci !');
 			$this->App->getHttpResponse()->redirect('news-' . $Request->getGetData('news') . '.html');
 		}
 

@@ -1,7 +1,8 @@
 <?php
 namespace Entity;
 
-use OCFram\Entity;
+use \OCFram\Entity;
+use \OCFram\Session;
 
 class Comment extends Entity {
 	protected $news;
@@ -9,10 +10,18 @@ class Comment extends Entity {
 	protected $email;
 	protected $contenu;
 	protected $Date;
+	protected $owner_type;
+
 	const PSEUDO_INVALIDE = 1, CONTENU_INVALIDE = 2, EMAIL_INVALIDE = 3;
+	const MEMBER = 1, VISITOR = 2;
 
 	public function isValid() {
-		return !(empty($this->pseudonym) || empty($this->contenu));
+		// Si l'utilisateur n'est pas connecté
+		if (!Session::isAuthenticated()) {
+			return !(empty($this->pseudonym) || empty($this->contenu));
+		} else {
+			return !empty($this->contenu);
+		}
 	}
 
 	public function setNews($news) { $this->news = (int)$news; }
@@ -35,10 +44,12 @@ class Comment extends Entity {
 		$this->email = $email;
 	}
 	public function setDate(\DateTime $Date) { $this->Date = $Date; }
+	public function setOwner_type($owner_type) { $this->owner_type = (int)$owner_type; }
 
 	public function getNews() { return $this->news; }
 	public function getPseudonym() { return $this->pseudonym; }
 	public function getContenu() { return $this->contenu; }
 	public function getDate() { return $this->Date; }
 	public function getEmail() { return $this->email; }
+	public function getOwner_type() { return $this->owner_type; }
 }
