@@ -5,8 +5,6 @@ namespace OCFram;
 abstract class FormBuilder {
 	/** @var  Form $Form */
 	protected $Form;
-	/** @var  User $User */
-	protected $User;
 
 	public function __construct(Entity $Entity) {
 		$this->setForm(new Form($Entity));

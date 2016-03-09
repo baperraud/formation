@@ -69,8 +69,6 @@ class NewsController extends BackController {
 		// On envoie les commentaires associés également
 		/** @var CommentsManager $Manager */
 		$Manager = $this->Managers->getManagerOf('Comments');
-		$Comment_a = $Manager->getCommentcUsingNewscIdSortByDateDesc_a($News->getId());
-
 		$this->Page->addVar('Comment_a', $Manager->getCommentcUsingNewscIdSortByDateDesc_a($News->getId()));
 
 		// On envoie le lien pour commenter la news
@@ -85,7 +83,6 @@ class NewsController extends BackController {
 
 		// Si le formulaire a été envoyé
 		if ($Request->getMethod() == 'POST') {
-
 			$Comment = new Comment([
 				'news' => $Request->getGetData('news'),
 				'pseudonym' => $Request->getPostData('pseudonym'),
