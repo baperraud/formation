@@ -3,6 +3,7 @@
  * @var \Entity\News $News
  * @var \Entity\Comment $Comment
  * @var \OCFram\User $User
+ * @var array $comment_news_url
  */
 ?>
 
