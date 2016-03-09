@@ -69,4 +69,45 @@ abstract class Application {
 			'\\' . $matchedRoute->getModule() . 'Controller';
 		return new $controllerClass($this, $matchedRoute->getModule(), $matchedRoute->getAction());
 	}
+
+	/**
+	 * Méthode statique permettant de récupérer une route spécifique
+	 * @param $application string L'application de la route à récupérer
+	 * @param $module string Le module de la route à récupérer
+	 * @param $action string L'action de la route à récupérer
+	 * @param $var_a array La liste des variables qui devront "hydrater" la route
+	 * @return string
+	 */
+	public static function getRoute($application, $module, $action, array $var_a = []) {
+
+		$Xml = new \DOMDocument;
+		$Xml->load(__DIR__ . '/../../App/' . $application . '/Config/routes.xml');
+
+		/** @var \DOMElement[] $Route_a */
+		$Route_a = $Xml->getElementsByTagName('route');
+
+		// Pour chaque route dans routes.xml
+		foreach ($Route_a as $Route) {
+
+			// Si l'on trouve l'url cherchée
+			if ($Route->getAttribute('module') == $module &&
+				$Route->getAttribute('action') == $action
+			) {
+				// On récupère l'url correspondante
+				$url = $Route->getAttribute('url');
+
+				// Si l'url a des variables
+				if (!empty($var_a)) {
+					// On remplace chaque paire de parenthèses
+					foreach ($var_a as $var) {
+						$url = preg_replace('/\([^)]+\)/', $var, $url, 1);
+					}
+				}
+
+				return preg_replace('/\\\./', '.', $url);
+			}
+		}
+
+		throw new \RuntimeException('Aucune route ne correspond à l\'URL !');
+	}
 }

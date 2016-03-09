@@ -29,6 +29,14 @@ class Page extends ApplicationComponent {
 		/** @noinspection PhpUnusedLocalVariableInspection */
 		$content = ob_get_clean();
 
+		// On renseigne les routes génériques du layout
+		$layout_route_a = [];
+		$layout_route_a['accueil'] = Application::getRoute('Frontend', 'News', 'index');
+		$layout_route_a['login'] = Application::getRoute('Frontend', 'Connexion', 'index');
+		$layout_route_a['logout'] = Application::getRoute('Frontend', 'Connexion', 'logout');
+		$layout_route_a['admin'] = Application::getRoute('Backend', 'News', 'index');
+		$layout_route_a['admin_insert'] = Application::getRoute('Backend', 'News', 'insert');
+
 		ob_start();
 		/** @noinspection PhpIncludeInspection */
 		require __DIR__ . '/../../App/' . $this->App->getName() . '/Templates/layout.php';

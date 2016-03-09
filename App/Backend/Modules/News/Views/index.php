@@ -1,4 +1,10 @@
-<?php /** @var int $nombre_news */ ?>
+<?php
+/**
+ * @var int $nombre_news
+ * @var array $news_update_url_a
+ * @var array $news_delete_url_a
+ */
+?>
 <p style="text-align: center">Il y a actuellement <?= $nombre_news ?> news. En voici la liste :</p>
 
 <table>
@@ -13,7 +19,7 @@
 					<td>', htmlspecialchars($News['titre']), '</td>
 					<td>', $News['Date_ajout']->format('d/m/Y à H\hi'), '</td>
 					<td>', ($News['Date_ajout'] == $News['Date_modif'] ? '-' : 'le ' . $News['Date_modif']->format('d/m/Y à H\hi')), '</td>
-					<td><a href="news-update-', $News['id'], '.html"><img src="/images/update.png" alt="Modifier" /></a> <a href="news-delete-', $News['id'], '.html"><img src="/images/delete.png" alt="Supprimer" /></a></td>
+					<td><a href=', $news_update_url_a[$News['id']], '><img src="/images/update.png" alt="Modifier" /></a> <a href=', $news_delete_url_a[$News['id']], '><img src="/images/delete.png" alt="Supprimer" /></a></td>
 				</tr>', "\n";
 		}
 		?>

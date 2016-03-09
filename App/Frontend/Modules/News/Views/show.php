@@ -18,7 +18,7 @@
 	</p>
 <?php endif; ?>
 
-<p><a href="commenter-<?= $News['id'] ?>.html">Ajouter un commentaire</a></p>
+<p><a href=<?= $comment_news_url ?>>Ajouter un commentaire</a></p>
 
 <?php
 if (empty($Comment_a)): ?>
@@ -41,4 +41,4 @@ if (empty($Comment_a)): ?>
 	endforeach;
 endif; ?>
 
-<p><a href="commenter-<?= $News['id'] ?>.html">Ajouter un commentaire</a></p>
+<p><a href=<?= $comment_news_url ?>>Ajouter un commentaire</a></p>

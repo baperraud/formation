@@ -7,6 +7,7 @@ use \FormBuilder\CommentFormBuilder;
 use \FormBuilder\NewsFormBuilder;
 use \Model\NewsManager;
 use \Model\CommentsManager;
+use \OCFram\Application;
 use \OCFram\BackController;
 use \OCFram\FormHandler;
 use \OCFram\HTTPRequest;
@@ -20,9 +21,25 @@ class NewsController extends BackController {
 		/** @var NewsManager $Manager */
 		$Manager = $this->Managers->getManagerOf('News');
 
+		/** @var News[] $News_a */
+		$News_a = $Manager->getNewscSortByIdDesc_a();
+
 		// On envoie la liste des news et leur nombre à la vue
-		$this->Page->addVar('News_a', $Manager->getNewscSortByIdDesc_a());
+		$this->Page->addVar('News_a', $News_a);
 		$this->Page->addVar('nombre_news', $Manager->countNewsc());
+
+		// On récupère les routes de modification/suppression de news
+		// puis on les envoie à la vue
+		$news_update_url_a = [];
+		$news_delete_url_a = [];
+
+		foreach ($News_a as $News) {
+			$news_update_url_a[$News->getId()] = Application::getRoute($this->App->getName(), $this->getModule(), 'update', array($News['id']));
+			$news_delete_url_a[$News->getId()] = Application::getRoute($this->App->getName(), $this->getModule(), 'delete', array($News['id']));
+		}
+
+		$this->Page->addVar('news_update_url_a', $news_update_url_a);
+		$this->Page->addVar('news_delete_url_a', $news_delete_url_a);
 	}
 
 	public function executeDelete(HTTPRequest $Request) {

@@ -6,6 +6,7 @@ use \Entity\News;
 use \FormBuilder\CommentFormBuilder;
 use \Model\CommentsManager;
 use \Model\NewsManager;
+use \OCFram\Application;
 use \OCFram\BackController;
 use \OCFram\FormHandler;
 use \OCFram\HTTPRequest;
@@ -41,7 +42,7 @@ class NewsController extends BackController {
 			}
 
 			// On récupère l'url de la news (show)
-			$news_url_a[$News->getId()] = $this->getRoute($this->getModule(), 'show', array($News['id']));
+			$news_url_a[$News->getId()] = Application::getRoute($this->App->getName(), $this->getModule(), 'show', array($News['id']));
 		}
 
 		// On envoie la liste des news à la vue ainsi que leur url
@@ -64,10 +65,15 @@ class NewsController extends BackController {
 		// On envoie la news à la vue
 		$this->Page->addVar('title', $News->getTitre());
 		$this->Page->addVar('News', $News);
+
 		// On envoie les commentaires associés également
 		/** @var CommentsManager $Manager */
 		$Manager = $this->Managers->getManagerOf('Comments');
 		$this->Page->addVar('Comment_a', $Manager->getCommentcUsingNewscIdSortByDateDesc_a($News->getId()));
+
+		// On envoie le lien pour commenter la news
+		$comment_news_url = Application::getRoute($this->App->getName(), $this->getModule(), 'insertComment', array($News['id']));
+		$this->Page->addVar('comment_news_url', $comment_news_url);
 	}
 
 	public function executeInsertComment(HTTPRequest $Request) {
