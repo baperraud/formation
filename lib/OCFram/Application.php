@@ -5,14 +5,14 @@ abstract class Application {
 	protected $Http_request;
 	protected $Http_response;
 	protected $name;
-	protected $User;
+	protected $Session;
 	protected $Config;
 
 	public function __construct() {
 		$this->Http_request = new HTTPRequest($this);
 		$this->Http_response = new HTTPResponse($this);
 		$this->name = '';
-		$this->User = new User($this);
+		$this->Session = new Session($this);
 		$this->Config = new Config($this);
 	}
 
@@ -21,7 +21,7 @@ abstract class Application {
 	public function getName() { return $this->name; }
 	public function getHttpRequest() { return $this->Http_request; }
 	public function getHttpResponse() { return $this->Http_response; }
-	public function getUser() { return $this->User; }
+	public function getSession() { return $this->Session; }
 	public function getConfig() { return $this->Config; }
 
 	public function getController() {

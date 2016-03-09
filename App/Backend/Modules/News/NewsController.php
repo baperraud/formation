@@ -54,7 +54,7 @@ class NewsController extends BackController {
 		$Manager = $this->Managers->getManagerOf('Comments');
 		$Manager->deleteCommentcUsingNewcId($news_id);
 
-		$this->App->getUser()->setFlash('La news a bien été supprimée !');
+		$this->App->getSession()->setFlash('La news a bien été supprimée !');
 
 		$this->App->getHttpResponse()->redirect('.');
 	}
@@ -76,7 +76,7 @@ class NewsController extends BackController {
 
 		if ($Request->getMethod() == 'POST') {
 			$News = new News([
-				'auteur' => $Request->getPostData('auteur'),
+				'pseudonym' => $Request->getPostData('pseudonym'),
 				'titre' => $Request->getPostData('titre'),
 				'contenu' => $Request->getPostData('contenu')
 			]);
@@ -102,7 +102,7 @@ class NewsController extends BackController {
 			$Form_handler = new FormHandler($Form, $Manager, $Request);
 
 			if ($Form_handler->process()) {
-				$this->App->getUser()->setFlash($News->isNew() ? 'La news a bien été ajoutée !' : 'La news a bien été modifiée !');
+				$this->App->getSession()->setFlash($News->isNew() ? 'La news a bien été ajoutée !' : 'La news a bien été modifiée !');
 				$this->App->getHttpResponse()->redirect($News->isNew() ? '/admin/' : '/news-' . $News->getId(). '.html');
 			}
 
@@ -119,7 +119,7 @@ class NewsController extends BackController {
 		if ($Request->getMethod() == 'POST') {
 			$Comment = new Comment([
 				'id' => $Request->getGetData('id'),
-				'auteur' => $Request->getPostData('auteur'),
+				'pseudonym' => $Request->getPostData('pseudonym'),
 				'contenu' => $Request->getPostData('contenu')
 			]);
 		} else {
@@ -135,7 +135,7 @@ class NewsController extends BackController {
 		$Form_handler = new FormHandler($Form, $Manager, $Request);
 
 		if ($Form_handler->process()) {
-			$this->App->getUser()->setFlash('Le commentaire a bien été modifié');
+			$this->App->getSession()->setFlash('Le commentaire a bien été modifié');
 
 			$Comment->setNews($Manager->getNewsIdUsingCommentcId($Comment->getId()));
 
@@ -154,7 +154,7 @@ class NewsController extends BackController {
 
 		$Manager->deleteCommentcUsingId($Request->getGetData('id'));
 
-		$this->App->getUser()->setFlash('Le commentaire a bien été supprimé !');
+		$this->App->getSession()->setFlash('Le commentaire a bien été supprimé !');
 
 		$this->App->getHttpResponse()->redirect('/news-' . $news_id . '.html');
 	}

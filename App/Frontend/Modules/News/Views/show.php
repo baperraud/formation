@@ -2,7 +2,7 @@
 /**
  * @var \Entity\News $News
  * @var \Entity\Comment $Comment
- * @var \OCFram\User $User
+ * @var \OCFram\Session $Session
  * @var array $comment_news_url
  */
 ?>
@@ -28,9 +28,9 @@ if (empty($Comment_a)): ?>
 	foreach ($Comment_a as $Comment): ?>
 		<fieldset>
 			<legend>
-				Posté par <strong><?= htmlspecialchars($Comment['auteur']) ?></strong>
+				Posté par <strong><?= htmlspecialchars($Comment['pseudonym']) ?></strong>
 				le <?= $Comment['Date']->format('d/m/Y à H\hi') ?>
-				<?php if ($User->isAuthenticated() && $User->isAdmin()
+				<?php if ($Session->isAuthenticated() && $Session->isAdmin()
 				): ?> -
 					<a href="admin/comment-update-<?= $Comment['id'] ?>.html">Modifier</a> |
 					<a href="admin/comment-delete-<?= $Comment['id'] ?>.html">Supprimer</a>
@@ -43,3 +43,5 @@ if (empty($Comment_a)): ?>
 endif; ?>
 
 <p><a href=<?= $comment_news_url ?>>Ajouter un commentaire</a></p>
+
+<?php

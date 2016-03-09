@@ -1,6 +1,6 @@
 <?php
 /**
- * @var \OCFram\User $User
+ * @var \OCFram\Session $Session
  * @var string $content
  * @var array $layout_route_a
  */
@@ -23,7 +23,7 @@
 	<header>
 		<h1><a href=<?= $layout_route_a['accueil'] ?>>Mon super site</a></h1>
 		<p>Comment ça, il n'y a presque rien ?<br/>
-			<?= $User->isAuthenticated() ? ('Bienvenue ' . $User->getAttribute('pseudo') . ' !') : 'Pas de session en cours' ?>
+			<?= $Session->isAuthenticated() ? ('Bienvenue ' . $Session->getAttribute('pseudo') . ' !') : 'Pas de session en cours' ?>
 		</p>
 	</header>
 
@@ -31,8 +31,8 @@
 		<ul>
 			<li><a href=<?= $layout_route_a['accueil'] ?>>Accueil</a></li>
 			<?php
-			if ($User->isAuthenticated()):
-				if ($User->getAttribute('admin') == 1): ?>
+			if ($Session->isAuthenticated()):
+				if ($Session->getAttribute('admin') == 1): ?>
 					<li><a href=<?= $layout_route_a['admin'] ?>>Admin</a></li>
 					<li><a href=<?= $layout_route_a['admin_insert'] ?>>Ajouter une news</a></li>
 					<?php
@@ -48,7 +48,7 @@
 
 	<div id="content-wrap">
 		<section id="main">
-			<?php if ($User->hasFlash()) echo '<p style="text-align: center;">', $User->getFlash(), '</p>'; ?>
+			<?php if ($Session->hasFlash()) echo '<p style="text-align: center;">', $Session->getFlash(), '</p>'; ?>
 
 			<?= $content ?>
 		</section>

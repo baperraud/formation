@@ -37,13 +37,17 @@ class CommentsManagerPDO extends CommentsManager {
 	 */
 	protected function addCommentc(Comment $Comment) {
 		$insert_query = '
-			INSERT INTO T_NEW_commentc (NCC_fk_NNC, NCC_author, NCC_content, NCC_date)
-			VALUES (:news, :auteur, :content, NOW())';
+			INSERT INTO T_NEW_commentc (NCC_fk_NNC, NCC_author, NCC_content, NCC_date, NCC_email)
+			VALUES (:news, :auteur, :content, NOW(), :email)';
+
+		$mail = $Comment->getEmail();
+		$mail = empty($mail) ? NULL : $mail;
 
 		$insert_query_result = $this->Dao->prepare($insert_query);
 		$insert_query_result->bindValue(':news', (int)$Comment->getNews(), \PDO::PARAM_INT);
-		$insert_query_result->bindValue(':auteur', $Comment->getAuteur());
+		$insert_query_result->bindValue(':auteur', $Comment->getPseudonym());
 		$insert_query_result->bindValue(':content', $Comment->getContenu());
+		$insert_query_result->bindValue(':email', $mail);
 
 		$insert_query_result->execute();
 
@@ -101,7 +105,7 @@ class CommentsManagerPDO extends CommentsManager {
 		}
 
 		$select_query = '
-			SELECT NCC_id id, NCC_author auteur, NCC_content contenu, NCC_date Date
+			SELECT NCC_id id, NCC_author pseudonym, NCC_content contenu, NCC_date Date
 			FROM T_NEW_commentc
 			WHERE NCC_fk_NNC = :news
 			ORDER BY NCC_date DESC';

@@ -4,6 +4,7 @@ namespace OCFram;
 
 class StringField extends Field {
 	protected $max_length;
+	protected $type = 'text';
 
 	public function buildWidget() {
 		$widget = '';
@@ -12,7 +13,7 @@ class StringField extends Field {
 			$widget .= $this->error_message . '<br />';
 		}
 
-		$widget .= '<label>' . $this->label . '</label><input type="text" name="' . $this->name . '"';
+		$widget .= '<label>' . $this->label . '</label><input type="' . $this->type . '" name="' . $this->name . '"';
 
 		if (!empty($this->value)) {
 			$widget .= ' value="' . htmlspecialchars($this->value) . '"';
@@ -33,6 +34,14 @@ class StringField extends Field {
 			$this->max_length = $max_length;
 		} else {
 			throw new \RuntimeException('La longueur maximale doit être un nombre supérieur à 0');
+		}
+	}
+
+	public function setType($type) {
+		if (!empty($type)) {
+			$this->type = $type;
+		} else {
+			throw new \RuntimeException('Le type doit être une string non vide');
 		}
 	}
 }

@@ -69,6 +69,8 @@ class NewsController extends BackController {
 		// On envoie les commentaires associés également
 		/** @var CommentsManager $Manager */
 		$Manager = $this->Managers->getManagerOf('Comments');
+		$Comment_a = $Manager->getCommentcUsingNewscIdSortByDateDesc_a($News->getId());
+
 		$this->Page->addVar('Comment_a', $Manager->getCommentcUsingNewscIdSortByDateDesc_a($News->getId()));
 
 		// On envoie le lien pour commenter la news
@@ -83,9 +85,11 @@ class NewsController extends BackController {
 
 		// Si le formulaire a été envoyé
 		if ($Request->getMethod() == 'POST') {
+
 			$Comment = new Comment([
 				'news' => $Request->getGetData('news'),
-				'auteur' => $Request->getPostData('auteur'),
+				'pseudonym' => $Request->getPostData('pseudonym'),
+				'email' => $Request->getPostData('email'),
 				'contenu' => $Request->getPostData('contenu')
 			]);
 		} else {
@@ -101,7 +105,7 @@ class NewsController extends BackController {
 		$Form_handler = new FormHandler($Form, $Manager, $Request);
 
 		if ($Form_handler->process()) {
-			$this->App->getUser()->setFlash('Le commentaire a bien été ajouté, merci !');
+			$this->App->getSession()->setFlash('Le commentaire a bien été ajouté, merci !');
 			$this->App->getHttpResponse()->redirect('news-' . $Request->getGetData('news') . '.html');
 		}
 

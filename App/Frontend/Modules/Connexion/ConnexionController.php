@@ -10,8 +10,8 @@ class ConnexionController extends BackController {
 
 	public function executeIndex(HTTPRequest $Request) {
 		// Si l'utilisateur est connecté
-		if ($this->App->getUser()->isAuthenticated()) {
-			$this->App->getUser()->setFlash('Vous êtes déjà connecté !');
+		if ($this->App->getSession()->isAuthenticated()) {
+			$this->App->getSession()->setFlash('Vous êtes déjà connecté !');
 			$this->App->getHttpResponse()->redirect('.');
 		}
 
@@ -34,11 +34,11 @@ class ConnexionController extends BackController {
 			if ($hashed_password === $user_a['password']) {
 				// Et que le compte est actif
 				if ($user_a['etat'] == UsersManager::COMPTE_ACTIF) {
-					$this->App->getUser()->setAuthenticated(true);
-					$this->App->getUser()->setAttribute('admin', (int)$user_a['role']);
-					$this->App->getUser()->setAttribute('pseudo', $login);
+					$this->App->getSession()->setAuthenticated(true);
+					$this->App->getSession()->setAttribute('admin', (int)$user_a['role']);
+					$this->App->getSession()->setAttribute('pseudo', $login);
 
-					$this->App->getUser()->setFlash('Connexion réussie !');
+					$this->App->getSession()->setFlash('Connexion réussie !');
 
 					// On redirige l'utilisateur en fonction de ses droits
 					if ($user_a['role'] == UsersManager::ROLE_ADMIN) {
@@ -49,10 +49,10 @@ class ConnexionController extends BackController {
 						throw new \RuntimeException('Role utilisateur non valide');
 					}
 				} elseif ($user_a['etat'] == UsersManager::COMPTE_INACTIF) {
-					$this->App->getUser()->setFlash('Ce compte est inactif.');
+					$this->App->getSession()->setFlash('Ce compte est inactif.');
 				}
 			} else {
-				$this->App->getUser()->setFlash('Le pseudo ou le mot de passe est incorrect.');
+				$this->App->getSession()->setFlash('Le pseudo ou le mot de passe est incorrect.');
 			}
 		}
 	}
@@ -61,7 +61,7 @@ class ConnexionController extends BackController {
 		$this->Page->addVar('title', 'Déconnexion');
 
 		// Si l'utilisateur est connecté
-		if ($this->App->getUser()->isAuthenticated()) {
+		if ($this->App->getSession()->isAuthenticated()) {
 
 			// On détruit les variables de notre session
 			session_unset();
@@ -70,7 +70,7 @@ class ConnexionController extends BackController {
 
 			// Puis on relance une session vierge
 			session_start();
-			$this->App->getUser()->setFlash('Vous avez bien été déconnecté !');
+			$this->App->getSession()->setFlash('Vous avez bien été déconnecté !');
 
 			$this->App->getHttpResponse()->redirect('/');
 		}

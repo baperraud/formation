@@ -5,7 +5,7 @@ use \Model\UsersManager;
 
 session_start();
 
-class User extends ApplicationComponent {
+class Session extends ApplicationComponent {
 
 	public function getAttribute($attr) {
 		return isset($_SESSION[$attr]) ? $_SESSION[$attr] : NULL;
@@ -26,7 +26,7 @@ class User extends ApplicationComponent {
 
 	public function setAuthenticated($authenticated = true) {
 		if (!is_bool($authenticated)) {
-			throw new \InvalidArgumentException('La valeur spécifiée à la méthode User::setAuthenticated() doit être un boolean');
+			throw new \InvalidArgumentException('La valeur spécifiée à la méthode Session::setAuthenticated() doit être un boolean');
 		}
 		$_SESSION['auth'] = $authenticated;
 	}
