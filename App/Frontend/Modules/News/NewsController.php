@@ -29,7 +29,7 @@ class NewsController extends BackController {
 
 		// Récupération des 5 dernières news
 		/** @var News[] $News_a
-		 *  @var NewsManager $Manager
+		 * @var NewsManager $Manager
 		 */
 		$News_a = $Manager->getNewscSortByIdDesc_a(0, $nombre_news);
 		$news_url_a = [];
@@ -64,7 +64,9 @@ class NewsController extends BackController {
 		/** @var News $News */
 		$News = $Manager->getNewscUsingId($Request->getGetData('id'));
 
-		if (empty($News)) { $this->App->getHttpResponse()->redirect404(); }
+		if (empty($News)) {
+			$this->App->getHttpResponse()->redirect404();
+		}
 
 		// On envoie la news à la vue
 		$this->Page->addVar('title', $News->getTitre());
@@ -157,7 +159,7 @@ class NewsController extends BackController {
 		$News = $Manager->getNewscUsingId($Request->getGetData('id'));
 
 		// Si l'utilisateur tente de modifier une news qui ne lui appartient pas
-		if ($News['auteur'] !== Session::getAttribute('pseudo')){
+		if ($News['auteur'] !== Session::getAttribute('pseudo')) {
 			Session::setFlash('Vous ne pouvez modifier que vos propres news !');
 			$this->App->getHttpResponse()->redirect('.');
 		}
@@ -180,7 +182,7 @@ class NewsController extends BackController {
 		$News = $Manager->getNewscUsingId($Request->getGetData('id'));
 
 		// Si l'utilisateur tente de supprimer une news qui ne lui appartient pas
-		if ($News['auteur'] !== Session::getAttribute('pseudo')){
+		if ($News['auteur'] !== Session::getAttribute('pseudo')) {
 			Session::setFlash('Vous ne pouvez supprimer que vos propres news !');
 			$this->App->getHttpResponse()->redirect('.');
 		}
@@ -236,9 +238,77 @@ class NewsController extends BackController {
 
 		if ($Form_handler->process()) {
 			Session::setFlash($News->isNew() ? 'La news a bien été ajoutée !' : 'La news a bien été modifiée !');
-			$this->App->getHttpResponse()->redirect('/news-' . $News->getId(). '.html');
+			$this->App->getHttpResponse()->redirect('/news-' . $News->getId() . '.html');
 		}
 
 		$this->Page->addVar('form', $Form->createView());
 	}
+
+	public function executeUpdateComment(HTTPRequest $Request) {
+		// Si l'utilisateur n'est pas connecté
+		if (!Session::isAuthenticated()) {
+			Session::setFlash('Vous devez être connecté pour modifier un commentaire.');
+			$this->App->getHttpResponse()->redirect('.');
+		}
+
+		// On récupère l'id de l'owner du commentaire
+		/** @var CommentsManager $Manager */
+		$Manager = $this->Managers->getManagerOf('Comments');
+		/** @var Comment $Comment */
+		$Comment = $Manager->getCommentcUsingCommentcId($Request->getGetData('id'));
+
+		// Si l'utilisateur tente de modifier un commentaire qui ne lui appartient pas
+		if ($Comment['pseudonym'] !== Session::getAttribute('pseudo')) {
+			Session::setFlash('Vous ne pouvez modifier que vos propres commentaires !');
+			$this->App->getHttpResponse()->redirect('.');
+		}
+
+		$this->Page->addVar('title', 'Modification d\'un commentaire');
+
+		// On récupère le manager des commentaires
+		/** @var CommentsManager $Manager */
+		$Manager = $this->Managers->getManagerOf('Comments');
+
+		if ($Request->getMethod() == 'POST') {
+			$Comment = new Comment([
+				'id' => $Request->getGetData('id'),
+				'pseudonym' => $Request->getPostData('pseudonym'),
+				'contenu' => $Request->getPostData('contenu')
+			]);
+		} else {
+			$Comment = $Manager->getCommentcUsingCommentcId($Request->getGetData('id'));
+		}
+
+		$Form_builder = new CommentFormBuilder($Comment);
+		$Form_builder->build();
+
+		$Form = $Form_builder->getForm();
+
+		// On récupère le gestionnaire de formulaire
+		$Form_handler = new FormHandler($Form, $Manager, $Request);
+
+		if ($Form_handler->process()) {
+			Session::setFlash('Le commentaire a bien été modifié');
+
+			$Comment->setNews($Manager->getNewsIdUsingCommentcId($Comment->getId()));
+
+			$this->App->getHttpResponse()->redirect('/news-' . $Comment->getNews() . '.html');
+		}
+
+		$this->Page->addVar('form', $Form->createView());
+	}
+//
+//	public function executeDeleteComment(HTTPRequest $Request) {
+//		// On récupère le manager des commentaires
+//		/** @var CommentsManager $Manager */
+//		$Manager = $this->Managers->getManagerOf('Comments');
+//
+//		$news_id = $Manager->getNewsIdUsingCommentcId($Request->getGetData('id'));
+//
+//		$Manager->deleteCommentcUsingId($Request->getGetData('id'));
+//
+//		Session::setFlash('Le commentaire a bien été supprimé !');
+//
+//		$this->App->getHttpResponse()->redirect('/news-' . $news_id . '.html');
+//	}
 }

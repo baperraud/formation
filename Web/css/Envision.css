@@ -479,13 +479,24 @@ footer a {
 
 /*noinspection CssOverwrittenProperties*/
 table td {
-	max-width: 96px;
 	white-space: pre;           /* CSS 2.0 */
 	white-space: pre-wrap;      /* CSS 2.1 */
 	white-space: pre-line;      /* CSS 3.0 */
 	white-space: -o-pre-wrap;   /* Opera 7 */
 	white-space: -moz-pre-wrap; /* Mozilla */
 	word-wrap: break-word;      /* IE 5+ */
+}
+
+table#admin_view td {
+	max-width: 96px;
+}
+
+table#news_user_view td {
+	max-width: 96px;
+}
+
+table#comments_user_view td {
+	width: 200px;
 }
 
 fieldset {

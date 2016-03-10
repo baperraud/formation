@@ -79,8 +79,9 @@ class CommentsManagerPDO extends CommentsManager {
 	 */
 	public function getCommentcUsingCommentcId($comment_id) {
 		$select_query = '
-			SELECT NCC_id id, NCC_fk_NNC news, NCC_author auteur, NCC_content contenu
+			SELECT NCC_id id, NCC_fk_NNC news, NCC_date Date, NCC_author auteur, NCC_content contenu, NUC_pseudonym pseudonym
 			FROM T_NEW_commentc
+			INNER JOIN T_NEW_userc ON NUC_id = NCC_fk_NUC
 			WHERE NCC_id = :id';
 
 		$select_query_result = $this->Dao->prepare($select_query);
@@ -116,6 +117,37 @@ class CommentsManagerPDO extends CommentsManager {
 
 		$select_query_result = $this->Dao->prepare($select_query);
 		$select_query_result->bindValue(':news', (int)$news_id, \PDO::PARAM_INT);
+		$select_query_result->execute();
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$select_query_result->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\Comment');
+
+		$Comment_a = $select_query_result->fetchAll();
+
+		/** @var Comment[] $Comment_a */
+		foreach ($Comment_a as $Comment) {
+			$Comment->setDate(new \DateTime($Comment->getDate()));
+		}
+
+		$select_query_result->closeCursor();
+
+		return $Comment_a;
+	}
+
+	/**
+	 * Méthode permettant de récupérer la liste des commentaires d'un membre
+	 * @param $user_id int L'id du membre dont on veut récupérer les commentaires
+	 * @return array
+	 */
+	public function getCommentcUsingUsercIdSortByDateDesc_a($user_id) {
+		$select_query = '
+			SELECT NCC_id id, NCC_fk_NNC news, NCC_email email, NCC_content contenu, NCC_date Date
+			FROM T_NEW_commentc
+			WHERE NCC_fk_NUC = :user
+			ORDER BY Date DESC';
+
+		$select_query_result = $this->Dao->prepare($select_query);
+		$select_query_result->bindValue(':user', (int)$user_id, \PDO::PARAM_INT);
 		$select_query_result->execute();
 
 		/** @noinspection PhpMethodParametersCountMismatchInspection */

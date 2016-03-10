@@ -7,7 +7,7 @@
 ?>
 <p style="text-align: center">Il y a actuellement <?= $nombre_news ?> news. En voici la liste :</p>
 
-<table>
+<table id="admin_view">
 	<tr>
 		<th>Auteur</th><th>Titre</th><th>Date d'ajout</th><th>Dernière modification</th><th>Action</th>
 

@@ -6,6 +6,8 @@
     <route url="/news-update-([0-9]+)\.html" module="News" action="update" vars="id"></route>
     <route url="/news-delete-([0-9]+)\.html" module="News" action="delete" vars="id"></route>
     <route url="/news-([0-9]+)\.html" module="News" action="show" vars="id"></route>
+    <route url="/comment-update-([0-9]+)\.html" module="News" action="updateComment" vars="id"></route>
+    <route url="/comment-delete-([0-9]+)\.html" module="News" action="deleteComment" vars="id"></route>
     <route url="/commenter-([0-9]+)\.html" module="News" action="insertComment" vars="news"></route>
     <route url="/device\.html" module="Device" action="index" ></route>
     <route url="/login\.html" module="User" action="index" ></route>

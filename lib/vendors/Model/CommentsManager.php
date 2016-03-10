@@ -47,6 +47,13 @@ abstract class CommentsManager extends Manager {
 	abstract public function getCommentcUsingCommentcId($comment_id);
 
 	/**
+	 * Méthode permettant de récupérer la liste des commentaires d'un membre
+	 * @param $user_id int L'id du membre dont on veut récupérer les commentaires
+	 * @return array
+	 */
+	abstract public function getCommentcUsingUsercIdSortByDateDesc_a($user_id);
+
+	/**
 	 * Méthode permettant de supprimer un commentaire
 	 * @param $comment_id int L'id du commentaire à supprimer
 	 * @return void

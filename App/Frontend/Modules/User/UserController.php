@@ -2,9 +2,11 @@
 
 namespace App\Frontend\Modules\User;
 
+use \Entity\Comment;
 use \Entity\News;
 use \Entity\User;
 use \FormBuilder\UserFormBuilder;
+use \Model\CommentsManager;
 use \Model\NewsManager;
 use \Model\UsersManager;
 use \OCFram\Application;
@@ -111,11 +113,13 @@ class UserController extends BackController {
 		$this->Page->addVar('title', 'Profil de ' . $pseudo);
 		$this->Page->addVar('pseudo', $pseudo);
 
+
+		/* Récupération des news du membre */
+
 		// On récupère le manager des news
 		/** @var NewsManager $Manager */
 		$Manager = $this->Managers->getManagerOf('News');
 
-		// Récupération des news du membre
 		/** @var News[] $News_a */
 		$News_a = $Manager->getNewscUsingUsercIdSortByDateDesc_a($User['id']);
 		$news_url_a = [];
@@ -152,6 +156,39 @@ class UserController extends BackController {
 
 		$this->Page->addVar('news_update_url_a', $news_update_url_a);
 		$this->Page->addVar('news_delete_url_a', $news_delete_url_a);
+
+		/* Récupération des commentaires du membre */
+
+
+		// On récupère le manager des commentaires
+		/** @var CommentsManager $Manager */
+		$Manager = $this->Managers->getManagerOf('Comments');
+
+		/** @var Comment[] $Comment_a */
+		$Comment_a = $Manager->getCommentcUsingUsercIdSortByDateDesc_a($User['id']);
+		$comment_news_url_a = [];
+
+		foreach ($Comment_a as $Comment) {
+			// On récupère l'url de la news du commentaire
+			$comment_news_url_a[$Comment->getId()] = Application::getRoute($this->App->getName(), 'News', 'show', array($Comment['news']));
+		}
+
+		// On envoie la liste des commentaires à la vue ainsi que l'url de leur news
+		$this->Page->addVar('Comment_a', $Comment_a);
+		$this->Page->addVar('comment_news_url_a', $comment_news_url_a);
+
+		// On récupère les routes de modification/suppression de commentaire
+		// puis on les envoie à la vue
+		$comment_update_url_a = [];
+		$comment_delete_url_a = [];
+
+		foreach ($Comment_a as $Comment) {
+			$comment_update_url_a[$Comment->getId()] = Application::getRoute($this->App->getName(), 'News', 'updateComment', array($Comment['id']));
+			$comment_delete_url_a[$Comment->getId()] = Application::getRoute($this->App->getName(), 'News', 'deleteComment', array($Comment['id']));
+		}
+
+		$this->Page->addVar('comment_update_url_a', $comment_update_url_a);
+		$this->Page->addVar('comment_delete_url_a', $comment_delete_url_a);
 	}
 
 	public function executeSignup(HTTPRequest $Request) {
