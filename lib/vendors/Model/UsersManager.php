@@ -9,6 +9,7 @@ abstract class UsersManager extends Manager {
 	const COMPTE_INACTIF = 2;
 	const ROLE_ADMIN = 1;
 	const ROLE_USER = 2;
+	const SALT_GENERATOR = 'return uniqid(mt_rand(), true);';
 
 	/**
 	 * Méthode permettant de récupérer l'id, le rôle et le statut
