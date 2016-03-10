@@ -186,4 +186,34 @@ class CommentsManagerPDO extends CommentsManager {
 
 		return $select_query_result->fetchColumn();
 	}
+
+	/**
+	 * Méthode permettant de récupérer la liste des mails de commentaires rattachés
+	 * à une news spécifique
+	 * @param $news_id int L'id de la news dont on veut récupérer les mails de commentaires
+	 * @return array
+	 */
+	public function getEmailUsingNewscId_a($news_id) {
+		$select_query = '
+			SELECT NCC_email email
+			FROM T_NEW_commentc
+			WHERE NCC_fk_NNC = :news AND NCC_fk_NUC IS NULL
+			UNION DISTINCT
+			SELECT NUC_email email
+			FROM T_NEW_commentc
+			INNER JOIN T_NEW_userc ON NUC_id = NCC_fk_NUC
+			WHERE NCC_fk_NNC = :news';
+
+		$select_query_result = $this->Dao->prepare($select_query);
+		$select_query_result->bindValue(':news', (int)$news_id, \PDO::PARAM_INT);
+		$select_query_result->execute();
+
+		$email_a = $select_query_result->fetchAll();
+
+		$select_query_result->closeCursor();
+
+		var_dump($email_a);die();
+
+		return $email_a;
+	}
 }

@@ -40,6 +40,9 @@ abstract class UsersManager extends Manager {
 	 * @return void
 	 */
 	public function save(User $User) {
+		var_dump($User);
+		var_dump($User->isValid());
+		var_dump($User->isNew());
 		if ($User->isValid()) {
 			$User->isNew() ? $this->insertUserc($User) : $this->updateUserc($User);
 		} else {

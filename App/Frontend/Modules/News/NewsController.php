@@ -15,6 +15,7 @@ use \OCFram\Session;
 
 // TODO: Remplacer les url de redirection en utilisant Application::getRoute
 // TODO: Factoriser le code pour les redirections en cas de non connexion (dans HTTPResponse)
+// TODO: ancre vers commentaire directe
 
 class NewsController extends BackController {
 	public function executeIndex() {
@@ -98,6 +99,8 @@ class NewsController extends BackController {
 	}
 
 	public function executeInsertComment(HTTPRequest $Request) {
+		// TODO: Interdire que l'on puisse poster un commentaire en tant que visiteur avec le pseudo d'un compte existant
+
 		/** @var CommentsManager $Manager */
 		// On récupère le manager des commentaires
 		$Manager = $this->Managers->getManagerOf('Comments');
@@ -125,6 +128,17 @@ class NewsController extends BackController {
 
 		if ($Form_handler->process()) {
 			Session::setFlash('Le commentaire a bien été ajouté, merci !');
+
+			// Récupération de tous les mails de ceux qui ont commenté la news
+//			$Manager->getEmailUsingNewscId_a($Comment->getNews());
+
+			// On envoie un mail à tous ceux qui ont déjà commenté la news
+
+
+
+
+
+
 			$this->App->getHttpResponse()->redirect('news-' . $Request->getGetData('news') . '.html');
 		}
 

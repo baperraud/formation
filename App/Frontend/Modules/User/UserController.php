@@ -15,6 +15,10 @@ use \OCFram\FormHandler;
 use \OCFram\HTTPRequest;
 use \OCFram\Session;
 
+// TODO: Connexion auto après inscription
+// TODO: Confirmation de password
+// TODO: Empêcher le choix d'un pseudo avec des espaces
+
 class UserController extends BackController {
 
 	public function executeIndex(HTTPRequest $Request) {
@@ -97,9 +101,11 @@ class UserController extends BackController {
 	}
 
 	public function executeShow() {
+		// TODO: Vérifier que l'utilisateur existe bien avant d'afficher la page
+
 		$nombre_caracteres = (int)$this->App->getConfig()->get('nombre_caracteres');
 
-		$pseudo = $this->App->getHttpRequest()->getGetData('pseudo');
+		$pseudo = urldecode($this->App->getHttpRequest()->getGetData('pseudo'));
 
 		// On commence par récupérer les informations du membre
 		/** @var UsersManager $Manager */
@@ -107,6 +113,8 @@ class UserController extends BackController {
 		// On récupère le manager des utilisateurs
 		$Manager = $this->Managers->getManagerOf('Users');
 		/** @var User $User */
+		// TODO: Utiliser des ids pour les requêtes
+		// TODO: ne pas injecter dans la vue directement des données en provenance des formulaires
 		$User = $Manager->getUsercUsingPseudo($pseudo);
 
 		// On passe le pseudo du membre à la vue
@@ -207,7 +215,8 @@ class UserController extends BackController {
 			$User = new User([
 				'pseudonym' => $Request->getPostData('pseudonym'),
 				'password' => $Request->getPostData('password'),
-				'email' => $Request->getPostData('email')
+				'email' => $Request->getPostData('email'),
+				'is_new' => true,
 			]);
 		} else {
 			$User = new User;

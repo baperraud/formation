@@ -1,5 +1,8 @@
 <?php
 
+// TODO: Implémenter un Validator qui vérifie que les 2 mdp sont identiques
+// TODO: Implémenter un Validator qui vérifie que le login/le mail n'est pas déjà pris
+
 namespace OCFram;
 
 abstract class Validator {

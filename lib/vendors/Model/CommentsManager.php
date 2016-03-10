@@ -40,6 +40,14 @@ abstract class CommentsManager extends Manager {
 	abstract public function getCommentcUsingNewscIdSortByDateDesc_a($news_id);
 
 	/**
+	 * Méthode permettant de récupérer la liste des mails de commentaires rattachés
+	 * à une news spécifique
+	 * @param $news_id int L'id de la news dont on veut récupérer les mails de commentaires
+	 * @return array
+	 */
+	abstract public function getEmailUsingNewscId_a($news_id);
+
+	/**
 	 * Méthode permettant de récupérer un commentaire spécifique
 	 * @param $comment_id int L'id du commentaire à récupérer
 	 * @return Comment
