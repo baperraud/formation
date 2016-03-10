@@ -19,7 +19,7 @@ use \OCFram\Session;
 
 	<h2 class="overflow_hidden"><?= htmlspecialchars($News['titre']) ?></h2>
 
-	<p class="overflow_hidden"><?= nl2br(htmlspecialchars($News['contenu'])) ?></p>
+	<p class="overflow_hidden"><?= htmlspecialchars($News['contenu']) ?></p>
 
 <?php if ($News['Date_ajout'] != $News['Date_modif']): ?>
 	<p style="text-align: right;">

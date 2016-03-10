@@ -259,7 +259,8 @@ class NewsController extends BackController {
 
 		// Si l'utilisateur tente de modifier un commentaire qui ne lui appartient pas
 		if ($Comment['owner_type'] == 2 ||
-			$Comment['pseudonym'] !== Session::getAttribute('pseudo')) {
+			$Comment['pseudonym'] !== Session::getAttribute('pseudo')
+		) {
 			Session::setFlash('Vous ne pouvez modifier que vos propres commentaires !');
 			$this->App->getHttpResponse()->redirect('.');
 		}
