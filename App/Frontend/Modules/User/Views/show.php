@@ -23,7 +23,7 @@ use \OCFram\Session;
 
 	<table>
 		<tr>
-			<th>Titre</th><th>Contenu</th><th>Date d'ajout</th><th>Dernière modification</th><!--<th>Action</th>-->
+			<th>Titre</th><th>Contenu</th><th>Date d'ajout</th><th>Dernière modification</th><?= Session::getAttribute('pseudo') == $pseudo ? '<th>Action</th>' : '' ?>
 
 			<?php /** @var \Entity\News[] $News_a */
 			foreach ($News_a as $News) {
@@ -32,9 +32,13 @@ use \OCFram\Session;
 					<td><a href=', $news_url_a[$News['id']] ,'>', htmlspecialchars($News['titre']), '</a></td>
 					<td>', htmlspecialchars($News['contenu']), '</td>
 					<td>', $News['Date_ajout']->format('d/m/Y à H\hi'), '</td>
-					<td>', ($News['Date_ajout'] == $News['Date_modif'] ? '-' : 'le ' . $News['Date_modif']->format('d/m/Y à H\hi')), '</td>
-					<!--<td><a href=', $news_update_url_a[$News['id']], '><img src="/images/update.png" alt="Modifier" /></a> <a href=', $news_delete_url_a[$News['id']], '><img src="/images/delete.png" alt="Supprimer" /></a></td>-->
+					<td>', ($News['Date_ajout'] == $News['Date_modif'] ? '-' : 'le ' . $News['Date_modif']->format('d/m/Y à H\hi')), '</td>';
+
+				if (Session::getAttribute('pseudo') == $pseudo) {
+					echo '
+					<td><a href=', $news_update_url_a[$News['id']], '><img src="/images/update.png" alt="Modifier" /></a> <a href=', $news_delete_url_a[$News['id']], '><img src="/images/delete.png" alt="Supprimer" /></a></td>
 				</tr>', "\n";
+				}
 			}
 			?>
 		</tr>

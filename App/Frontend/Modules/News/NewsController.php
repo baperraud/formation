@@ -137,20 +137,60 @@ class NewsController extends BackController {
 		}
 
 		$this->Page->addVar('title', 'Ajout d\'une news');
-		$this->processForm($Request);
+		$this->processForm($Request, 'insert');
 	}
 
-	public function processForm(HTTPRequest $Request) {
+	public function executeUpdate(HTTPRequest $Request) {
+		// Si l'utilisateur n'est pas connecté
+		if (!Session::isAuthenticated()) {
+			Session::setFlash('Vous devez être connecté pour modifier une news.');
+			$this->App->getHttpResponse()->redirect('.');
+		}
+
+		// On récupère l'id de l'owner de la news
+		/** @var NewsManager $Manager */
+		$Manager = $this->Managers->getManagerOf('News');
+		/** @var News $News */
+		$News = $Manager->getNewscUsingId($Request->getGetData('id'));
+
+		// Si l'utilisateur tente de modifier une news qui ne lui appartient pas
+		if ($News['auteur'] !== Session::getAttribute('pseudo')){
+			Session::setFlash('Vous ne pouvez modifier que vos propres news !');
+			$this->App->getHttpResponse()->redirect('.');
+		}
+
+		$this->Page->addVar('title', 'Modification d\'une news');
+		$this->processForm($Request, 'update');
+	}
+
+//	public function executeDelete(HTTPRequest $Request) {
+//		$news_id = $Request->getGetData('id');
+//
+//		// On supprime la news
+//		/** @var NewsManager $Manager */
+//		$Manager = $this->Managers->getManagerOf('News');
+//		$Manager->deleteNewscUsingId($news_id);
+//		// On supprime les commentaires associés
+//		/** @var CommentsManager $Manager */
+//		$Manager = $this->Managers->getManagerOf('Comments');
+//		$Manager->deleteCommentcUsingNewcId($news_id);
+//
+//		Session::setFlash('La news a bien été supprimée !');
+//
+//		$this->App->getHttpResponse()->redirect('.');
+//	}
+
+	public function processForm(HTTPRequest $Request, $type) {
 		// On récupère le manager des news
 		/** @var NewsManager $Manager */
 		$Manager = $this->Managers->getManagerOf('News');
 
 		if ($Request->getMethod() == 'POST') {
 			$News = new News([
-				'is_new' => true,
 				'titre' => $Request->getPostData('titre'),
 				'contenu' => $Request->getPostData('contenu')
 			]);
+			if ($type === 'insert') $News->setIs_new();
 
 			if ($Request->getExists('id')) {
 				$News->setId($Request->getGetData('id'));

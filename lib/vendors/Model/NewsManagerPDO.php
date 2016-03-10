@@ -26,12 +26,11 @@ class NewsManagerPDO extends NewsManager {
 	protected function updateNewsc(News $News) {
 		$update_query = '
 			UPDATE T_NEW_newsc
-			SET NNC_author = :auteur, NNC_title = :titre, NNC_content = :contenu, NNC_dateupdate = NOW()
+			SET NNC_title = :titre, NNC_content = :contenu, NNC_dateupdate = NOW()
 			WHERE NNC_id = :id';
 
 		$update_query_result = $this->Dao->prepare($update_query);
 		$update_query_result->bindValue(':titre', $News->getTitre());
-		$update_query_result->bindValue(':auteur', $News->getAuteur());
 		$update_query_result->bindValue(':contenu', $News->getContenu());
 		$update_query_result->bindValue(':id', $News->getId(), \PDO::PARAM_INT);
 

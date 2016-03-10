@@ -139,6 +139,19 @@ class UserController extends BackController {
 		// On envoie la liste des news à la vue ainsi que leur url
 		$this->Page->addVar('News_a', $News_a);
 		$this->Page->addVar('news_url_a', $news_url_a);
+
+		// On récupère les routes de modification/suppression de news
+		// puis on les envoie à la vue
+		$news_update_url_a = [];
+		$news_delete_url_a = [];
+
+		foreach ($News_a as $News) {
+			$news_update_url_a[$News->getId()] = Application::getRoute($this->App->getName(), 'News', 'update', array($News['id']));
+			$news_delete_url_a[$News->getId()] = Application::getRoute($this->App->getName(), 'News', 'delete', array($News['id']));
+		}
+
+		$this->Page->addVar('news_update_url_a', $news_update_url_a);
+		$this->Page->addVar('news_delete_url_a', $news_delete_url_a);
 	}
 
 	public function executeSignup(HTTPRequest $Request) {
