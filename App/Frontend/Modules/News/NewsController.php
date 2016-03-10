@@ -131,6 +131,12 @@ class NewsController extends BackController {
 	}
 
 	public function executeInsert(HTTPRequest $Request) {
+		// Si l'utilisateur n'est pas connecté
+		if (!Session::isAuthenticated()) {
+			Session::setFlash('Vous devez être connecté pour poster une news.');
+			$this->App->getHttpResponse()->redirect('.');
+		}
+
 		$this->Page->addVar('title', 'Ajout d\'une news');
 		$this->processForm($Request);
 	}
