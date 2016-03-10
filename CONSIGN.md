@@ -34,17 +34,17 @@ This part consist to add a functionnality for ask a route for a Controller and a
 * Modifications supplémentaires :
   * Les utilisateurs sont maintenant des auteurs
   * Un visiteur peut donc :
-    * S'inscrire en tant qu'Auteur (pseudo, email et password).
-    * Poster un commentaire en saisissant sont pseudo (et son email : nullable)
+    * S'inscrire en tant qu'Auteur (pseudo, email et password). OK
+    * Poster un commentaire en saisissant sont pseudo (et son email : nullable) OK
   * Un utilisateur connecté peut donc :
-    * Créer une news.
-    * Éditer/supprimer ses news.
-    * Poster un commentaire qui sera automatiquement associé à son compte utilisateur (il ne rentrera donc ni pseudo ni email).
+    * Créer une news. *En cours*
+    * Éditer/supprimer ses news. *En cours*
+    * Poster un commentaire qui sera automatiquement associé à son compte utilisateur (il ne rentrera donc ni pseudo ni email). OK
   * Un administrateur connecté peut donc :
     * Faire tout ce que peut faire un utilisateurs connecté ( il y a donc héritage de droits)
     * Éditer/supprimer les news des autres auteurs.
     * Supprimer n'importe quel commentaire.
   * Liens vers les pages profils :
-    * Le nom de l'auteur d'une news ou d'un commentaire qui fait référence à un compte utilisateurs/admin pointera vers une page de profil d'un utilisateur qui listera les news postées par ce membre et les commentaires écrits.
+    * Le nom de l'auteur d'une news ou d'un commentaire qui fait référence à un compte utilisateurs/admin pointera vers une page de profil d'un utilisateur qui listera les news postées par ce membre et les commentaires écrits. *En cours*
   * Mails.
     * Lorsqu'un nouveau commentaires est posté, envoyer un mail à tous les gens qui ont commenté cette même news précédement.
