@@ -32,8 +32,8 @@ class Page extends ApplicationComponent {
 		// On renseigne les routes génériques du layout
 		$layout_route_a = [];
 		$layout_route_a['accueil'] = Application::getRoute('Frontend', 'News', 'index');
-		$layout_route_a['login'] = Application::getRoute('Frontend', 'Connexion', 'index');
-		$layout_route_a['logout'] = Application::getRoute('Frontend', 'Connexion', 'logout');
+		$layout_route_a['login'] = Application::getRoute('Frontend', 'User', 'index');
+		$layout_route_a['logout'] = Application::getRoute('Frontend', 'User', 'logout');
 		$layout_route_a['admin'] = Application::getRoute('Backend', 'News', 'index');
 		$layout_route_a['admin_insert'] = Application::getRoute('Backend', 'News', 'insert');
 
