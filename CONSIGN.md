@@ -42,9 +42,9 @@ This part consist to add a functionnality for ask a route for a Controller and a
     * Poster un commentaire qui sera automatiquement associé à son compte utilisateur (il ne rentrera donc ni pseudo ni email). OK
   * Un administrateur connecté peut donc :
     * Faire tout ce que peut faire un utilisateurs connecté ( il y a donc héritage de droits). OK
-    * Éditer/supprimer les news des autres auteurs. *En cours*
-    * Supprimer n'importe quel commentaire. *En cours*
+    * Éditer/supprimer les news des autres auteurs. OK
+    * Supprimer n'importe quel commentaire. OK
   * Liens vers les pages profils :
     * Le nom de l'auteur d'une news ou d'un commentaire qui fait référence à un compte utilisateurs/admin pointera vers une page de profil d'un utilisateur qui listera les news postées par ce membre et les commentaires écrits. OK
   * Mails.
-    * Lorsqu'un nouveau commentaires est posté, envoyer un mail à tous les gens qui ont commenté cette même news précédement.
+    * Lorsqu'un nouveau commentaires est posté, envoyer un mail à tous les gens qui ont commenté cette même news précédement. En cours

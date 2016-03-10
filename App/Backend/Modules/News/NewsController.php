@@ -15,6 +15,8 @@ use \OCFram\Session;
 
 class NewsController extends BackController {
 	public function executeIndex() {
+		// TODO: Ajouter les liens vers les auteurs et les news
+
 		// On ajoute une définition pour le titre
 		$this->Page->addVar('title', 'Gestion des news');
 
