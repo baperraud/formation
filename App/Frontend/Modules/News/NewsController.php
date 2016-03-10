@@ -13,6 +13,9 @@ use \OCFram\FormHandler;
 use \OCFram\HTTPRequest;
 use \OCFram\Session;
 
+// TODO: Remplacer les url de redirection en utilisant Application::getRoute
+// TODO: Factoriser le code pour les redirections en cas de non connexion (dans HTTPResponse)
+
 class NewsController extends BackController {
 	public function executeIndex() {
 		$nombre_news = $this->App->getConfig()->get('nombre_news');
@@ -163,22 +166,41 @@ class NewsController extends BackController {
 		$this->processForm($Request, 'update');
 	}
 
-//	public function executeDelete(HTTPRequest $Request) {
-//		$news_id = $Request->getGetData('id');
-//
-//		// On supprime la news
-//		/** @var NewsManager $Manager */
-//		$Manager = $this->Managers->getManagerOf('News');
-//		$Manager->deleteNewscUsingId($news_id);
-//		// On supprime les commentaires associés
-//		/** @var CommentsManager $Manager */
-//		$Manager = $this->Managers->getManagerOf('Comments');
-//		$Manager->deleteCommentcUsingNewcId($news_id);
-//
-//		Session::setFlash('La news a bien été supprimée !');
-//
-//		$this->App->getHttpResponse()->redirect('.');
-//	}
+	public function executeDelete(HTTPRequest $Request) {
+		// Si l'utilisateur n'est pas connecté
+		if (!Session::isAuthenticated()) {
+			Session::setFlash('Vous devez être connecté pour modifier une news.');
+			$this->App->getHttpResponse()->redirect('.');
+		}
+
+		// On récupère l'id de l'owner de la news
+		/** @var NewsManager $Manager */
+		$Manager = $this->Managers->getManagerOf('News');
+		/** @var News $News */
+		$News = $Manager->getNewscUsingId($Request->getGetData('id'));
+
+		// Si l'utilisateur tente de supprimer une news qui ne lui appartient pas
+		if ($News['auteur'] !== Session::getAttribute('pseudo')){
+			Session::setFlash('Vous ne pouvez supprimer que vos propres news !');
+			$this->App->getHttpResponse()->redirect('.');
+		}
+
+		$news_id = $Request->getGetData('id');
+
+		// On supprime la news
+		/** @var NewsManager $Manager */
+		$Manager = $this->Managers->getManagerOf('News');
+		$Manager->deleteNewscUsingId($news_id);
+
+		// On supprime les commentaires associés
+		/** @var CommentsManager $Manager */
+		$Manager = $this->Managers->getManagerOf('Comments');
+		$Manager->deleteCommentcUsingNewcId($news_id);
+
+		Session::setFlash('La news a bien été supprimée !');
+
+		$this->App->getHttpResponse()->redirect('.');
+	}
 
 	public function processForm(HTTPRequest $Request, $type) {
 		// On récupère le manager des news
