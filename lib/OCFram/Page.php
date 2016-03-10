@@ -35,7 +35,7 @@ class Page extends ApplicationComponent {
 		$layout_route_a['login'] = Application::getRoute('Frontend', 'User', 'index');
 		$layout_route_a['logout'] = Application::getRoute('Frontend', 'User', 'logout');
 		$layout_route_a['admin'] = Application::getRoute('Backend', 'News', 'index');
-		$layout_route_a['admin_insert'] = Application::getRoute('Backend', 'News', 'insert');
+		$layout_route_a['insert'] = Application::getRoute('Frontend', 'News', 'insert');
 		$layout_route_a['profil'] = Application::getRoute('Frontend', 'User', 'show', array(Session::getAttribute('pseudo')));
 		$layout_route_a['signup'] = Application::getRoute('Frontend', 'User', 'signup');
 

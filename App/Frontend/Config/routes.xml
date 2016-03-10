@@ -2,6 +2,7 @@
 <!--suppress ALL -->
 <routes>
     <route url="/" module="News" action="index" ></route>
+    <route url="/news-insert\.html" module="News" action="insert" ></route>
     <route url="/news-([0-9]+)\.html" module="News" action="show" vars="id"></route>
     <route url="/commenter-([0-9]+)\.html" module="News" action="insertComment" vars="news"></route>
     <route url="/device\.html" module="Device" action="index" ></route>

@@ -13,7 +13,7 @@ class News extends Entity {
 	const AUTEUR_INVALIDE = 1, TITRE_INVALIDE = 2, CONTENU_INVALIDE = 3;
 
 	public function isValid() {
-		return !(empty($this->auteur) || empty($this->titre) || empty($this->contenu));
+		return !(empty($this->titre) || empty($this->contenu));
 	}
 
 	public function setAuteur($auteur) {

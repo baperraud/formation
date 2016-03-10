@@ -60,11 +60,6 @@ class NewsController extends BackController {
 		$this->App->getHttpResponse()->redirect('.');
 	}
 
-	public function executeInsert(HTTPRequest $Request) {
-		$this->Page->addVar('title', 'Ajout d\'une news');
-		$this->processForm($Request);
-	}
-
 	public function executeUpdate(HTTPRequest $Request) {
 		$this->Page->addVar('title', 'Modification d\'une news');
 		$this->processForm($Request);

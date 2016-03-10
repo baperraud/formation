@@ -5,6 +5,7 @@ abstract class Entity implements \ArrayAccess {
 	use Hydrator;
 
 	protected $id;
+	protected $is_new;
 	protected $erreur_a = [];
 
 	public function __construct(array $donnee_a = []) {
@@ -13,12 +14,15 @@ abstract class Entity implements \ArrayAccess {
 		}
 	}
 
-	public function isNew() { return empty($this->id); }
-
 	public function getErreur_a() { return $this->erreur_a; }
 	public function getId() { return $this->id; }
 
+	public function isNew() {
+		return isset($this->is_new) ? $this->is_new : false;
+	}
+
 	public function setId($id) { $this->id = (int)$id; }
+	public function setIs_new($bool = true) { $this->is_new = (bool)$bool; }
 
 	public function offsetGet($var) {
 		if (isset($this->$var) && is_callable([$this, $method = 'get' . ucfirst($var)])) {

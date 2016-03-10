@@ -10,7 +10,7 @@ abstract class NewsManager extends Manager {
 	 * @param $News News La news à ajouter
 	 * @return void
 	 */
-	abstract protected function addNewsc(News $News);
+	abstract protected function insertNewsc(News $News);
 
 	/**
 	 * Méthode permettant de modifier une news.
@@ -22,13 +22,13 @@ abstract class NewsManager extends Manager {
 	/**
 	 * Méthode permettant d'enregistrer une news
 	 * @param $News News La news à enregistrer
-	 * @see self::add()
-	 * @see self::modify()
+	 * @see self::insertNewsc()
+	 * @see self::updateNewsc()
 	 * @return void
 	 */
 	public function save(News $News) {
 		if ($News->isValid()) {
-			$News->isNew() ? $this->addNewsc($News) : $this->updateNewsc($News);
+			$News->isNew() ? $this->insertNewsc($News) : $this->updateNewsc($News);
 		} else {
 			throw new \RuntimeException('La news doit être validée pour être enregistrée');
 		}

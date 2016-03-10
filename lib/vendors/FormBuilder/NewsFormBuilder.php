@@ -11,14 +11,6 @@ use \OCFram\NotNullValidator;
 class NewsFormBuilder extends FormBuilder {
 	public function build() {
 		$this->Form->add(new StringField([
-			'label' => 'Auteur',
-			'name' => 'auteur',
-			'max_length' => 20,
-			'Validator_a' => [
-				new MaxLengthValidator('L\'auteur spécifié est trop long (20 caractères maximum)', 20),
-				new NotNullValidator('Merci de spécifier l\'auteur de la news'),
-			]
-		]))->add(new StringField([
 			'label' => 'Titre',
 			'name' => 'titre',
 			'max_length' => 100,

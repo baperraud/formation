@@ -4,6 +4,7 @@ namespace App\Frontend\Modules\News;
 use \Entity\Comment;
 use \Entity\News;
 use \FormBuilder\CommentFormBuilder;
+use \FormBuilder\NewsFormBuilder;
 use \Model\CommentsManager;
 use \Model\NewsManager;
 use \OCFram\Application;
@@ -100,6 +101,7 @@ class NewsController extends BackController {
 		// Si le formulaire a été envoyé
 		if ($Request->getMethod() == 'POST') {
 			$Comment = new Comment([
+				'is_new' => true,
 				'news' => $Request->getGetData('news'),
 				'pseudonym' => $Request->getPostData('pseudonym'),
 				'email' => $Request->getPostData('email'),
@@ -126,5 +128,50 @@ class NewsController extends BackController {
 		// On passe le formulaire généré à la vue
 		$this->Page->addVar('form', $Form->createView());
 		$this->Page->addVar('title', 'Ajout d\'un commentaire');
+	}
+
+	public function executeInsert(HTTPRequest $Request) {
+		$this->Page->addVar('title', 'Ajout d\'une news');
+		$this->processForm($Request);
+	}
+
+	public function processForm(HTTPRequest $Request) {
+		// On récupère le manager des news
+		/** @var NewsManager $Manager */
+		$Manager = $this->Managers->getManagerOf('News');
+
+		if ($Request->getMethod() == 'POST') {
+			$News = new News([
+				'is_new' => true,
+				'titre' => $Request->getPostData('titre'),
+				'contenu' => $Request->getPostData('contenu')
+			]);
+
+			if ($Request->getExists('id')) {
+				$News->setId($Request->getGetData('id'));
+			}
+		} else {
+			// L'identifiant de la news est transmis si on veut la modifier
+			if ($Request->getExists('id')) {
+				$News = $Manager->getNewscUsingId($Request->getGetData('id'));
+			} else {
+				$News = new News;
+			}
+		}
+
+		$Form_builder = new NewsFormBuilder($News);
+		$Form_builder->build();
+
+		$Form = $Form_builder->getForm();
+
+		// On récupère le gestionnaire de formulaire
+		$Form_handler = new FormHandler($Form, $Manager, $Request);
+
+		if ($Form_handler->process()) {
+			Session::setFlash($News->isNew() ? 'La news a bien été ajoutée !' : 'La news a bien été modifiée !');
+			$this->App->getHttpResponse()->redirect('/news-' . $News->getId(). '.html');
+		}
+
+		$this->Page->addVar('form', $Form->createView());
 	}
 }

@@ -35,10 +35,10 @@ use \OCFram\Session;
 			<?php
 			if (Session::isAuthenticated()):
 				if (Session::getAttribute('admin') == 1): ?>
-					<li><a href=<?= $layout_route_a['admin'] ?>>Admin</a></li>
-					<li><a href=<?= $layout_route_a['admin_insert'] ?>>Ajouter une news</a></li>
+					<li><a href=<?= $layout_route_a['admin'] ?>>Zone Admin</a></li>
 					<?php
 				endif; ?>
+				<li><a href=<?= $layout_route_a['insert'] ?>>Ajouter une news</a></li>
 				<li><a href=<?= $layout_route_a['profil'] ?>>Mon profil</a></li>
 				<li><a href=<?= $layout_route_a['logout'] ?>>Se déconnecter</a></li>
 				<?php
