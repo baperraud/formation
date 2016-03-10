@@ -131,4 +131,36 @@ class NewsManagerPDO extends NewsManager {
 
 		return NULL;
 	}
+
+	/**
+	 * Méthode permettant de récupérer la liste des news d'un membre
+	 * @param $user_id int L'id du membre dont on veut récupérer les news
+	 * @return array
+	 */
+	public function getNewscUsingUsercIdSortByDateDesc_a($user_id) {
+		$select_query = '
+			SELECT NNC_id id, NNC_title titre, NNC_content contenu, NNC_dateadd Date_ajout, NNC_dateupdate Date_modif
+			FROM T_NEW_newsc
+			WHERE NNC_fk_NUC = :user
+			ORDER BY Date_ajout DESC';
+
+		$select_query_result = $this->Dao->prepare($select_query);
+		$select_query_result->bindValue(':user', (int)$user_id, \PDO::PARAM_INT);
+		$select_query_result->execute();
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$select_query_result->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\News');
+
+		$News_a = $select_query_result->fetchAll();
+
+		/** @var News[] $News_a */
+		foreach ($News_a as $News) {
+			$News->setDateAjout(new \DateTime($News->getDate_ajout()));
+			$News->setDateModif(new \DateTime($News->getDate_modif()));
+		}
+
+		$select_query_result->closeCursor();
+
+		return $News_a;
+	}
 }

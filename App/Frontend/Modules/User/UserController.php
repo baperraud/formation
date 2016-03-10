@@ -2,8 +2,10 @@
 
 namespace App\Frontend\Modules\User;
 
+use \Entity\News;
 use \Entity\User;
 use \FormBuilder\UserFormBuilder;
+use \Model\NewsManager;
 use \Model\UsersManager;
 use \OCFram\Application;
 use \OCFram\BackController;
@@ -31,35 +33,41 @@ class UserController extends BackController {
 			$login = $Request->getPostData('login');
 			$password = $Request->getPostData('password');
 
-			$user_a = $Manager->getUsercUsingPseudo($login);
+			/** @var User $User */
+			$User = $Manager->getUsercUsingPseudo($login);
 
-			$hashed_password = crypt($password, $user_a['salt']);
+			// Si le pseudonyme existe
+			if ($User !== NULL) {
+				$hashed_password = crypt($password, $User['salt']);
 
-			// Si les informations d'identification sont correctes
-			if ($hashed_password === $user_a['password']) {
-				// Et que le compte est actif
-				if ($user_a['etat'] == UsersManager::COMPTE_ACTIF) {
-					// On initialise les variables de session
-					Session::setAuthenticated(true);
-					Session::setAttribute('admin', (int)$user_a['role']);
-					Session::setAttribute('pseudo', $login);
-					Session::setAttribute('id', (int)$user_a['id']);
+				// Si le mot de passe saisi est correct
+				if ($hashed_password === $User['password']) {
+					// Et que le compte est actif
+					if ($User['etat'] == UsersManager::COMPTE_ACTIF) {
+						// On initialise les variables de session
+						Session::setAuthenticated(true);
+						Session::setAttribute('admin', (int)$User['role']);
+						Session::setAttribute('pseudo', $login);
+						Session::setAttribute('id', (int)$User['id']);
 
-					Session::setFlash('Connexion réussie !');
+						Session::setFlash('Connexion réussie !');
 
-					// On redirige l'utilisateur en fonction de ses droits
-					if ($user_a['role'] == UsersManager::ROLE_ADMIN) {
-						$this->App->getHttpResponse()->redirect('/admin/');
-					} elseif ($user_a['role'] == UsersManager::ROLE_USER) {
-						$this->App->getHttpResponse()->redirect('/');
-					} else {
-						throw new \RuntimeException('Role utilisateur non valide');
+						// On redirige l'utilisateur en fonction de ses droits
+						if ($User['role'] == UsersManager::ROLE_ADMIN) {
+							$this->App->getHttpResponse()->redirect('/admin/');
+						} elseif ($User['role'] == UsersManager::ROLE_USER) {
+							$this->App->getHttpResponse()->redirect('/');
+						} else {
+							throw new \RuntimeException('Role utilisateur non valide');
+						}
+					} elseif ($User['etat'] == UsersManager::COMPTE_INACTIF) {
+						Session::setFlash('Ce compte est inactif.');
 					}
-				} elseif ($user_a['etat'] == UsersManager::COMPTE_INACTIF) {
-					Session::setFlash('Ce compte est inactif.');
+				} else {
+					Session::setFlash('Le mot de passe est incorrect.');
 				}
 			} else {
-				Session::setFlash('Le pseudo ou le mot de passe est incorrect.');
+				Session::setFlash('Il n\'existe pas de compte avec le pseudo renseigné.');
 			}
 		}
 	}
@@ -87,11 +95,50 @@ class UserController extends BackController {
 	}
 
 	public function executeShow() {
+		$nombre_caracteres = (int)$this->App->getConfig()->get('nombre_caracteres');
+
 		$pseudo = $this->App->getHttpRequest()->getGetData('pseudo');
 
+		// On commence par récupérer les informations du membre
+		/** @var UsersManager $Manager */
+
+		// On récupère le manager des utilisateurs
+		$Manager = $this->Managers->getManagerOf('Users');
+		/** @var User $User */
+		$User = $Manager->getUsercUsingPseudo($pseudo);
+
+		// On passe le pseudo du membre à la vue
 		$this->Page->addVar('title', 'Profil de ' . $pseudo);
 		$this->Page->addVar('pseudo', $pseudo);
 
+		// On récupère le manager des news
+		/** @var NewsManager $Manager */
+		$Manager = $this->Managers->getManagerOf('News');
+
+		// Récupération des news du membre
+		/** @var News[] $News_a */
+		$News_a = $Manager->getNewscUsingUsercIdSortByDateDesc_a($User['id']);
+		$news_url_a = [];
+
+		foreach ($News_a as $News) {
+			// On assigne aux news le nombre de caractères max
+			if (strlen($News->getContenu()) > $nombre_caracteres) {
+				$debut = substr($News->getContenu(), 0, $nombre_caracteres);
+				if (strrpos($debut, ' ') === false) {
+					$debut .= '...';
+				} else {
+					$debut = substr($debut, 0, strrpos($debut, ' ')) . '...';
+				}
+				$News->setContenu($debut);
+			}
+
+			// On récupère l'url de la news
+			$news_url_a[$News->getId()] = Application::getRoute($this->App->getName(), 'News', 'show', array($News['id']));
+		}
+
+		// On envoie la liste des news à la vue ainsi que leur url
+		$this->Page->addVar('News_a', $News_a);
+		$this->Page->addVar('news_url_a', $news_url_a);
 	}
 
 	public function executeSignup(HTTPRequest $Request) {

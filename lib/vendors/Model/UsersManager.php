@@ -12,10 +12,9 @@ abstract class UsersManager extends Manager {
 	const SALT_GENERATOR = 'return uniqid(mt_rand(), true);';
 
 	/**
-	 * Méthode permettant de récupérer l'id, le rôle et le statut
-	 * d'un utilisateur s'il existe avec les identifiants fournis
-	 * @param $pseudo string Le pseudonyme de l'utilisateur
-	 * @return array | bool
+	 * Méthode permettant de récupérer un membre selon son pseudonyme
+	 * @param $pseudo string Le pseudonyme du membre
+	 * @return User
 	 */
 	abstract public function getUsercUsingPseudo($pseudo);
 

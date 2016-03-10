@@ -61,4 +61,11 @@ abstract class NewsManager extends Manager {
 	 * @return News La news demandée
 	 */
 	abstract public function getNewscUsingId($id);
+
+	/**
+	 * Méthode permettant de récupérer la liste des news d'un membre
+	 * @param $user_id int L'id du membre dont on veut récupérer les news
+	 * @return array
+	 */
+	abstract public function getNewscUsingUsercIdSortByDateDesc_a($user_id);
 }

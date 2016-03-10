@@ -16,7 +16,7 @@ use \OCFram\Session;
 class NewsController extends BackController {
 	public function executeIndex() {
 		$nombre_news = $this->App->getConfig()->get('nombre_news');
-		$nombre_caracteres = $this->App->getConfig()->get('nombre_caracteres');
+		$nombre_caracteres = (int)$this->App->getConfig()->get('nombre_caracteres');
 
 		// On ajoute une définition pour le titre
 		$this->Page->addVar('title', 'Liste des ' . $nombre_news . ' dernières news');
@@ -31,8 +31,8 @@ class NewsController extends BackController {
 		$News_a = $Manager->getNewscSortByIdDesc_a(0, $nombre_news);
 		$news_url_a = [];
 
-		// On assigne aux news 200 caractères max
 		foreach ($News_a as $News) {
+			// On assigne aux news le nombre de caractères max
 			if (strlen($News->getContenu()) > $nombre_caracteres) {
 				$debut = substr($News->getContenu(), 0, $nombre_caracteres);
 				if (strrpos($debut, ' ') === false) {
@@ -50,7 +50,6 @@ class NewsController extends BackController {
 		// On envoie la liste des news à la vue ainsi que leur url
 		$this->Page->addVar('News_a', $News_a);
 		$this->Page->addVar('news_url_a', $news_url_a);
-
 	}
 
 	public function executeShow(HTTPRequest $Request) {
