@@ -39,6 +39,7 @@ use \OCFram\Session;
 					<li><a href=<?= $layout_route_a['admin_insert'] ?>>Ajouter une news</a></li>
 					<?php
 				endif; ?>
+				<li><a href=<?= $layout_route_a['profil'] ?>>Mon profil</a></li>
 				<li><a href=<?= $layout_route_a['logout'] ?>>Se déconnecter</a></li>
 				<?php
 			else: ?>

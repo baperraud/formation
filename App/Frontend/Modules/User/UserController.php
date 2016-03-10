@@ -80,7 +80,10 @@ class UserController extends BackController {
 	}
 
 	public function executeShow() {
+		$pseudo = $this->App->getHttpRequest()->getGetData('pseudo');
 
+		$this->Page->addVar('title', 'Profil de '. $pseudo);
+		$this->Page->addVar('pseudo', $pseudo);
 
 	}
 }

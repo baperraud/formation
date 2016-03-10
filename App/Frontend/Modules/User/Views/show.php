@@ -1,4 +1,16 @@
-<h2>Profil de XXX</h2>
+<?php
+use \OCFram\Session;
 
-<p>Bonjour, vous visitez actuellement la page de XXX.</p>
+/** @var string $pseudo */
+?>
+
+	<h2><?= Session::getAttribute('pseudo') == $pseudo ?
+			'Mon profil' : 'Profil de ' . $pseudo;
+		?></h2>
+
+	<p><?= Session::getAttribute('pseudo') == $pseudo ?
+			'Bienvenue sur votre page de profil !' : 'Vous visitez actuellement le profil de ' . $pseudo . '.';
+		?></p>
+
+<?php
 
