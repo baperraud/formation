@@ -2,8 +2,12 @@
 
 namespace App\Frontend\Modules\User;
 
+use \Entity\User;
+use \FormBuilder\UserFormBuilder;
 use \Model\UsersManager;
+use \OCFram\Application;
 use \OCFram\BackController;
+use \OCFram\FormHandler;
 use \OCFram\HTTPRequest;
 use \OCFram\Session;
 
@@ -77,13 +81,59 @@ class UserController extends BackController {
 
 			$this->App->getHttpResponse()->redirect('/');
 		}
+
+		Session::setFlash('Vous n\'êtes pas connecté !');
+		$this->App->getHttpResponse()->redirect('.');
 	}
 
 	public function executeShow() {
 		$pseudo = $this->App->getHttpRequest()->getGetData('pseudo');
 
-		$this->Page->addVar('title', 'Profil de '. $pseudo);
+		$this->Page->addVar('title', 'Profil de ' . $pseudo);
 		$this->Page->addVar('pseudo', $pseudo);
 
 	}
+
+	public function executeSignup(HTTPRequest $Request) {
+		// Si l'utilisateur est connecté
+		if (Session::isAuthenticated()) {
+			Session::setFlash('Vous êtes déjà connecté !');
+			$this->App->getHttpResponse()->redirect('.');
+		}
+
+		/** @var UsersManager $Manager */
+		// On récupère le manager des utilisateurs
+		$Manager = $this->Managers->getManagerOf('Users');
+
+		// Si le formulaire a été envoyé
+		if ($Request->getMethod() == 'POST') {
+			$User = new User([
+				'pseudonym' => $Request->getPostData('pseudonym'),
+				'password' => $Request->getPostData('password'),
+				'email' => $Request->getPostData('email')
+			]);
+		} else {
+			$User = new User;
+		}
+
+		$Form_builder = new UserFormBuilder($User);
+		$Form_builder->build();
+
+		$Form = $Form_builder->getForm();
+
+		// On récupère le gestionnaire de formulaire
+		$Form_handler = new FormHandler($Form, $Manager, $Request);
+
+		if ($Form_handler->process()) {
+			Session::setFlash('Votre compte a bien été créé !');
+			$login_route = Application::getRoute('Frontend', 'User', 'index');
+			$this->App->getHttpResponse()->redirect($login_route);
+		}
+
+		$this->Page->addVar('User', $User);
+		// On passe le formulaire généré à la vue
+		$this->Page->addVar('form', $Form->createView());
+		$this->Page->addVar('title', 'Création d\'un compte');
+	}
+
 }

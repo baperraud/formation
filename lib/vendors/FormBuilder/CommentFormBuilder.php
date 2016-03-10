@@ -19,7 +19,7 @@ class CommentFormBuilder extends FormBuilder {
 				'name' => 'pseudonym',
 				'max_length' => 50,
 				'Validator_a' => [
-					new MaxLengthValidator('L\'auteur spécifié est trop long (50 caractères maximum)', 50),
+					new MaxLengthValidator('Le pseudo spécifié est trop long (50 caractères maximum)', 50),
 					new NotNullValidator('Merci de spécifier votre pseudo'),
 				]
 			]))->add(new StringField([

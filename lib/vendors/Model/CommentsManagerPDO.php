@@ -55,7 +55,7 @@ class CommentsManagerPDO extends CommentsManager {
 
 	/**
 	 * Méthode permettant de modifier un commentaire
-	 * @param $Comment Comment Le commentaire à ajouter
+	 * @param $Comment Comment Le commentaire à modifier
 	 * @return void
 	 */
 	protected function updateCommentc(Comment $Comment) {

@@ -8,4 +8,5 @@
     <route url="/login\.html" module="User" action="index" ></route>
     <route url="/logout\.html" module="User" action="logout" ></route>
     <route url="/profil/(.+)" module="User" action="show" vars="pseudo"></route>
+    <route url="/signup\.html" module="User" action="signup" ></route>
 </routes>

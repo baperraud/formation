@@ -4,11 +4,12 @@ namespace OCFram;
 
 use \Model\CommentsManager;
 use \Model\NewsManager;
+use \Model\UsersManager;
 
 class FormHandler {
 	/** @var  Form */
 	protected $Form;
-	/** @var  NewsManager | CommentsManager */
+	/** @var  NewsManager | CommentsManager | UsersManager */
 	protected $Manager;
 	/** @var  HTTPRequest */
 	protected $Request;

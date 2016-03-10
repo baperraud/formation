@@ -19,7 +19,7 @@ class NewsManagerPDO extends NewsManager {
 
 	/**
 	 * Méthode permettant de modifier une news.
-	 * @param $News News La news à ajouter
+	 * @param $News News La news à modifier
 	 * @return void
 	 */
 	protected function updateNewsc(News $News) {

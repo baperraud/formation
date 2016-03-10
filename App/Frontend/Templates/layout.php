@@ -44,6 +44,7 @@ use \OCFram\Session;
 				<?php
 			else: ?>
 				<li><a href=<?= $layout_route_a['login'] ?>>Se connecter</a></li>
+				<li><a href=<?= $layout_route_a['signup'] ?>>S'inscrire</a></li>
 				<?php
 			endif; ?>
 		</ul>

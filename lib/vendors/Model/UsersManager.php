@@ -1,6 +1,7 @@
 <?php
 namespace Model;
 
+use \Entity\User;
 use \OCFram\Manager;
 
 abstract class UsersManager extends Manager {
@@ -16,4 +17,33 @@ abstract class UsersManager extends Manager {
 	 * @return array | bool
 	 */
 	abstract public function getUsercUsingPseudo($pseudo);
+
+	/**
+	 * Méthode permettant de créer un compte.
+	 * @param $User User Le membre à ajouter
+	 * @return void
+	 */
+	abstract protected function insertUserc(User $User);
+
+	/**
+	 * Méthode permettant de modifier un membre
+	 * @param $User User Le membre à modifier
+	 * @return void
+	 */
+	abstract protected function updateUserc(User $User);
+
+	/**
+	 * Méthode permettant d'enregistrer un membre
+	 * @param $User User Le membre à enregistrer
+	 * @see self::insertUserc(User $User)
+	 * @see self::updateUserc(User $User)
+	 * @return void
+	 */
+	public function save(User $User) {
+		if ($User->isValid()) {
+			$User->isNew() ? $this->insertUserc($User) : $this->updateUserc($User);
+		} else {
+			throw new \RuntimeException('L\'utilisateur doit être validé pour être enregistré');
+		}
+	}
 }

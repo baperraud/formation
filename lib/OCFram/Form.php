@@ -27,6 +27,8 @@ class Form {
 			$view .= $Field->buildWidget() . '<br />';
 		}
 
+		$view .= '<br />';
+
 		return $view;
 	}
 

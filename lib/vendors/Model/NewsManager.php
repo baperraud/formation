@@ -14,13 +14,13 @@ abstract class NewsManager extends Manager {
 
 	/**
 	 * Méthode permettant de modifier une news.
-	 * @param $News News La news à ajouter
+	 * @param $News News La news à modifier
 	 * @return void
 	 */
 	abstract protected function updateNewsc(News $News);
 
 	/**
-	 * Méthode permettant d'enreigster une news
+	 * Méthode permettant d'enregistrer une news
 	 * @param $News News La news à enregistrer
 	 * @see self::add()
 	 * @see self::modify()

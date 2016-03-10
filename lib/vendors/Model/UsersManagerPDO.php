@@ -1,6 +1,8 @@
 <?php
 namespace Model;
 
+use \Entity\User;
+
 class UsersManagerPDO extends UsersManager {
 	/**
 	 * Méthode permettant de récupérer l'id, le rôle et le statut
@@ -20,5 +22,23 @@ class UsersManagerPDO extends UsersManager {
 		$select_query_result->execute();
 
 		return $select_query_result->fetch(\PDO::FETCH_ASSOC);
+	}
+
+	/**
+	 * Méthode permettant de créer un compte.
+	 * @param $User User Le membre à ajouter
+	 * @return void
+	 */
+	protected function insertUserc(User $User) {
+		var_dump($User); die();
+	}
+
+	/**
+	 * Méthode permettant de modifier un membre
+	 * @param $User User Le membre à modifier
+	 * @return void
+	 */
+	protected function updateUserc(User $User) {
+		// TODO: implement method
 	}
 }
