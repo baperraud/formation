@@ -37,8 +37,8 @@ This part consist to add a functionnality for ask a route for a Controller and a
     * S'inscrire en tant qu'Auteur (pseudo, email et password). OK
     * Poster un commentaire en saisissant sont pseudo (et son email : nullable) OK
   * Un utilisateur connecté peut donc :
-    * Créer une news. *En cours*
-    * Éditer/supprimer ses news. *En cours*
+    * Créer une news. OK
+    * Éditer/supprimer ses news. OK
     * Poster un commentaire qui sera automatiquement associé à son compte utilisateur (il ne rentrera donc ni pseudo ni email). OK
   * Un administrateur connecté peut donc :
     * Faire tout ce que peut faire un utilisateurs connecté ( il y a donc héritage de droits)
