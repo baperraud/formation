@@ -216,4 +216,23 @@ class CommentsManagerPDO extends CommentsManager {
 
 		return $email_a;
 	}
+
+	/**
+	 * Méthode permettant de récupérer l'id de l'auteur d'un commentaire
+	 * @param $comment_id int L'id du commentaire
+	 * @return int Renvoie 0 si l'auteur n'est pas inscrit
+	 */
+	public function getUsercIdUsingCommentcId($comment_id) {
+		$select_query = '
+			SELECT NCC_fk_NUC
+			FROM T_NEW_commentc
+			WHERE NCC_id = :id';
+
+		/** @var \PDOStatement $select_query_result */
+		$select_query_result = $this->Dao->prepare($select_query);
+		$select_query_result->bindValue(':id', (int)$comment_id, \PDO::PARAM_INT);
+		$select_query_result->execute();
+
+		return ($user_id = $select_query_result->fetchColumn()) ? (int)$user_id : 0;
+	}
 }

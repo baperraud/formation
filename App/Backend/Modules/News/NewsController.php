@@ -16,6 +16,7 @@ use \OCFram\Session;
 class NewsController extends BackController {
 	public function executeIndex() {
 		// TODO: Ajouter les liens vers les auteurs et les news
+		// TODO: Ajouter le tableau de la liste des membres
 
 		// On ajoute une définition pour le titre
 		$this->Page->addVar('title', 'Gestion des news');

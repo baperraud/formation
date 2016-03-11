@@ -12,6 +12,6 @@
     <route url="/device\.html" module="Device" action="index" ></route>
     <route url="/login\.html" module="User" action="index" ></route>
     <route url="/logout\.html" module="User" action="logout" ></route>
-    <route url="/profil/(.+)" module="User" action="show" vars="pseudo"></route>
+    <route url="/membre-([0-9]+)\.html" module="User" action="show" vars="id"></route>
     <route url="/signup\.html" module="User" action="signup" ></route>
 </routes>

@@ -55,14 +55,17 @@ class NewsController extends BackController {
 		$this->Page->addVar('news_url_a', $news_url_a);
 	}
 
+	/**
+	 * Action permettant d'afficher une news et les commentaires associés
+	 * @param $Request HTTPRequest La requête de l'utilisateur
+	 */
 	public function executeShow(HTTPRequest $Request) {
-		/** @var NewsManager $Manager */
-		// On récupère le manager des news
-		$Manager = $this->Managers->getManagerOf('News');
 
 		// On récupère la news de la requête
+		/** @var NewsManager $NewsManager */
+		$NewsManager = $this->Managers->getManagerOf('News');
 		/** @var News $News */
-		$News = $Manager->getNewscUsingId($Request->getGetData('id'));
+		$News = $NewsManager->getNewscUsingId($Request->getGetData('id'));
 
 		if (empty($News)) {
 			$this->App->getHttpResponse()->redirect404();
@@ -72,25 +75,40 @@ class NewsController extends BackController {
 		$this->Page->addVar('title', $News->getTitre());
 		$this->Page->addVar('News', $News);
 
-		// On envoie les commentaires associés également
-		/** @var CommentsManager $Manager */
-		$Manager = $this->Managers->getManagerOf('Comments');
+		// On récupère l'id de l'auteur de la news
+		$user_id = $NewsManager->getUsercIdUsingNewscId($News->getId());
+		if (!empty($user_id)) $this->Page->addVar('user_id', $user_id);
+		else throw new \RuntimeException('Erreur de récupération de l\'auteur de la news');
+		$this->Page->addVar('user_id', $user_id);
+
+		// On récupère les commentaires associés également
+		/** @var CommentsManager $CommentsManager */
+		$CommentsManager = $this->Managers->getManagerOf('Comments');
 		/** @var Comment[] $Comment_a */
-		$Comment_a = $Manager->getCommentcUsingNewscIdSortByDateDesc_a($News->getId());
+		$Comment_a = $CommentsManager->getCommentcUsingNewscIdSortByDateDesc_a($News->getId());
+
 		$this->Page->addVar('Comment_a', $Comment_a);
 
 		// On récupère les routes de modification/suppression de commentaires
+		// ainsi que les id des auteurs des commentaires
 		// puis on les envoie à la vue
 		$comment_update_url_a = [];
 		$comment_delete_url_a = [];
+		$comment_user_url_a = [];
 
 		foreach ($Comment_a as $Comment) {
 			$comment_update_url_a[$Comment->getId()] = Application::getRoute('Backend', $this->getModule(), 'updateComment', array($Comment['id']));
 			$comment_delete_url_a[$Comment->getId()] = Application::getRoute('Backend', $this->getModule(), 'deleteComment', array($Comment['id']));
+			$user_id = $CommentsManager->getUsercIdUsingCommentcId($Comment->getId());
+			if (!empty($user_id))
+				$comment_user_url_a[$Comment->getId()] = Application::getRoute('Frontend', 'User', 'show', array($user_id));
+			else
+				$comment_user_url_a[$Comment->getId()] = NULL;
 		}
 
 		$this->Page->addVar('comment_update_url_a', $comment_update_url_a);
 		$this->Page->addVar('comment_delete_url_a', $comment_delete_url_a);
+		$this->Page->addVar('comment_user_url_a', $comment_user_url_a);
 
 		// On envoie le lien pour commenter la news
 		$comment_news_url = Application::getRoute($this->App->getName(), $this->getModule(), 'insertComment', array($News['id']));

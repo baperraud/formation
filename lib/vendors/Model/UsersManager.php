@@ -19,6 +19,13 @@ abstract class UsersManager extends Manager {
 	abstract public function getUsercUsingPseudo($pseudo);
 
 	/**
+	 * Méthode permettant de récupérer un membre en BDD
+	 * @param $id int L'id du membre
+	 * @return User
+	 */
+	abstract public function getUsercUsingId($id);
+
+	/**
 	 * Méthode renvoyant un boolean selon l'existence d'un membre en BDD
 	 * @param $pseudo string Le pseudonyme du membre cherché
 	 * @return boolean

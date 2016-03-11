@@ -15,8 +15,6 @@ use \OCFram\FormHandler;
 use \OCFram\HTTPRequest;
 use \OCFram\Session;
 
-// TODO: Confirmation de password
-
 class UserController extends BackController {
 
 	public function executeIndex(HTTPRequest $Request) {
@@ -101,27 +99,25 @@ class UserController extends BackController {
 	/**
 	 * Action permettant d'afficher le profil d'un membre
 	 * avec les news et commentaires qu'il a postés
+	 * @param $Request HTTPRequest La requête de l'utilisateur
 	 */
-	public function executeShow() {
-		// TODO: Vérifier que l'utilisateur existe bien avant d'afficher la page
+	public function executeShow(HTTPRequest $Request) {
+
+		// On vérifie que le membre existe bien
+		/** @var UsersManager $UsersManager */
+		$UsersManager = $this->Managers->getManagerOf('Users');
+		/** @var User $User */
+		$User = $UsersManager->getUsercUsingId($Request->getGetData('id'));
+		if (empty($User)) {
+			$this->App->getHttpResponse()->redirect404();
+		}
 
 		$nombre_caracteres = (int)$this->App->getConfig()->get('nombre_caracteres');
 
-		$pseudo = urldecode($this->App->getHttpRequest()->getGetData('pseudo'));
 
-		// On commence par récupérer les informations du membre
-		/** @var UsersManager $UsersManager */
-
-		$UsersManager = $this->Managers->getManagerOf('Users');
-		/** @var User $User */
-		// TODO: Utiliser des ids pour les requêtes
-		// TODO: ne pas injecter dans la vue directement des données en provenance des formulaires
-		$User = $UsersManager->getUsercUsingPseudo($pseudo);
-
-		// On passe le pseudo du membre à la vue
-		$this->Page->addVar('title', 'Profil de ' . $pseudo);
-		$this->Page->addVar('pseudo', $pseudo);
-
+		// On passe le membre à la vue
+		$this->Page->addVar('title', 'Profil de ' . $User->getPseudonym());
+		$this->Page->addVar('User', $User);
 
 		/*
 		 * Récupération des news du membre

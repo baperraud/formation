@@ -68,4 +68,11 @@ abstract class NewsManager extends Manager {
 	 * @return array
 	 */
 	abstract public function getNewscUsingUsercIdSortByDateDesc_a($user_id);
+
+	/**
+	 * Méthode permettant de récupérer l'id de l'auteur d'une news
+	 * @param $news_id int L'id de la news considérée
+	 * @return int Renvoie 0 en cas d'erreur
+	 */
+	abstract public function getUsercIdUsingNewscId($news_id);
 }

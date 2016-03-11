@@ -5,6 +5,32 @@ use \Entity\User;
 
 class UsersManagerPDO extends UsersManager {
 	/**
+	 * Méthode permettant de récupérer un membre en BDD
+	 * @param $id int L'id du membre
+	 * @return User
+	 */
+	public function getUsercUsingId($id) {
+		$select_query = '
+			SELECT NUC_id id, NUC_fk_NUY role, NUC_fk_NUE etat, NUC_pseudonym pseudonym, NUC_password password, NUC_salt salt, NUC_email email
+			FROM T_NEW_userc
+			WHERE NUC_id = :id';
+
+		/** @var \PDOStatement $select_query_result */
+		$select_query_result = $this->Dao->prepare($select_query);
+		$select_query_result->bindValue(':id', $id);
+		$select_query_result->execute();
+
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$select_query_result->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\User');
+
+		if ($User = $select_query_result->fetch()) {
+			return $User;
+		}
+
+		return NULL;
+	}
+
+	/**
 	 * Méthode permettant de récupérer un membre selon son pseudonyme
 	 * @param $pseudo string Le pseudonyme du membre
 	 * @return User

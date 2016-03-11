@@ -162,4 +162,23 @@ class NewsManagerPDO extends NewsManager {
 
 		return $News_a;
 	}
+
+	/**
+	 * Méthode permettant de récupérer l'id de l'auteur d'une news
+	 * @param $news_id int L'id de la news considérée
+	 * @return int
+	 */
+	public function getUsercIdUsingNewscId($news_id) {
+		$select_query = '
+			SELECT NNC_fk_NUC
+			FROM T_NEW_newsc
+			WHERE NNC_id = :id';
+
+		/** @var \PDOStatement $select_query_result */
+		$select_query_result = $this->Dao->prepare($select_query);
+		$select_query_result->bindValue(':id', (int)$news_id, \PDO::PARAM_INT);
+		$select_query_result->execute();
+
+		return ($user_id = $select_query_result->fetchColumn()) ? (int)$user_id : 0;
+	}
 }

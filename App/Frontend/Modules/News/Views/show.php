@@ -5,6 +5,8 @@
  * @var array $comment_news_url
  * @var array $comment_update_url_a
  * @var array $comment_delete_url_a
+ * @var array $comment_user_url_a
+ * @var int $user_id
  */
 
 use \OCFram\Application;
@@ -12,8 +14,8 @@ use \OCFram\Session;
 ?>
 
 	<p>Par <em>
-			<?php
-			$user_profil_url = Application::getRoute('Frontend', 'User', 'show', array($News['auteur']));
+			<?php //TODO : modifier cette url, la rattacher au controleur en amont
+			$user_profil_url = Application::getRoute('Frontend', 'User', 'show', array($user_id));
 			echo '<a href="', $user_profil_url ,'">', htmlspecialchars($News['auteur']) ,'</a>';
 			?></em>, le <?= $News['Date_ajout']->format('d/m/Y à H\hi') ?></p>
 
@@ -39,9 +41,8 @@ if (empty($Comment_a)): ?>
 				Posté par <strong>
 					<?php
 					// Si l'auteur du commentaire est un membre
-					if ((int)$Comment['owner_type'] === 1) {
-						$user_profil_url = Application::getRoute('Frontend', 'User', 'show', array($Comment['pseudonym']));
-						echo '<a href=', $user_profil_url ,'>', htmlspecialchars($Comment['pseudonym']), '</a>';
+					if (!empty($comment_user_url_a[$Comment['id']])) {
+						echo '<a href=', $comment_user_url_a[$Comment['id']] ,'>', htmlspecialchars($Comment['pseudonym']), '</a>';
 					} else {
 						echo htmlspecialchars($Comment['pseudonym']), ' (visiteur)';
 					}
@@ -53,7 +54,7 @@ if (empty($Comment_a)): ?>
 					<a href=<?= $comment_delete_url_a[$Comment['id']] ?>>Supprimer</a>
 				<?php endif; ?>
 			</legend>
-			<p class="overflow_hidden"><?= nl2br(htmlspecialchars($Comment['contenu'])) ?></p>
+			<p class="overflow_hidden"><?= htmlspecialchars($Comment['contenu']) ?></p>
 		</fieldset>
 		<?php
 	endforeach;

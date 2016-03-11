@@ -81,4 +81,11 @@ abstract class CommentsManager extends Manager {
 	 * @return int
 	 */
 	abstract public function getNewsIdUsingCommentcId($comment_id);
+
+	/**
+	 * Méthode permettant de récupérer l'id de l'auteur d'un commentaire
+	 * @param $comment_id int L'id du commentaire
+	 * @return int Renvoie 0 si l'auteur n'est pas inscrit
+	 */
+	abstract public function getUsercIdUsingCommentcId($comment_id);
 }
