@@ -104,10 +104,6 @@ class CommentsManagerPDO extends CommentsManager {
 	 * @return array
 	 */
 	public function getCommentcUsingNewscIdSortByDateDesc_a($news_id) {
-		if (!ctype_digit($news_id)) {
-			throw new \InvalidArgumentException('L\'identifiant de la news passée doit être un entier valide');
-		}
-
 		$select_query = '
 			SELECT NCC_id id, NCC_fk_NNC news, NCC_author pseudonym, NCC_email email, NCC_content contenu, NCC_date Date, 2 owner_type
 			FROM T_NEW_commentc

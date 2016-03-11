@@ -23,19 +23,28 @@ use \OCFram\Session;
 			'Bienvenue sur votre page de profil !' : 'Vous visitez actuellement le profil de ' . $User['pseudonym'] . '.';
 		?></p>
 
+<?php
+if (empty($News_a)): ?>
+	<p>Aucune news n'a encore été saisie !</p>
+<?php else: ?>
+
 	<h3><?= Session::getAttribute('pseudo') == $User['pseudonym'] ?
 			'Voici la liste des news que vous avez postées :' : 'Liste des news postées par ce membre :';
 		?></h3>
 
 	<table id="news_user_view">
 		<tr>
-			<th>Titre</th><th>Contenu</th><th>Date d'ajout</th><th>Dernière modification</th><?= Session::getAttribute('pseudo') == $User['pseudonym'] ? '<th>Action</th>' : '' ?>
+			<th>Titre</th>
+			<th>Contenu</th>
+			<th>Date d'ajout</th>
+			<th>Dernière modification
+			</th><?= Session::getAttribute('pseudo') == $User['pseudonym'] ? '<th>Action</th>' : '' ?>
 
 			<?php /** @var \Entity\News[] $News_a */
 			foreach ($News_a as $News) {
 				echo '
 				<tr>
-					<td><a href=', $news_url_a[$News['id']] ,'>', htmlspecialchars($News['titre']), '</a></td>
+					<td><a href=', $news_url_a[$News['id']], '>', htmlspecialchars($News['titre']), '</a></td>
 					<td>', htmlspecialchars($News['contenu']), '</td>
 					<td>', $News['Date_ajout']->format('d/m/Y à H\hi'), '</td>
 					<td>', ($News['Date_ajout'] == $News['Date_modif'] ? '-' : 'le ' . $News['Date_modif']->format('d/m/Y à H\hi')), '</td>';
@@ -50,19 +59,26 @@ use \OCFram\Session;
 		</tr>
 	</table>
 
+<?php endif;
+if (empty($Comment_a)): ?>
+	<p>Aucun commentaire n'a encore été saisi !</p>
+<?php else:
+	?>
+
 	<h3><?= Session::getAttribute('pseudo') == $User['pseudonym'] ?
 			'Voici la liste des commentaires que vous avez postés :' : 'Liste des commentaires postés par ce membre :';
 		?></h3>
 
 	<table id="comments_user_view">
 		<tr>
-			<th>Contenu</th><th>Date</th><?= Session::getAttribute('pseudo') == $User['pseudonym'] ? '<th>Action</th>' : '' ?>
+			<th>Contenu</th>
+			<th>Date</th><?= Session::getAttribute('pseudo') == $User['pseudonym'] ? '<th>Action</th>' : '' ?>
 
 			<?php
 			foreach ($Comment_a as $Comment) {
 				echo '
 				<tr>
-					<td><a href=', $comment_news_url_a[$Comment['id']], '#' , 'commentaire-'.$Comment['id'] ,'>', htmlspecialchars($Comment['contenu']), '</a></td>
+					<td><a href=', $comment_news_url_a[$Comment['id']], '#', 'commentaire-' . $Comment['id'], '>', htmlspecialchars($Comment['contenu']), '</a></td>
 					<td>', $Comment['Date']->format('d/m/Y à H\hi'), '</td>';
 
 				if (Session::getAttribute('pseudo') == $User['pseudonym']) {
@@ -75,5 +91,4 @@ use \OCFram\Session;
 		</tr>
 	</table>
 
-<?php
-
+<?php endif;
