@@ -10,6 +10,7 @@ abstract class Field {
 	protected $label;
 	protected $name;
 	protected $value;
+	protected $required;
 	/** @var Validator[] $Validator_a */
 	protected $Validator_a = [];
 
@@ -38,7 +39,12 @@ abstract class Field {
 	public function getLabel() { return $this->label; }
 	public function getName() { return $this->name; }
 	public function getValue() { return $this->value; }
+	public function getRequired() { return $this->required; }
 	public function getValidator_a() { return $this->Validator_a; }
+
+	public function isRequired() {
+		return empty($this->required) ? false : $this->required;
+	}
 
 	public function setLabel($label) {
 		if (is_string($label)) {
@@ -54,6 +60,11 @@ abstract class Field {
 		if (is_string($value)) {
 			$this->value = $value;
 		}
+	}
+	public function setRequired($required = true) {
+		if (is_bool($required)) {
+			$this->required = $required;
+		} else throw new \InvalidArgumentException('Require doit être de type boolean');
 	}
 	public function setValidator_a(array $Validator_a) {
 		foreach ($Validator_a as $Validator) {

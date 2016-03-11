@@ -19,6 +19,7 @@ class UserFormBuilder extends FormBuilder {
 		$this->Form->add(new StringField([
 			'label' => 'Pseudo',
 			'name' => 'pseudonym',
+			'required' => true,
 			'max_length' => 50,
 			'Validator_a' => [
 				new MaxLengthValidator('Le pseudo spécifié est trop long (50 caractères maximum)', 50),
@@ -29,6 +30,7 @@ class UserFormBuilder extends FormBuilder {
 		]))->add(new StringField([
 			'label' => 'E-mail',
 			'name' => 'email',
+			'required' => true,
 			'max_length' => 50,
 			'type' => 'email',
 			'Validator_a' => [
@@ -39,6 +41,7 @@ class UserFormBuilder extends FormBuilder {
 		]))->add($password_origin = new StringField([
 			'label' => 'Mot de passe',
 			'name' => 'password',
+			'required' => true,
 			'max_length' => 100,
 			'type' => 'password',
 			'Validator_a' => [
@@ -49,6 +52,7 @@ class UserFormBuilder extends FormBuilder {
 		]))->add(new StringField([
 			'label' => 'Confirmation du mot de passe',
 			'name' => 'password_confirmation',
+			'required' => true,
 			'max_length' => 100,
 			'type' => 'password',
 			'Validator_a' => [

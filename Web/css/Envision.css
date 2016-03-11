@@ -502,3 +502,8 @@ table#comments_user_view td {
 fieldset {
 	min-width: 0;
 }
+
+.required:after {
+	color: red;
+	content: " *";
+}

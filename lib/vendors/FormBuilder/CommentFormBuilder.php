@@ -21,6 +21,7 @@ class CommentFormBuilder extends FormBuilder {
 				'label' => 'Pseudo',
 				'name' => 'pseudonym',
 				'max_length' => 50,
+				'required' => true,
 				'Validator_a' => [
 					new MaxLengthValidator('Le pseudo spécifié est trop long (50 caractères maximum)', 50),
 					new NotNullValidator('Merci de spécifier votre pseudo'),
@@ -42,6 +43,7 @@ class CommentFormBuilder extends FormBuilder {
 		$this->Form->add(new TextField([
 			'label' => 'Contenu',
 			'name' => 'contenu',
+			'required' => true,
 			'rows' => 7,
 			'cols' => 50,
 			'Validator_a' => [

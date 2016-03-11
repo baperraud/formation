@@ -13,7 +13,7 @@ class StringField extends Field {
 			$widget .= $this->error_message . '<br />';
 		}
 
-		$widget .= '<label>' . $this->label . '</label><input type="' . $this->type . '" name="' . $this->name . '"';
+		$widget .= '<label ' . ($this->isRequired() ? 'class="required"' : '') . ' for="' . $this->name . '">' . $this->label . '</label><input type="' . $this->type . '" name="' . $this->name . '" id="' . $this->name . '"';
 
 		if (!empty($this->value)) {
 			$widget .= ' value="' . htmlspecialchars($this->value) . '"';
@@ -21,6 +21,10 @@ class StringField extends Field {
 
 		if (!empty($this->max_length)) {
 			$widget .= ' maxlength="' . $this->max_length . '"';
+		}
+
+		if ($this->isRequired()) {
+			$widget .= ' required';
 		}
 
 		$widget .= ' />';
