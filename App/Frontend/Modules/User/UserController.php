@@ -199,6 +199,10 @@ class UserController extends BackController {
 		$this->Page->addVar('comment_delete_url_a', $comment_delete_url_a);
 	}
 
+	/**
+	 * Méthode permettant d'inscrire un nouveau membre
+	 * @param $Request HTTPRequest La requête de l'utilisateur
+	 */
 	public function executeSignup(HTTPRequest $Request) {
 		// Si l'utilisateur est connecté
 		if (Session::isAuthenticated()) {
@@ -206,9 +210,9 @@ class UserController extends BackController {
 			$this->App->getHttpResponse()->redirect('.');
 		}
 
-		/** @var UsersManager $Manager */
+		/** @var UsersManager $UsersManager */
 		// On récupère le manager des utilisateurs
-		$Manager = $this->Managers->getManagerOf('Users');
+		$UsersManager = $this->Managers->getManagerOf('Users');
 
 		// Si le formulaire a été envoyé
 		if ($Request->getMethod() == 'POST') {
@@ -228,12 +232,22 @@ class UserController extends BackController {
 		$Form = $Form_builder->getForm();
 
 		// On récupère le gestionnaire de formulaire
-		$Form_handler = new FormHandler($Form, $Manager, $Request);
+		$Form_handler = new FormHandler($Form, $UsersManager, $Request);
 
 		if ($Form_handler->process()) {
 			Session::setFlash('Votre compte a bien été créé !');
-			$login_route = Application::getRoute('Frontend', 'User', 'index');
-			$this->App->getHttpResponse()->redirect($login_route);
+
+			// On connecte automatiquement le membre puis l'on redirige vers son profil
+			Session::setAuthenticated(true);
+			Session::setAttribute('pseudo', $User->getPseudonym());
+			Session::setAttribute('id', (int)$User->getId());
+
+			Session::setFlash('Inscription réussie !');
+
+
+			//$login_route = Application::getRoute('Frontend', 'User', 'index');
+			//$this->App->getHttpResponse()->redirect($login_route);
+			$this->App->getHttpResponse()->redirect('/');
 		}
 
 		$this->Page->addVar('User', $User);

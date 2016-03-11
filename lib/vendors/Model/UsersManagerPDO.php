@@ -91,6 +91,8 @@ class UsersManagerPDO extends UsersManager {
 		$insert_query_result->bindValue(':etat', self::COMPTE_ACTIF);
 		$insert_query_result->bindValue(':role', self::ROLE_USER);
 		$insert_query_result->execute();
+
+		$User->setId($this->Dao->lastInsertId());
 	}
 
 	/**
