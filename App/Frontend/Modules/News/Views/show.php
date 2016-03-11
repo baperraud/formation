@@ -6,18 +6,14 @@
  * @var array $comment_update_url_a
  * @var array $comment_delete_url_a
  * @var array $comment_user_url_a
- * @var int $user_id
+ * @var string $news_user_url
  */
 
 use \OCFram\Application;
 use \OCFram\Session;
 ?>
 
-	<p>Par <em>
-			<?php //TODO : modifier cette url, la rattacher au controleur en amont
-			$user_profil_url = Application::getRoute('Frontend', 'User', 'show', array($user_id));
-			echo '<a href="', $user_profil_url ,'">', htmlspecialchars($News['auteur']) ,'</a>';
-			?></em>, le <?= $News['Date_ajout']->format('d/m/Y à H\hi') ?></p>
+	<p>Par <em><a href="<?= $news_user_url ?>"><?= htmlspecialchars($News['auteur']) ?></a></em>, le <?= $News['Date_ajout']->format('d/m/Y à H\hi') ?></p>
 
 	<h2 class="overflow_hidden"><?= htmlspecialchars($News['titre']) ?></h2>
 
@@ -48,7 +44,8 @@ if (empty($Comment_a)): ?>
 					}
 					?></strong>
 				le <?= $Comment['Date']->format('d/m/Y à H\hi') ?>
-				<?php if (Session::isAuthenticated() && Session::isAdmin()
+				<?php if (Session::isAdmin()
+					|| $Comment['pseudonym'] === Session::getAttribute('pseudo')
 				): ?> -
 					<a href=<?= $comment_update_url_a[$Comment['id']] ?>>Modifier</a> |
 					<a href=<?= $comment_delete_url_a[$Comment['id']] ?>>Supprimer</a>

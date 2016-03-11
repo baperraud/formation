@@ -108,42 +108,6 @@ class NewsController extends BackController {
 			$this->Page->addVar('form', $Form->createView());
 		}
 
-	public function executeUpdateComment(HTTPRequest $Request) {
-		$this->Page->addVar('title', 'Modification d\'un commentaire');
-
-		// On récupère le manager des commentaires
-		/** @var CommentsManager $Manager */
-		$Manager = $this->Managers->getManagerOf('Comments');
-
-		if ($Request->getMethod() == 'POST') {
-			$Comment = new Comment([
-				'id' => $Request->getGetData('id'),
-				'pseudonym' => $Request->getPostData('pseudonym'),
-				'contenu' => $Request->getPostData('contenu')
-			]);
-		} else {
-			$Comment = $Manager->getCommentcUsingCommentcId($Request->getGetData('id'));
-		}
-
-		$Form_builder = new CommentFormBuilder($Comment);
-		$Form_builder->build();
-
-		$Form = $Form_builder->getForm();
-
-		// On récupère le gestionnaire de formulaire
-		$Form_handler = new FormHandler($Form, $Manager, $Request);
-
-		if ($Form_handler->process()) {
-			Session::setFlash('Le commentaire a bien été modifié');
-
-			$Comment->setNews($Manager->getNewsIdUsingCommentcId($Comment->getId()));
-
-			$this->App->getHttpResponse()->redirect('/news-' . $Comment->getNews() . '.html');
-		}
-
-		$this->Page->addVar('form', $Form->createView());
-	}
-
 	public function executeDeleteComment(HTTPRequest $Request) {
 		// On récupère le manager des commentaires
 		/** @var CommentsManager $Manager */
