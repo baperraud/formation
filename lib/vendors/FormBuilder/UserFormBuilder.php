@@ -7,7 +7,8 @@ use OCFram\IsEmailValidator;
 use OCFram\MaxLengthValidator;
 use OCFram\NotNullValidator;
 use OCFram\StringField;
-use OCFram\TextField;
+use OCFram\PseudoAvailableValidator;
+use OCFram\EmailAvailableValidator;
 
 class UserFormBuilder extends FormBuilder {
 	public function build() {
@@ -17,7 +18,8 @@ class UserFormBuilder extends FormBuilder {
 			'max_length' => 50,
 			'Validator_a' => [
 				new MaxLengthValidator('Le pseudo spécifié est trop long (50 caractères maximum)', 50),
-				new NotNullValidator('Merci de spécifier votre pseudo')
+				new NotNullValidator('Merci de spécifier votre pseudo'),
+				new PseudoAvailableValidator('Erreur : le pseudo est déjà pris')
 			]
 		]))->add(new StringField([
 			'label' => 'E-mail',
@@ -26,6 +28,7 @@ class UserFormBuilder extends FormBuilder {
 			'type' => 'email',
 			'Validator_a' => [
 				new IsEmailValidator('Merci de renseigner un email valide'),
+				new EmailAvailableValidator('Erreur : l\'email est déjà pris'),
 				new NotNullValidator('Merci de spécifier votre email')
 			]
 		]))->add(new StringField([

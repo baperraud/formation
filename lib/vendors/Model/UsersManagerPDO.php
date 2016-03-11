@@ -31,6 +31,44 @@ class UsersManagerPDO extends UsersManager {
 	}
 
 	/**
+	 * Méthode renvoyant un boolean selon l'existance d'un membre en BDD
+	 * @param $pseudo string Le pseudonyme du membre cherché
+	 * @return boolean
+	 */
+	public function existsUsercUsingPseudonym($pseudo) {
+		$select_query = '
+			SELECT NUC_id
+			FROM T_NEW_userc
+			WHERE NUC_pseudonym = :pseudonym';
+
+		/** @var \PDOStatement $select_query_result */
+		$select_query_result = $this->Dao->prepare($select_query);
+		$select_query_result->bindValue(':pseudonym', $pseudo);
+		$select_query_result->execute();
+
+		return $select_query_result->fetch() ? true : false;
+	}
+
+	/**
+	 * Méthode renvoyant un boolean selon l'existence d'un membre en BDD
+	 * @param $email string L'email du membre cherché
+	 * @return boolean
+	 */
+	public function existsUsercUsingEmail($email) {
+		$select_query = '
+			SELECT NUC_id
+			FROM T_NEW_userc
+			WHERE NUC_email = :email';
+
+		/** @var \PDOStatement $select_query_result */
+		$select_query_result = $this->Dao->prepare($select_query);
+		$select_query_result->bindValue(':email', $email);
+		$select_query_result->execute();
+
+		return $select_query_result->fetch() ? true : false;
+	}
+
+	/**
 	 * Méthode permettant de créer un compte.
 	 * @param $User User Le membre à ajouter
 	 * @return void
