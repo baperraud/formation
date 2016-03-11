@@ -99,8 +99,6 @@ class NewsController extends BackController {
 	}
 
 	public function executeInsertComment(HTTPRequest $Request) {
-		// TODO: Interdire que l'on puisse poster un commentaire en tant que visiteur avec le pseudo d'un compte existant
-
 		/** @var CommentsManager $Manager */
 		// On récupère le manager des commentaires
 		$Manager = $this->Managers->getManagerOf('Comments');

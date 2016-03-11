@@ -217,6 +217,7 @@ class UserController extends BackController {
 			$User = new User([
 				'pseudonym' => $Request->getPostData('pseudonym'),
 				'password' => $Request->getPostData('password'),
+				'password_confirmation' => $Request->getPostData('password_confirmation'),
 				'email' => $Request->getPostData('email'),
 				'is_new' => true,
 			]);

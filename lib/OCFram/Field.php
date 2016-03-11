@@ -21,6 +21,9 @@ abstract class Field {
 
 	abstract public function buildWidget();
 
+	/**
+	 * Méthode permettant de vérifier que le champ est valide
+	 */
 	public function isValid() {
 		foreach ($this->Validator_a as $Validator) {
 			if (!$Validator->isValid($this->value)) {

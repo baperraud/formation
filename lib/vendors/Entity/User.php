@@ -6,12 +6,13 @@ use OCFram\Entity;
 class User extends Entity {
 	protected $pseudonym;
 	protected $password;
+	protected $password_confirmation;
 	protected $salt;
 	protected $email;
 	protected $role;
 	protected $etat;
 
-	const PSEUDO_INVALIDE = 1, PASSWORD_INVALIDE = 2, EMAIL_INVALIDE = 3;
+	const PSEUDO_INVALIDE = 1, PASSWORD_INVALIDE = 2, EMAIL_INVALIDE = 3, PASSWORD_CONFIRMATION_INVALIDE = 4;
 
 	public function isValid() {
 		return !(empty($this->pseudonym) || empty($this->password) || empty($this->email));
@@ -35,6 +36,12 @@ class User extends Entity {
 		}
 		$this->password = $password;
 	}
+	public function setPassword_confirmation($password_confirmation) {
+		if (!is_string($password_confirmation) || empty($password_confirmation)) {
+			$this->password_confirmation = self::PASSWORD_CONFIRMATION_INVALIDE;
+		}
+		$this->password_confirmation = $password_confirmation;
+	}
 	public function setEmail($email) {
 		if (!is_string($email) || empty($email)) {
 			$this->email = self::EMAIL_INVALIDE;
@@ -56,6 +63,7 @@ class User extends Entity {
 
 	public function getPseudonym() { return $this->pseudonym; }
 	public function getPassword() { return $this->password; }
+	public function getPassword_confirmation() { return $this->password_confirmation; }
 	public function getSalt() { return $this->salt; }
 	public function getEmail() { return $this->email; }
 	public function getRole() { return (int)$this->role; }

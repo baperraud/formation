@@ -10,6 +10,7 @@ use OCFram\StringField;
 use OCFram\PseudoAvailableValidator;
 use OCFram\EmailAvailableValidator;
 use OCFram\NoSpaceValidator;
+use OCFram\SimilarCheckValidator;
 
 // TODO: Factoriser en un param par défaut les messages d'erreur des validateurs
 
@@ -35,7 +36,7 @@ class UserFormBuilder extends FormBuilder {
 				new EmailAvailableValidator('Erreur : l\'email est déjà pris'),
 				new NotNullValidator('Merci de spécifier votre email')
 			]
-		]))->add(new StringField([
+		]))->add($password_origin = new StringField([
 			'label' => 'Mot de passe',
 			'name' => 'password',
 			'max_length' => 100,
@@ -44,6 +45,14 @@ class UserFormBuilder extends FormBuilder {
 				new MaxLengthValidator('Le mot de passe spécifié est trop long (100 caractères maximum)', 50),
 				new NotNullValidator('Merci de spécifier votre mot de passe'),
 				new NoSpaceValidator('Veuillez ne pas utiliser le caractère d\'espacement')
+			]
+		]))->add(new StringField([
+			'label' => 'Confirmation du mot de passe',
+			'name' => 'password_confirmation',
+			'max_length' => 100,
+			'type' => 'password',
+			'Validator_a' => [
+				new SimilarCheckValidator('Les mots de passe doivent être identiquement saisis', $password_origin)
 			]
 		]));
 	}
