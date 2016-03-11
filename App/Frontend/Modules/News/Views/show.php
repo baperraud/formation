@@ -34,7 +34,7 @@ if (empty($Comment_a)): ?>
 	<p>Aucun commentaire n'a encore été posté. Soyez le premier à en laisser un !</p>
 <?php else:
 	foreach ($Comment_a as $Comment): ?>
-		<fieldset>
+		<fieldset id="<?= 'commentaire-'.$Comment['id'] ?>">
 			<legend>
 				Posté par <strong>
 					<?php

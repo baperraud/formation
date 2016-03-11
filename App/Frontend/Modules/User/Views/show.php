@@ -61,7 +61,7 @@ use \OCFram\Session;
 			foreach ($Comment_a as $Comment) {
 				echo '
 				<tr>
-					<td><a href=', $comment_news_url_a[$Comment['id']] ,'>', htmlspecialchars($Comment['contenu']), '</a></td>
+					<td><a href=', $comment_news_url_a[$Comment['id']], '#' , 'commentaire-'.$Comment['id'] ,'>', htmlspecialchars($Comment['contenu']), '</a></td>
 					<td>', $Comment['Date']->format('d/m/Y à H\hi'), '</td>';
 
 				if (Session::getAttribute('pseudo') == $pseudo) {

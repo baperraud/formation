@@ -1,7 +1,5 @@
 <?php
 
-// TODO: Implémenter un Validator qui vérifie que les 2 mdp sont identiques
-
 namespace OCFram;
 
 abstract class Validator {

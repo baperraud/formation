@@ -2,6 +2,8 @@
 
 namespace OCFram;
 
+// TODO: Ajouter les astérisques et require pour les champs requis dans les formulaires
+
 abstract class FormBuilder {
 	/** @var  Form $Form */
 	protected $Form;

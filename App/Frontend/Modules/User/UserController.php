@@ -98,6 +98,10 @@ class UserController extends BackController {
 		$this->App->getHttpResponse()->redirect('.');
 	}
 
+	/**
+	 * Action permettant d'afficher le profil d'un membre
+	 * avec les news et commentaires qu'il a postés
+	 */
 	public function executeShow() {
 		// TODO: Vérifier que l'utilisateur existe bien avant d'afficher la page
 
@@ -106,28 +110,28 @@ class UserController extends BackController {
 		$pseudo = urldecode($this->App->getHttpRequest()->getGetData('pseudo'));
 
 		// On commence par récupérer les informations du membre
-		/** @var UsersManager $Manager */
+		/** @var UsersManager $UsersManager */
 
-		// On récupère le manager des utilisateurs
-		$Manager = $this->Managers->getManagerOf('Users');
+		$UsersManager = $this->Managers->getManagerOf('Users');
 		/** @var User $User */
 		// TODO: Utiliser des ids pour les requêtes
 		// TODO: ne pas injecter dans la vue directement des données en provenance des formulaires
-		$User = $Manager->getUsercUsingPseudo($pseudo);
+		$User = $UsersManager->getUsercUsingPseudo($pseudo);
 
 		// On passe le pseudo du membre à la vue
 		$this->Page->addVar('title', 'Profil de ' . $pseudo);
 		$this->Page->addVar('pseudo', $pseudo);
 
 
-		/* Récupération des news du membre */
+		/*
+		 * Récupération des news du membre
+		 * */
 
-		// On récupère le manager des news
-		/** @var NewsManager $Manager */
-		$Manager = $this->Managers->getManagerOf('News');
+		/** @var NewsManager $NewsManager */
+		$NewsManager = $this->Managers->getManagerOf('News');
 
 		/** @var News[] $News_a */
-		$News_a = $Manager->getNewscUsingUsercIdSortByDateDesc_a($User['id']);
+		$News_a = $NewsManager->getNewscUsingUsercIdSortByDateDesc_a($User['id']);
 		$news_url_a = [];
 
 		foreach ($News_a as $News) {
@@ -163,15 +167,15 @@ class UserController extends BackController {
 		$this->Page->addVar('news_update_url_a', $news_update_url_a);
 		$this->Page->addVar('news_delete_url_a', $news_delete_url_a);
 
-		/* Récupération des commentaires du membre */
+		/*
+		 * Récupération des commentaires du membre
+		 * */
 
-
-		// On récupère le manager des commentaires
-		/** @var CommentsManager $Manager */
-		$Manager = $this->Managers->getManagerOf('Comments');
+		/** @var CommentsManager $CommentsManager */
+		$CommentsManager = $this->Managers->getManagerOf('Comments');
 
 		/** @var Comment[] $Comment_a */
-		$Comment_a = $Manager->getCommentcUsingUsercIdSortByDateDesc_a($User['id']);
+		$Comment_a = $CommentsManager->getCommentcUsingUsercIdSortByDateDesc_a($User['id']);
 		$comment_news_url_a = [];
 
 		foreach ($Comment_a as $Comment) {

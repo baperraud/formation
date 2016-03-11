@@ -15,7 +15,6 @@ use \OCFram\Session;
 
 // TODO: Remplacer les url de redirection en utilisant Application::getRoute
 // TODO: Factoriser le code pour les redirections en cas de non connexion (dans HTTPResponse)
-// TODO: ancre vers commentaire directe
 
 class NewsController extends BackController {
 	public function executeIndex() {
