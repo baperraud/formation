@@ -5,12 +5,14 @@ namespace App\Frontend\Modules\User;
 use \Entity\Comment;
 use \Entity\News;
 use \Entity\User;
+use \FormBuilder\ConnexionFormBuilder;
 use \FormBuilder\UserFormBuilder;
 use \Model\CommentsManager;
 use \Model\NewsManager;
 use \Model\UsersManager;
 use \OCFram\Application;
 use \OCFram\BackController;
+use \OCFram\ConnexionFormHandler;
 use \OCFram\FormHandler;
 use \OCFram\HTTPRequest;
 use \OCFram\Session;
@@ -24,55 +26,60 @@ class UserController extends BackController {
 			$this->App->getHttpResponse()->redirect('.');
 		}
 
-		// On récupère le manager des utilisateurs
-		/** @var UsersManager $Manager */
-		$Manager = $this->Managers->getManagerOf('Users');
-
-		$this->Page->addVar('title', 'Connexion');
+		/** @var UsersManager $UsersManager */
+		$UsersManager = $this->Managers->getManagerOf('Users');
 
 		// Si le formulaire a été envoyé
-		if ($Request->postExists('login')) {
-			$login = $Request->getPostData('login');
-			$password = $Request->getPostData('password');
+		if ($Request->getMethod() == 'POST') {
+			$User = new User([
+				'pseudonym' => $Request->getPostData('pseudonym'),
+				'password' => $Request->getPostData('password')
+			]);
+		} else {
+			$User = new User;
+		}
 
-			/** @var User $User */
-			$User = $Manager->getUsercUsingPseudo($login);
+		$Form_builder = new ConnexionFormBuilder($User);
+		$Form_builder->build();
 
-			// Si le pseudonyme existe
-			if ($User !== NULL) {
-				$hashed_password = crypt($password, $User['salt']);
+		$Form = $Form_builder->getForm();
 
-				// Si le mot de passe saisi est correct
-				if ($hashed_password === $User['password']) {
-					// Et que le compte est actif
-					if ($User['etat'] == UsersManager::COMPTE_ACTIF) {
-						// On initialise les variables de session
-						Session::setAuthenticated(true);
-						Session::setAttribute('admin', (int)$User['role']);
-						Session::setAttribute('pseudo', $login);
-						Session::setAttribute('id', (int)$User['id']);
+		$Connexion_Form_handler = new ConnexionFormHandler($Form, $UsersManager, $Request);
 
-						Session::setFlash('Connexion réussie !');
+		if ($Connexion_Form_handler->process()) {
 
-						// On redirige l'utilisateur en fonction de ses droits
-						if ($User['role'] == UsersManager::ROLE_ADMIN) {
-							$admin_url = Application::getRoute('Backend', 'News', 'index');
-							$this->App->getHttpResponse()->redirect($admin_url);
-						} elseif ($User['role'] == UsersManager::ROLE_USER) {
-							$home_url = Application::getRoute('Frontend', 'News', 'index');
-							$this->App->getHttpResponse()->redirect($home_url);
-						} else {
-							throw new \RuntimeException('Role utilisateur non valide');
-						}
-					} elseif ($User['etat'] == UsersManager::COMPTE_INACTIF) {
-						Session::setFlash('Ce compte est inactif.');
-					}
-				} else {
-					Session::setFlash('Le mot de passe est incorrect.');
-				}
+			$User = $Connexion_Form_handler->getUser();
+
+			// On initialise les variables de session
+			Session::setAuthenticated(true);
+			Session::setAttribute('admin', (int)$User['role']);
+			Session::setAttribute('pseudo', $User['pseudonym']);
+			Session::setAttribute('id', (int)$User['id']);
+
+			Session::setFlash('Connexion réussie !');
+
+			// On redirige l'utilisateur en fonction de ses droits
+			if ($User['role'] == UsersManager::ROLE_ADMIN) {
+				$admin_url = Application::getRoute('Backend', 'News', 'index');
+				$this->App->getHttpResponse()->redirect($admin_url);
+			} elseif ($User['role'] == UsersManager::ROLE_USER) {
+				$home_url = Application::getRoute('Frontend', 'News', 'index');
+				$this->App->getHttpResponse()->redirect($home_url);
 			} else {
-				Session::setFlash('Il n\'existe pas de compte avec le pseudo renseigné.');
+				throw new \RuntimeException('Role utilisateur non valide');
 			}
+
+		} else {
+			// On passe le formulaire généré à la vue
+			$this->Page->addVar('form', $Form->createView());
+
+			// On récupère le message d'erreur s'il existe
+			if ($Connexion_Form_handler->getError_type() === ConnexionFormHandler::PSEUDO_INEXISTANT)
+				Session::setFlash('Il n\'existe pas de compte avec le pseudo renseigné');
+			if ($Connexion_Form_handler->getError_type() === ConnexionFormHandler::PASSWORD_INVALIDE)
+				Session::setFlash('Le mot de passe est incorrect.');
+			if ($Connexion_Form_handler->getError_type() === ConnexionFormHandler::COMPTE_INACTIF)
+				Session::setFlash('Ce compte est inactif.');
 		}
 	}
 

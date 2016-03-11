@@ -5,7 +5,7 @@ namespace OCFram;
 abstract class Validator {
 	protected $error_message;
 
-	public function __construct($error_message) {
+	public function __construct($error_message = 'Erreur : champ invalide') {
 		$this->setError_message($error_message);
 	}
 
