@@ -12,7 +12,7 @@ abstract class CommentsManager extends Manager {
 	 */
 	public function save(Comment $Comment) {
 		if ($Comment->isValid()) {
-			$Comment->isNew() ? $this->addCommentc($Comment) : $this->updateCommentc($Comment);
+			$Comment->isNew() ? $this->insertCommentc($Comment) : $this->updateCommentc($Comment);
 		} else {
 			throw new \RuntimeException('Le commentaire doit être validé pour être enregistré');
 		}
@@ -23,7 +23,7 @@ abstract class CommentsManager extends Manager {
 	 * @param $Comment Comment Le commentaire à ajouter
 	 * @return void
 	 */
-	abstract protected function addCommentc(Comment $Comment);
+	abstract protected function insertCommentc(Comment $Comment);
 
 	/**
 	 * Méthode permettant de modifier un commentaire
@@ -40,12 +40,12 @@ abstract class CommentsManager extends Manager {
 	abstract public function getCommentcUsingNewscIdSortByDateDesc_a($news_id);
 
 	/**
-	 * Méthode permettant de récupérer la liste des mails de commentaires rattachés
-	 * à une news spécifique
-	 * @param $news_id int L'id de la news dont on veut récupérer les mails de commentaires
+	 * Méthode permettant de récupérer la liste des mails et pseudos
+	 * de commentaires rattachés à une news spécifique
+	 * @param $news_id int L'id de la news considérée
 	 * @return array
 	 */
-	abstract public function getEmailUsingNewscId_a($news_id);
+	abstract public function getEmailAndPseudoUsingNewscId_a($news_id);
 
 	/**
 	 * Méthode permettant de récupérer un commentaire spécifique

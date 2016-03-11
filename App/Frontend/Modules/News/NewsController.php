@@ -116,9 +116,8 @@ class NewsController extends BackController {
 	}
 
 	public function executeInsertComment(HTTPRequest $Request) {
-		/** @var CommentsManager $Manager */
-		// On récupère le manager des commentaires
-		$Manager = $this->Managers->getManagerOf('Comments');
+		/** @var CommentsManager $CommentsManager */
+		$CommentsManager = $this->Managers->getManagerOf('Comments');
 
 		// Si le formulaire a été envoyé
 		if ($Request->getMethod() == 'POST') {
@@ -139,15 +138,48 @@ class NewsController extends BackController {
 		$Form = $Form_builder->getForm();
 
 		// On récupère le gestionnaire de formulaire
-		$Form_handler = new FormHandler($Form, $Manager, $Request);
+		$Form_handler = new FormHandler($Form, $CommentsManager, $Request);
 
 		if ($Form_handler->process()) {
 			Session::setFlash('Le commentaire a bien été ajouté, merci !');
 
-			// Récupération de tous les mails de ceux qui ont commenté la news
-//			$Manager->getEmailUsingNewscId_a($Comment->getNews());
-
 			// On envoie un mail à tous ceux qui ont déjà commenté la news
+
+			$mail = new \PHPMailer();
+
+			$mail->isSMTP();
+			$mail->SMTPDebug = 3;
+			$mail->Debugoutput = 'html';
+			$mail->Host = 'smtp.gmail.com';
+			$mail->SMTPAuth = true;
+			$mail->Username = 'dreamcenturyfaformation@gmail.com';
+			$mail->Password = 'UJ691vWtcdrm';
+			$mail->SMTPSecure = 'ssl';
+			$mail->Port = 465;
+
+			$mail->setFrom('notifier@dreamcentury.com', 'Notifier');
+
+			// Récupération de tous les mails et pseudos de ceux qui ont commenté la news
+			$email_and_pseudo_a = $CommentsManager->getEmailAndPseudoUsingNewscId_a($Comment->getNews());
+
+			foreach ($email_and_pseudo_a as $email_and_pseudo) {
+				// On exclue le mail du commentaire en train d'être inséré
+				if ($email_and_pseudo['email'] !== $Comment->getEmail())
+					// On ajoute un destinataire
+					$mail->addAddress($email_and_pseudo['email'], $email_and_pseudo['pseudo']);
+			}
+
+			$mail->Subject = 'Notification : New Comment Inserted';
+
+			$comment_news_url = $_SERVER['HTTP_ORIGIN'] . Application::getRoute($this->App->getName(), 'News', 'show', array($Comment['news']));
+			$comment_news_url .= '#commentaire-' . $Comment['id'];
+
+			$mail->Body = '<h1>New posted comment</h1>
+<b>Alert:</b> A new comment has been posted on a news you previously commented!<br /><br /><a href="' . $comment_news_url . '">Check it now</a>';
+			$mail->AltBody = 'A new comment has been posted on a news you previously commented! Check it now here: ' . $comment_news_url;
+
+			// Envoi du mail
+			$mail->send();
 
 			$news_url = Application::getRoute('Frontend', 'News', 'show', array($Request->getGetData('news')));
 			$this->App->getHttpResponse()->redirect($news_url);
