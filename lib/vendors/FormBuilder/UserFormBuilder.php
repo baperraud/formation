@@ -9,6 +9,9 @@ use OCFram\NotNullValidator;
 use OCFram\StringField;
 use OCFram\PseudoAvailableValidator;
 use OCFram\EmailAvailableValidator;
+use OCFram\NoSpaceValidator;
+
+// TODO: Factoriser en un param par défaut les messages d'erreur des validateurs
 
 class UserFormBuilder extends FormBuilder {
 	public function build() {
@@ -19,7 +22,8 @@ class UserFormBuilder extends FormBuilder {
 			'Validator_a' => [
 				new MaxLengthValidator('Le pseudo spécifié est trop long (50 caractères maximum)', 50),
 				new NotNullValidator('Merci de spécifier votre pseudo'),
-				new PseudoAvailableValidator('Erreur : le pseudo est déjà pris')
+				new PseudoAvailableValidator('Erreur : le pseudo est déjà pris'),
+				new NoSpaceValidator('Veuillez ne pas utiliser le caractère d\'espacement')
 			]
 		]))->add(new StringField([
 			'label' => 'E-mail',
@@ -38,7 +42,8 @@ class UserFormBuilder extends FormBuilder {
 			'type' => 'password',
 			'Validator_a' => [
 				new MaxLengthValidator('Le mot de passe spécifié est trop long (100 caractères maximum)', 50),
-				new NotNullValidator('Merci de spécifier votre mot de passe')
+				new NotNullValidator('Merci de spécifier votre mot de passe'),
+				new NoSpaceValidator('Veuillez ne pas utiliser le caractère d\'espacement')
 			]
 		]));
 	}

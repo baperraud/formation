@@ -15,9 +15,7 @@ use \OCFram\FormHandler;
 use \OCFram\HTTPRequest;
 use \OCFram\Session;
 
-// TODO: Connexion auto après inscription
 // TODO: Confirmation de password
-// TODO: Empêcher le choix d'un pseudo avec des espaces
 
 class UserController extends BackController {
 
