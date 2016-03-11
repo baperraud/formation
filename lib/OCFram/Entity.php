@@ -15,7 +15,7 @@ abstract class Entity implements \ArrayAccess {
 	}
 
 	public function getErreur_a() { return $this->erreur_a; }
-	public function getId() { return $this->id; }
+	public function getId() { return (int)$this->id; }
 
 	public function isNew() {
 		return isset($this->is_new) ? $this->is_new : false;

@@ -13,7 +13,6 @@ use \OCFram\FormHandler;
 use \OCFram\HTTPRequest;
 use \OCFram\Session;
 
-// TODO: Remplacer les url de redirection en utilisant Application::getRoute
 // TODO: Factoriser le code pour les redirections en cas de non connexion (dans HTTPResponse)
 
 class NewsController extends BackController {
@@ -150,8 +149,8 @@ class NewsController extends BackController {
 
 			// On envoie un mail à tous ceux qui ont déjà commenté la news
 
-
-			$this->App->getHttpResponse()->redirect('news-' . $Request->getGetData('news') . '.html');
+			$news_url = Application::getRoute('Frontend', 'News', 'show', array($Request->getGetData('news')));
+			$this->App->getHttpResponse()->redirect($news_url);
 		}
 
 		$this->Page->addVar('Comment', $Comment);
@@ -264,7 +263,8 @@ class NewsController extends BackController {
 
 		if ($Form_handler->process()) {
 			Session::setFlash($News->isNew() ? 'La news a bien été ajoutée !' : 'La news a bien été modifiée !');
-			$this->App->getHttpResponse()->redirect('/news-' . $News->getId() . '.html');
+			$news_url = Application::getRoute('Frontend', 'News', 'show', array($News->getId()));
+			$this->App->getHttpResponse()->redirect($news_url);
 		}
 
 		$this->Page->addVar('form', $Form->createView());
@@ -311,6 +311,7 @@ class NewsController extends BackController {
 				'pseudonym' => $Request->getPostData('pseudonym'),
 				'contenu' => $Request->getPostData('contenu')
 			]);
+			$Comment->setNews($CommentsManager->getNewsIdUsingCommentcId($Comment->getId()));
 		} else {
 			$Comment = $CommentsManager->getCommentcUsingCommentcId($Request->getGetData('id'));
 		}
@@ -326,9 +327,8 @@ class NewsController extends BackController {
 		if ($Form_handler->process()) {
 			Session::setFlash('Le commentaire a bien été modifié');
 
-			$Comment->setNews($CommentsManager->getNewsIdUsingCommentcId($Comment->getId()));
-
-			$this->App->getHttpResponse()->redirect('/news-' . $Comment->getNews() . '.html');
+			$news_url = Application::getRoute('Frontend', 'News', 'show', array($Comment->getNews()));
+			$this->App->getHttpResponse()->redirect($news_url);
 		}
 
 		$this->Page->addVar('form', $Form->createView());
@@ -366,6 +366,7 @@ class NewsController extends BackController {
 
 		Session::setFlash('Le commentaire a bien été supprimé !');
 
-		$this->App->getHttpResponse()->redirect('/news-' . $Comment->getNews() . '.html');
+		$news_url = Application::getRoute('Frontend', 'News', 'show', array($Comment->getNews()));
+		$this->App->getHttpResponse()->redirect($news_url);
 	}
 }

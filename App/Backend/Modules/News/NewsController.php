@@ -1,9 +1,7 @@
 <?php
 namespace App\Backend\Modules\News;
 
-use \Entity\Comment;
 use \Entity\News;
-use \FormBuilder\CommentFormBuilder;
 use \FormBuilder\NewsFormBuilder;
 use \Model\NewsManager;
 use \Model\CommentsManager;
@@ -101,24 +99,25 @@ class NewsController extends BackController {
 			$Form_handler = new FormHandler($Form, $Manager, $Request);
 
 			if ($Form_handler->process()) {
-				Session::setFlash($News->isNew() ? 'La news a bien été ajoutée !' : 'La news a bien été modifiée !');
-				$this->App->getHttpResponse()->redirect($News->isNew() ? '/admin/' : '/news-' . $News->getId(). '.html');
+				Session::setFlash('La news a bien été modifiée !');
+				$news_url = Application::getRoute('Frontend', 'News', 'show', array($News->getId()));
+				$this->App->getHttpResponse()->redirect($news_url);
 			}
 
 			$this->Page->addVar('form', $Form->createView());
 		}
 
 	public function executeDeleteComment(HTTPRequest $Request) {
-		// On récupère le manager des commentaires
-		/** @var CommentsManager $Manager */
-		$Manager = $this->Managers->getManagerOf('Comments');
+		/** @var CommentsManager $CommentsManager */
+		$CommentsManager = $this->Managers->getManagerOf('Comments');
 
-		$news_id = $Manager->getNewsIdUsingCommentcId($Request->getGetData('id'));
+		$news_id = $CommentsManager->getNewsIdUsingCommentcId($Request->getGetData('id'));
 
-		$Manager->deleteCommentcUsingId($Request->getGetData('id'));
+		$CommentsManager->deleteCommentcUsingId($Request->getGetData('id'));
 
 		Session::setFlash('Le commentaire a bien été supprimé !');
 
-		$this->App->getHttpResponse()->redirect('/news-' . $news_id . '.html');
+		$news_url = Application::getRoute('Frontend', 'News', 'show', array($news_id));
+		$this->App->getHttpResponse()->redirect($news_url);
 	}
 }

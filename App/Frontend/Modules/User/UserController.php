@@ -56,9 +56,11 @@ class UserController extends BackController {
 
 						// On redirige l'utilisateur en fonction de ses droits
 						if ($User['role'] == UsersManager::ROLE_ADMIN) {
-							$this->App->getHttpResponse()->redirect('/admin/');
+							$admin_url = Application::getRoute('Backend', 'News', 'index');
+							$this->App->getHttpResponse()->redirect($admin_url);
 						} elseif ($User['role'] == UsersManager::ROLE_USER) {
-							$this->App->getHttpResponse()->redirect('/');
+							$home_url = Application::getRoute('Frontend', 'News', 'index');
+							$this->App->getHttpResponse()->redirect($home_url);
 						} else {
 							throw new \RuntimeException('Role utilisateur non valide');
 						}
@@ -89,7 +91,8 @@ class UserController extends BackController {
 			session_start();
 			Session::setFlash('Vous avez bien été déconnecté !');
 
-			$this->App->getHttpResponse()->redirect('/');
+			$home_url = Application::getRoute('Frontend', 'News', 'index');
+			$this->App->getHttpResponse()->redirect($home_url);
 		}
 
 		Session::setFlash('Vous n\'êtes pas connecté !');
@@ -236,17 +239,16 @@ class UserController extends BackController {
 		if ($Form_handler->process()) {
 			Session::setFlash('Votre compte a bien été créé !');
 
-			// On connecte automatiquement le membre puis l'on redirige vers son profil
+			// On connecte automatiquement le membre
 			Session::setAuthenticated(true);
 			Session::setAttribute('pseudo', $User->getPseudonym());
-			Session::setAttribute('id', (int)$User->getId());
+			Session::setAttribute('id', $User->getId());
 
 			Session::setFlash('Inscription réussie !');
 
-
-			//$login_route = Application::getRoute('Frontend', 'User', 'index');
-			//$this->App->getHttpResponse()->redirect($login_route);
-			$this->App->getHttpResponse()->redirect('/');
+			// On le redirige sur sa page de profil
+			$user_url = Application::getRoute('Frontend', 'User', 'show', array($User->getId()));
+			$this->App->getHttpResponse()->redirect($user_url);
 		}
 
 		$this->Page->addVar('User', $User);
