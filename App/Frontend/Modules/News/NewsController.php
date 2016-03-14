@@ -192,22 +192,16 @@ class NewsController extends BackController {
 	}
 
 	public function executeInsert(HTTPRequest $Request) {
-		// Si l'utilisateur n'est pas connecté
-		if (!Session::isAuthenticated()) {
-			Session::setFlash('Vous devez être connecté pour poster une news.');
-			$this->App->getHttpResponse()->redirect('.');
-		}
+		// Redirection si l'utilisateur n'est pas connecté
+		$this->App->getGenericComponentHandler()->checkAndredirectToLogin();
 
 		$this->Page->addVar('title', 'Ajout d\'une news');
 		$this->processForm($Request, 'insert');
 	}
 
 	public function executeUpdate(HTTPRequest $Request) {
-		// Si l'utilisateur n'est pas connecté
-		if (!Session::isAuthenticated()) {
-			Session::setFlash('Vous devez être connecté pour modifier une news.');
-			$this->App->getHttpResponse()->redirect('.');
-		}
+		// Redirection si l'utilisateur n'est pas connecté
+		$this->App->getGenericComponentHandler()->checkAndredirectToLogin();
 
 		// On récupère l'id de l'owner de la news
 		/** @var NewsManager $Manager */
@@ -226,11 +220,8 @@ class NewsController extends BackController {
 	}
 
 	public function executeDelete(HTTPRequest $Request) {
-		// Si l'utilisateur n'est pas connecté
-		if (!Session::isAuthenticated()) {
-			Session::setFlash('Vous devez être connecté pour modifier une news.');
-			$this->App->getHttpResponse()->redirect('.');
-		}
+		// Redirection si l'utilisateur n'est pas connecté
+		$this->App->getGenericComponentHandler()->checkAndredirectToLogin();
 
 		// On récupère l'id de l'owner de la news
 		/** @var NewsManager $Manager */
@@ -307,11 +298,8 @@ class NewsController extends BackController {
 	 * @param $Request HTTPRequest La requête de l'utilisateur
 	 */
 	public function executeUpdateComment(HTTPRequest $Request) {
-		// Si l'utilisateur n'est pas connecté
-		if (!Session::isAuthenticated()) {
-			Session::setFlash('Vous devez être connecté pour modifier un commentaire.');
-			$this->App->getHttpResponse()->redirect('.');
-		}
+		// Redirection si l'utilisateur n'est pas connecté
+		$this->App->getGenericComponentHandler()->checkAndredirectToLogin();
 
 		/**
 		 * @var CommentsManager $CommentsManager
@@ -367,11 +355,8 @@ class NewsController extends BackController {
 	}
 
 	public function executeDeleteComment(HTTPRequest $Request) {
-		// Si l'utilisateur n'est pas connecté
-		if (!Session::isAuthenticated()) {
-			Session::setFlash('Vous devez être connecté pour modifier un commentaire.');
-			$this->App->getHttpResponse()->redirect('.');
-		}
+		// Redirection si l'utilisateur n'est pas connecté
+		$this->App->getGenericComponentHandler()->checkAndredirectToLogin();
 
 		/**
 		 * @var CommentsManager $CommentsManager

@@ -12,13 +12,14 @@ class GenericComponentHandler extends ApplicationComponent {
 	 * @return void
 	 */
 	public function checkAndredirectToLogin($message = 'Vous devez être connecté pour accéder à cette page', $to_admin = false) {
-		Session::setFlash($message);
 
 		// Si l'utilisateur n'est pas identifié
 		if (!Session::isAuthenticated()) {
+			Session::setFlash($message);
 			$this->App->getHttpResponse()->redirect(Application::getRoute('Frontend', 'User', 'index'));
 		} // S'il n'a pas les droits admin qui sont requis
 		elseif ($to_admin && !Session::isAdmin()) {
+			Session::setFlash($message);
 			$this->App->getHttpResponse()->redirect(Application::getRoute('Frontend', 'News', 'index'));
 		}
 	}
