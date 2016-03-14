@@ -47,4 +47,4 @@ This part consist to add a functionnality for ask a route for a Controller and a
   * Liens vers les pages profils :
     * Le nom de l'auteur d'une news ou d'un commentaire qui fait référence à un compte utilisateurs/admin pointera vers une page de profil d'un utilisateur qui listera les news postées par ce membre et les commentaires écrits. OK
   * Mails.
-    * Lorsqu'un nouveau commentaires est posté, envoyer un mail à tous les gens qui ont commenté cette même news précédement. *En cours*
+    * Lorsqu'un nouveau commentaires est posté, envoyer un mail à tous les gens qui ont commenté cette même news précédement. OK
