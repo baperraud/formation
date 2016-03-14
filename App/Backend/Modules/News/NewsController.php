@@ -12,8 +12,6 @@ use OCFram\FormHandler;
 use OCFram\HTTPRequest;
 use OCFram\Session;
 
-// TODO: Ajouter les liens vers les auteurs et les news
-// TODO: Ajouter le tableau de la liste des membres
 
 class NewsController extends BackController {
 
@@ -45,18 +43,28 @@ class NewsController extends BackController {
 		$this->Page->addVar('News_a', $News_a);
 		$this->Page->addVar('nombre_news', $NewsManager->countNewsc());
 
-		// On récupère les routes de modification/suppression de news
-		// puis on les envoie à la vue
+		// On récupère les routes associées que l'on envoie à la vue
+		$news_url_a = [];
 		$news_update_url_a = [];
 		$news_delete_url_a = [];
+		$user_url_a = [];
 
 		foreach ($News_a as $News) {
+			$news_url_a[$News->getId()] = Application::getRoute('Frontend', $this->getModule(), 'show', array($News['id']));
 			$news_update_url_a[$News->getId()] = Application::getRoute($this->App->getName(), $this->getModule(), 'update', array($News['id']));
 			$news_delete_url_a[$News->getId()] = Application::getRoute($this->App->getName(), $this->getModule(), 'delete', array($News['id']));
+
+			// On récupère l'id de l'auteur de la news
+			$user_id = $NewsManager->getUsercIdUsingNewscId($News->getId());
+			if (!empty($user_id))
+				$user_url_a[$News->getId()] = Application::getRoute('Frontend', 'User', 'show', array($user_id));
+			else throw new \RuntimeException('Erreur de récupération de l\'auteur de la news');
 		}
 
+		$this->Page->addVar('news_url_a', $news_url_a);
 		$this->Page->addVar('news_update_url_a', $news_update_url_a);
 		$this->Page->addVar('news_delete_url_a', $news_delete_url_a);
+		$this->Page->addVar('user_url_a', $user_url_a);
 	}
 
 	/**
