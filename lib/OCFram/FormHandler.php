@@ -2,9 +2,9 @@
 
 namespace OCFram;
 
-use \Model\CommentsManager;
-use \Model\NewsManager;
-use \Model\UsersManager;
+use Model\CommentsManager;
+use Model\NewsManager;
+use Model\UsersManager;
 
 class FormHandler {
 	/** @var  Form */

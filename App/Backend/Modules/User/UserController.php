@@ -3,12 +3,15 @@
 namespace App\Backend\Modules\User;
 
 
+use App\Backend\GenericActionHandler;
 use Entity\User;
 use Model\UsersManager;
 use OCFram\BackController;
 
 
 class UserController extends BackController {
+	use GenericActionHandler;
+
 	public function executeIndex() {
 		$this->Page->addVar('title', 'Gestion des membres');
 

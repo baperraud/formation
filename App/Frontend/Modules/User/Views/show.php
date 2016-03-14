@@ -1,5 +1,5 @@
 <?php
-use \OCFram\Session;
+use OCFram\Session;
 
 /**
  * @var \Entity\User $User

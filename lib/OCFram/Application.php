@@ -7,7 +7,6 @@ abstract class Application {
 	protected $name;
 	protected $Session;
 	protected $Config;
-	protected $GenericComponentHandler;
 
 	public function __construct() {
 		$this->Http_request = new HTTPRequest($this);
@@ -15,7 +14,6 @@ abstract class Application {
 		$this->name = '';
 		$this->Session = new Session($this);
 		$this->Config = new Config($this);
-		$this->GenericComponentHandler = new GenericComponentHandler($this);
 	}
 
 	abstract public function run();
@@ -25,7 +23,6 @@ abstract class Application {
 	public function getHttpResponse() { return $this->Http_response; }
 	public function getSession() { return $this->Session; }
 	public function getConfig() { return $this->Config; }
-	public function getGenericComponentHandler() { return $this->GenericComponentHandler; }
 
 	public function getController() {
 		$Router = new Router;

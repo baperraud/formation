@@ -1,36 +1,48 @@
 <?php
 namespace App\Frontend\Modules\News;
 
-use \Entity\Comment;
-use \Entity\News;
-use \FormBuilder\CommentFormBuilder;
-use \FormBuilder\NewsFormBuilder;
-use \Model\CommentsManager;
-use \Model\NewsManager;
-use \OCFram\Application;
-use \OCFram\BackController;
-use \OCFram\FormHandler;
-use \OCFram\HTTPRequest;
-use \OCFram\Session;
-
-// TODO: Factoriser le code pour les redirections en cas de non connexion (dans HTTPResponse)
+use App\Frontend\GenericActionHandler;
+use Entity\Comment;
+use Entity\News;
+use FormBuilder\CommentFormBuilder;
+use FormBuilder\NewsFormBuilder;
+use Model\CommentsManager;
+use Model\NewsManager;
+use OCFram\Application;
+use OCFram\BackController;
+use OCFram\FormHandler;
+use OCFram\HTTPRequest;
+use OCFram\Session;
 
 class NewsController extends BackController {
+
+	use GenericActionHandler;
+
+	/**
+	 * Action permettant d'afficher les dernières news
+	 */
 	public function executeIndex() {
+		/*------------------------*/
+		/* Traitements génériques */
+		/*------------------------*/
 		$nombre_news = $this->App->getConfig()->get('nombre_news');
+		$this->title = 'Liste des ' . $nombre_news . ' dernières news';
+		$this->runActionHandler();
+
+
+		/*-------------------------*/
+		/* Traitements spécifiques */
+		/*-------------------------*/
 		$nombre_caracteres = (int)$this->App->getConfig()->get('nombre_caracteres');
 
-		// On ajoute une définition pour le titre
-		$this->Page->addVar('title', 'Liste des ' . $nombre_news . ' dernières news');
-
-		// On récupère le manager des news
-		$Manager = $this->Managers->getManagerOf('News');
-
 		// Récupération des 5 dernières news
-		/** @var News[] $News_a
-		 * @var NewsManager $Manager
+		/**
+		 * @var NewsManager $NewsManager
+		 * @var News[] $News_a
 		 */
-		$News_a = $Manager->getNewscSortByIdDesc_a(0, $nombre_news);
+		$NewsManager = $this->Managers->getManagerOf('News');
+		$News_a = $NewsManager->getNewscSortByIdDesc_a(0, $nombre_news);
+
 		$news_url_a = [];
 
 		foreach ($News_a as $News) {
@@ -59,20 +71,27 @@ class NewsController extends BackController {
 	 * @param $Request HTTPRequest La requête de l'utilisateur
 	 */
 	public function executeShow(HTTPRequest $Request) {
+		/*------------------------*/
+		/* Traitements génériques */
+		/*------------------------*/
 
 		// On récupère la news de la requête
-		/** @var NewsManager $NewsManager */
+		/**
+		 * @var NewsManager $NewsManager
+		 * @var News $News
+		 */
 		$NewsManager = $this->Managers->getManagerOf('News');
-		/** @var News $News */
 		$News = $NewsManager->getNewscUsingId($Request->getGetData('id'));
-
-		if (empty($News)) {
-			$this->App->getHttpResponse()->redirect404();
-		}
-
-		// On envoie la news à la vue
-		$this->Page->addVar('title', $News->getTitre());
+		if (empty($News)) $this->App->getHttpResponse()->redirect404();
 		$this->Page->addVar('News', $News);
+
+		$this->title = $News->getTitre();
+		$this->runActionHandler();
+
+
+		/*-------------------------*/
+		/* Traitements spécifiques */
+		/*-------------------------*/
 
 		// On récupère l'id de l'auteur de la news
 		$user_id = $NewsManager->getUsercIdUsingNewscId($News->getId());
@@ -115,7 +134,22 @@ class NewsController extends BackController {
 		$this->Page->addVar('comment_news_url', $comment_news_url);
 	}
 
+	/**
+	 * Action permettant d'insérer un commentaire
+	 * @param $Request HTTPRequest La requête de l'utilisateur
+	 */
 	public function executeInsertComment(HTTPRequest $Request) {
+		/*------------------------*/
+		/* Traitements génériques */
+		/*------------------------*/
+		$this->title = 'Ajout d\'un commentaire';
+		$this->runActionHandler();
+
+
+		/*-------------------------*/
+		/* Traitements spécifiques */
+		/*-------------------------*/
+
 		/** @var CommentsManager $CommentsManager */
 		$CommentsManager = $this->Managers->getManagerOf('Comments');
 
@@ -137,7 +171,6 @@ class NewsController extends BackController {
 
 		$Form = $Form_builder->getForm();
 
-		// On récupère le gestionnaire de formulaire
 		$Form_handler = new FormHandler($Form, $CommentsManager, $Request);
 
 		if ($Form_handler->process()) {
@@ -188,26 +221,51 @@ class NewsController extends BackController {
 		$this->Page->addVar('Comment', $Comment);
 		// On passe le formulaire généré à la vue
 		$this->Page->addVar('form', $Form->createView());
-		$this->Page->addVar('title', 'Ajout d\'un commentaire');
 	}
 
+	/**
+	 * Action permettant d'ajouter une news
+	 * @param $Request HTTPRequest La requête de l'utilisateur
+	 */
 	public function executeInsert(HTTPRequest $Request) {
-		// Redirection si l'utilisateur n'est pas connecté
-		$this->App->getGenericComponentHandler()->checkAndredirectToLogin();
+		/*------------------------*/
+		/* Traitements génériques */
+		/*------------------------*/
+		$this->title = 'Ajout d\'une news';
+		$this->connection_required = true;
+		$this->runActionHandler();
 
-		$this->Page->addVar('title', 'Ajout d\'une news');
+
+		/*-------------------------*/
+		/* Traitements spécifiques */
+		/*-------------------------*/
 		$this->processForm($Request, 'insert');
 	}
 
+	/**
+	 * Action permettant de modifier une news
+	 * @param $Request HTTPRequest La requête de l'utilisateur
+	 */
 	public function executeUpdate(HTTPRequest $Request) {
-		// Redirection si l'utilisateur n'est pas connecté
-		$this->App->getGenericComponentHandler()->checkAndredirectToLogin();
+		/*------------------------*/
+		/* Traitements génériques */
+		/*------------------------*/
+		$this->title = 'Modification d\'une news';
+		$this->connection_required = true;
+		$this->runActionHandler();
+
+
+		/*-------------------------*/
+		/* Traitements spécifiques */
+		/*-------------------------*/
 
 		// On récupère l'id de l'owner de la news
-		/** @var NewsManager $Manager */
-		$Manager = $this->Managers->getManagerOf('News');
-		/** @var News $News */
-		$News = $Manager->getNewscUsingId($Request->getGetData('id'));
+		/**
+		 * @var NewsManager $NewsManager
+		 * @var News $News
+		 */
+		$NewsManager = $this->Managers->getManagerOf('News');
+		$News = $NewsManager->getNewscUsingId($Request->getGetData('id'));
 
 		// Si l'utilisateur tente de modifier une news qui ne lui appartient pas
 		if ($News['auteur'] !== Session::getAttribute('pseudo')) {
@@ -215,19 +273,32 @@ class NewsController extends BackController {
 			$this->App->getHttpResponse()->redirect('.');
 		}
 
-		$this->Page->addVar('title', 'Modification d\'une news');
 		$this->processForm($Request, 'update');
 	}
 
+	/**
+	 * Action permettant de supprimer une news
+	 * @param $Request HTTPRequest La requête de l'utilisateur
+	 */
 	public function executeDelete(HTTPRequest $Request) {
-		// Redirection si l'utilisateur n'est pas connecté
-		$this->App->getGenericComponentHandler()->checkAndredirectToLogin();
+		/*------------------------*/
+		/* Traitements génériques */
+		/*------------------------*/
+		$this->connection_required = true;
+		$this->runActionHandler();
+
+
+		/*-------------------------*/
+		/* Traitements spécifiques */
+		/*-------------------------*/
 
 		// On récupère l'id de l'owner de la news
-		/** @var NewsManager $Manager */
-		$Manager = $this->Managers->getManagerOf('News');
-		/** @var News $News */
-		$News = $Manager->getNewscUsingId($Request->getGetData('id'));
+		/**
+		 * @var NewsManager $NewsManager
+		 * @var News $News
+		 */
+		$NewsManager = $this->Managers->getManagerOf('News');
+		$News = $NewsManager->getNewscUsingId($Request->getGetData('id'));
 
 		// Si l'utilisateur tente de supprimer une news qui ne lui appartient pas
 		if ($News['auteur'] !== Session::getAttribute('pseudo')) {
@@ -252,10 +323,9 @@ class NewsController extends BackController {
 		$this->App->getHttpResponse()->redirect('.');
 	}
 
-	public function processForm(HTTPRequest $Request, $type) {
-		// On récupère le manager des news
-		/** @var NewsManager $Manager */
-		$Manager = $this->Managers->getManagerOf('News');
+	protected function processForm(HTTPRequest $Request, $type) {
+		/** @var NewsManager $NewsManager */
+		$NewsManager = $this->Managers->getManagerOf('News');
 
 		if ($Request->getMethod() == 'POST') {
 			$News = new News([
@@ -270,7 +340,7 @@ class NewsController extends BackController {
 		} else {
 			// L'identifiant de la news est transmis si on veut la modifier
 			if ($Request->getExists('id')) {
-				$News = $Manager->getNewscUsingId($Request->getGetData('id'));
+				$News = $NewsManager->getNewscUsingId($Request->getGetData('id'));
 			} else {
 				$News = new News;
 			}
@@ -282,7 +352,7 @@ class NewsController extends BackController {
 		$Form = $Form_builder->getForm();
 
 		// On récupère le gestionnaire de formulaire
-		$Form_handler = new FormHandler($Form, $Manager, $Request);
+		$Form_handler = new FormHandler($Form, $NewsManager, $Request);
 
 		if ($Form_handler->process()) {
 			Session::setFlash($News->isNew() ? 'La news a bien été ajoutée !' : 'La news a bien été modifiée !');
@@ -298,9 +368,17 @@ class NewsController extends BackController {
 	 * @param $Request HTTPRequest La requête de l'utilisateur
 	 */
 	public function executeUpdateComment(HTTPRequest $Request) {
-		// Redirection si l'utilisateur n'est pas connecté
-		$this->App->getGenericComponentHandler()->checkAndredirectToLogin();
+		/*------------------------*/
+		/* Traitements génériques */
+		/*------------------------*/
+		$this->title = 'Modification d\'un commentaire';
+		$this->connection_required = true;
+		$this->runActionHandler();
 
+
+		/*-------------------------*/
+		/* Traitements spécifiques */
+		/*-------------------------*/
 		/**
 		 * @var CommentsManager $CommentsManager
 		 * @var Comment $Comment
@@ -310,9 +388,7 @@ class NewsController extends BackController {
 		$CommentsManager = $this->Managers->getManagerOf('Comments');
 		$Comment = $CommentsManager->getCommentcUsingCommentcId($Request->getGetData('id'));
 
-		/*
-		* Si l'utilisateur n'est pas un admin
-		 * * */
+		// Si non admin
 		if (!Session::isAdmin()) {
 			// Si l'utilisateur tente de modifier un commentaire qui ne lui appartient pas
 			if ($Comment['owner_type'] == 2 ||
@@ -322,8 +398,6 @@ class NewsController extends BackController {
 				$this->App->getHttpResponse()->redirect('.');
 			}
 		}
-
-		$this->Page->addVar('title', 'Modification d\'un commentaire');
 
 		if ($Request->getMethod() == 'POST') {
 			$Comment = new Comment([
@@ -341,7 +415,6 @@ class NewsController extends BackController {
 
 		$Form = $Form_builder->getForm();
 
-		// On récupère le gestionnaire de formulaire
 		$Form_handler = new FormHandler($Form, $CommentsManager, $Request);
 
 		if ($Form_handler->process()) {
@@ -354,10 +427,22 @@ class NewsController extends BackController {
 		$this->Page->addVar('form', $Form->createView());
 	}
 
+	/**
+	 * Action permettant de supprimer un commentaire
+	 * @param $Request HTTPRequest La requête de l'utilisateur
+	 */
 	public function executeDeleteComment(HTTPRequest $Request) {
-		// Redirection si l'utilisateur n'est pas connecté
-		$this->App->getGenericComponentHandler()->checkAndredirectToLogin();
+		/*------------------------*/
+		/* Traitements génériques */
+		/*------------------------*/
+		$this->title = 'Suppression d\'un commentaire';
+		$this->connection_required = true;
+		$this->runActionHandler();
 
+
+		/*-------------------------*/
+		/* Traitements spécifiques */
+		/*-------------------------*/
 		/**
 		 * @var CommentsManager $CommentsManager
 		 * @var Comment $Comment
@@ -367,9 +452,7 @@ class NewsController extends BackController {
 		$CommentsManager = $this->Managers->getManagerOf('Comments');
 		$Comment = $CommentsManager->getCommentcUsingCommentcId($Request->getGetData('id'));
 
-		/*
-		* Si l'utilisateur n'est pas un admin
-		* */
+		// Si non admin
 		if (!Session::isAdmin()) {
 			// Si l'utilisateur tente de modifier un commentaire qui ne lui appartient pas
 			if ($Comment['pseudonym'] !== Session::getAttribute('pseudo')) {

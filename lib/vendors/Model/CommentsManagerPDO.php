@@ -1,8 +1,8 @@
 <?php
 namespace Model;
 
-use \Entity\Comment;
-use \OCFram\Session;
+use Entity\Comment;
+use OCFram\Session;
 
 class CommentsManagerPDO extends CommentsManager {
 	/**

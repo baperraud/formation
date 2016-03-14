@@ -1,8 +1,8 @@
 <?php
 namespace Model;
 
-use \Entity\User;
-use \OCFram\Manager;
+use Entity\User;
+use OCFram\Manager;
 
 abstract class UsersManager extends Manager {
 	const COMPTE_ACTIF = 1;

@@ -2,9 +2,10 @@
 /**
  * @var string $content
  * @var array $layout_route_a
+ * @var array $menu_a
  */
 
-use \OCFram\Session;
+use OCFram\Session;
 
 ?>
 
@@ -23,7 +24,7 @@ use \OCFram\Session;
 <body>
 <div id="wrap">
 	<header>
-		<h1><a href=<?= $layout_route_a['accueil'] ?>>Mon super site</a></h1>
+		<h1><a href=<?= \OCFram\Application::getRoute('Frontend', 'News', 'index') ?>>Mon super site</a></h1>
 		<p>Comment ça, il n'y a presque rien ?<br/>
 			<?= Session::isAuthenticated() ? ('Bienvenue ' . Session::getAttribute('pseudo') . ' !') : 'Pas de session en cours' ?>
 		</p>
@@ -31,22 +32,13 @@ use \OCFram\Session;
 
 	<nav>
 		<ul>
-			<li><a href=<?= $layout_route_a['accueil'] ?>>Accueil</a></li>
 			<?php
-			if (Session::isAuthenticated()):
-				if (Session::getAttribute('admin') == 1): ?>
-					<li><a href=<?= $layout_route_a['admin'] ?>>Zone Admin</a></li>
-					<?php
-				endif; ?>
-				<li><a href=<?= $layout_route_a['insert'] ?>>Ajouter une news</a></li>
-				<li><a href=<?= $layout_route_a['profil'] ?>>Mon profil</a></li>
-				<li><a href=<?= $layout_route_a['logout'] ?>>Se déconnecter</a></li>
-				<?php
-			else: ?>
-				<li><a href=<?= $layout_route_a['login'] ?>>Se connecter</a></li>
-				<li><a href=<?= $layout_route_a['signup'] ?>>S'inscrire</a></li>
-				<?php
-			endif; ?>
+			foreach ($menu_a as $label => $route): ?>
+			<li><a href=<?= $route ?>><?= $label ?></a></li>
+			<?php
+			endforeach;
+			?>
+
 		</ul>
 	</nav>
 

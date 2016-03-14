@@ -1,7 +1,7 @@
 <?php
 namespace OCFram;
 
-use \Model\UsersManager;
+use Model\UsersManager;
 
 session_start();
 

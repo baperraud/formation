@@ -9,8 +9,8 @@
  * @var string $news_user_url
  */
 
-use \OCFram\Application;
-use \OCFram\Session;
+use OCFram\Application;
+use OCFram\Session;
 ?>
 
 	<p>Par <em><a href="<?= $news_user_url ?>"><?= htmlspecialchars($News['auteur']) ?></a></em>, le <?= $News['Date_ajout']->format('d/m/Y à H\hi') ?></p>

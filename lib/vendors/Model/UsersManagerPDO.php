@@ -1,7 +1,7 @@
 <?php
 namespace Model;
 
-use \Entity\User;
+use Entity\User;
 
 class UsersManagerPDO extends UsersManager {
 	/**

@@ -2,7 +2,7 @@
 
 namespace App\Frontend\Modules\Device;
 
-use \OCFram\BackController;
+use OCFram\BackController;
 
 class DeviceController extends BackController {
 	public function executeIndex() {

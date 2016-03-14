@@ -2,30 +2,42 @@
 
 namespace App\Frontend\Modules\User;
 
-use \Entity\Comment;
-use \Entity\News;
-use \Entity\User;
-use \FormBuilder\ConnexionFormBuilder;
-use \FormBuilder\UserFormBuilder;
-use \Model\CommentsManager;
-use \Model\NewsManager;
-use \Model\UsersManager;
-use \OCFram\Application;
-use \OCFram\BackController;
-use \OCFram\ConnexionFormHandler;
-use \OCFram\FormHandler;
-use \OCFram\HTTPRequest;
-use \OCFram\Session;
+use App\Frontend\GenericActionHandler;
+use Entity\Comment;
+use Entity\News;
+use Entity\User;
+use FormBuilder\ConnexionFormBuilder;
+use FormBuilder\UserFormBuilder;
+use Model\CommentsManager;
+use Model\NewsManager;
+use Model\UsersManager;
+use OCFram\Application;
+use OCFram\BackController;
+use OCFram\ConnexionFormHandler;
+use OCFram\FormHandler;
+use OCFram\HTTPRequest;
+use OCFram\Session;
 
 class UserController extends BackController {
 
-	public function executeIndex(HTTPRequest $Request) {
-		// Si l'utilisateur est connecté
-		if (Session::isAuthenticated()) {
-			Session::setFlash('Vous êtes déjà connecté !');
-			$this->App->getHttpResponse()->redirect('.');
-		}
+	use GenericActionHandler;
 
+	/**
+	 * Action permettant de se connecter
+	 * @param $Request HTTPRequest La requête de l'utilisateur
+	 */
+	public function executeIndex(HTTPRequest $Request) {
+		/*------------------------*/
+		/* Traitements génériques */
+		/*------------------------*/
+		$this->deconnection_required = true;
+		$this->title = 'Connexion';
+		$this->runActionHandler();
+
+
+		/*-------------------------*/
+		/* Traitements spécifiques */
+		/*-------------------------*/
 		/** @var UsersManager $UsersManager */
 		$UsersManager = $this->Managers->getManagerOf('Users');
 
@@ -83,8 +95,19 @@ class UserController extends BackController {
 		}
 	}
 
+	/**
+	 * Action permettant de se déconnecter
+	 */
 	public function executeLogout() {
-		$this->Page->addVar('title', 'Déconnexion');
+		/*------------------------*/
+		/* Traitements génériques */
+		/*------------------------*/
+		$this->runActionHandler();
+
+
+		/*-------------------------*/
+		/* Traitements spécifiques */
+		/*-------------------------*/
 
 		// Si l'utilisateur est connecté
 		if (Session::isAuthenticated()) {
@@ -112,32 +135,39 @@ class UserController extends BackController {
 	 * @param $Request HTTPRequest La requête de l'utilisateur
 	 */
 	public function executeShow(HTTPRequest $Request) {
+		/*------------------------*/
+		/* Traitements génériques */
+		/*------------------------*/
 
 		// On vérifie que le membre existe bien
-		/** @var UsersManager $UsersManager */
+		/**
+		 * @var UsersManager $UsersManager
+		 * @var User $User
+		 */
 		$UsersManager = $this->Managers->getManagerOf('Users');
-		/** @var User $User */
 		$User = $UsersManager->getUsercUsingId($Request->getGetData('id'));
-		if (empty($User)) {
-			$this->App->getHttpResponse()->redirect404();
-		}
+		if (empty($User)) $this->App->getHttpResponse()->redirect404();
 
-		$nombre_caracteres = (int)$this->App->getConfig()->get('nombre_caracteres');
-
-
-		// On passe le membre à la vue
-		$this->Page->addVar('title', 'Profil de ' . $User->getPseudonym());
 		$this->Page->addVar('User', $User);
 
-		/*
-		 * Récupération des news du membre
-		 * */
+		$this->title = 'Profil de ' . $User->getPseudonym();
+		$this->runActionHandler();
 
-		/** @var NewsManager $NewsManager */
+
+		/*-------------------------*/
+		/* Traitements spécifiques */
+		/*-------------------------*/
+		$nombre_caracteres = (int)$this->App->getConfig()->get('nombre_caracteres');
+
+		/* Récupération des news du membre */
+
+		/**
+		 * @var NewsManager $NewsManager
+		 * @var News[] $News_a
+		 */
 		$NewsManager = $this->Managers->getManagerOf('News');
-
-		/** @var News[] $News_a */
 		$News_a = $NewsManager->getNewscUsingUsercIdSortByDateDesc_a($User['id']);
+
 		$news_url_a = [];
 
 		foreach ($News_a as $News) {
@@ -173,15 +203,16 @@ class UserController extends BackController {
 		$this->Page->addVar('news_update_url_a', $news_update_url_a);
 		$this->Page->addVar('news_delete_url_a', $news_delete_url_a);
 
-		/*
-		 * Récupération des commentaires du membre
-		 * */
 
-		/** @var CommentsManager $CommentsManager */
+		/* Récupération des commentaires du membre */
+
+		/**
+		 * @var CommentsManager $CommentsManager
+		 * @var Comment[] $Comment_a
+		 */
 		$CommentsManager = $this->Managers->getManagerOf('Comments');
-
-		/** @var Comment[] $Comment_a */
 		$Comment_a = $CommentsManager->getCommentcUsingUsercIdSortByDateDesc_a($User['id']);
+
 		$comment_news_url_a = [];
 
 		foreach ($Comment_a as $Comment) {
@@ -212,14 +243,18 @@ class UserController extends BackController {
 	 * @param $Request HTTPRequest La requête de l'utilisateur
 	 */
 	public function executeSignup(HTTPRequest $Request) {
-		// Si l'utilisateur est connecté
-		if (Session::isAuthenticated()) {
-			Session::setFlash('Vous êtes déjà connecté !');
-			$this->App->getHttpResponse()->redirect('.');
-		}
+		/*------------------------*/
+		/* Traitements génériques */
+		/*------------------------*/
+		$this->deconnection_required = true;
+		$this->title = 'Création d\'un compte';
+		$this->runActionHandler();
 
+
+		/*-------------------------*/
+		/* Traitements spécifiques */
+		/*-------------------------*/
 		/** @var UsersManager $UsersManager */
-		// On récupère le manager des utilisateurs
 		$UsersManager = $this->Managers->getManagerOf('Users');
 
 		// Si le formulaire a été envoyé
@@ -261,7 +296,6 @@ class UserController extends BackController {
 		$this->Page->addVar('User', $User);
 		// On passe le formulaire généré à la vue
 		$this->Page->addVar('form', $Form->createView());
-		$this->Page->addVar('title', 'Création d\'un compte');
 	}
 
 }

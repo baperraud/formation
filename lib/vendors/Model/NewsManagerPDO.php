@@ -1,7 +1,7 @@
 <?php
 namespace Model;
 
-use \Entity\News;
+use Entity\News;
 use OCFram\Session;
 
 class NewsManagerPDO extends NewsManager {

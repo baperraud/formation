@@ -1,8 +1,8 @@
 <?php
 namespace Entity;
 
-use \OCFram\Entity;
-use \OCFram\Session;
+use OCFram\Entity;
+use OCFram\Session;
 
 class Comment extends Entity {
 	protected $news;
