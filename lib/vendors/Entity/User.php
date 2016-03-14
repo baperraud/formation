@@ -4,6 +4,7 @@ namespace Entity;
 use OCFram\Entity;
 
 class User extends Entity {
+	protected $Date;
 	protected $pseudonym;
 	protected $password;
 	protected $password_confirmation;
@@ -18,6 +19,7 @@ class User extends Entity {
 		return !(empty($this->pseudonym) || empty($this->password) || empty($this->email));
 	}
 
+	public function setDate(\DateTime $Date) { $this->Date = $Date; }
 	public function setPseudonym($pseudonym) {
 		if (!is_string($pseudonym) || empty($pseudonym)) {
 			$this->pseudonym = self::PSEUDO_INVALIDE;
@@ -61,6 +63,7 @@ class User extends Entity {
 		$this->etat = $etat;
 	}
 
+	public function getDate() { return $this->Date; }
 	public function getPseudonym() { return $this->pseudonym; }
 	public function getPassword() { return $this->password; }
 	public function getPassword_confirmation() { return $this->password_confirmation; }

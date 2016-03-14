@@ -7,13 +7,18 @@
 ?>
 <p style="text-align: center">Il y a actuellement <?= $nombre_news ?> news. En voici la liste :</p>
 
-<table id="admin_view">
+<table id="news_admin_view">
 	<tr>
-		<th>Auteur</th><th>Titre</th><th>Date d'ajout</th><th>Dernière modification</th><th>Action</th>
+		<th>Auteur</th>
+		<th>Titre</th>
+		<th>Date d'ajout</th>
+		<th>Dernière modification</th>
+		<th>Action</th>
+	</tr>
 
-		<?php /** @var \Entity\News[] $News_a */
-		foreach ($News_a as $News) {
-			echo '
+	<?php /** @var \Entity\News[] $News_a */
+	foreach ($News_a as $News) {
+		echo '
 				<tr>
 					<td>', htmlspecialchars($News['auteur']), '</td>
 					<td>', htmlspecialchars($News['titre']), '</td>
@@ -21,7 +26,6 @@
 					<td>', ($News['Date_ajout'] == $News['Date_modif'] ? '-' : 'le ' . $News['Date_modif']->format('d/m/Y à H\hi')), '</td>
 					<td><a href=', $news_update_url_a[$News['id']], '><img src="/images/update.png" alt="Modifier" /></a> <a href=', $news_delete_url_a[$News['id']], '><img src="/images/delete.png" alt="Supprimer" /></a></td>
 				</tr>', "\n";
-		}
-		?>
-	</tr>
+	}
+	?>
 </table>

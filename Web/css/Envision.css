@@ -487,8 +487,12 @@ table td {
 	word-wrap: break-word;      /* IE 5+ */
 }
 
-table#admin_view td {
+table#news_admin_view td {
 	max-width: 96px;
+}
+
+table#users_admin_view td {
+	max-width: 124px;
 }
 
 table#news_user_view td {

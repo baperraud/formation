@@ -12,6 +12,20 @@ abstract class UsersManager extends Manager {
 	const SALT_GENERATOR = 'return uniqid(mt_rand(), true);';
 
 	/**
+	 * Méthode retournant le nombre de membres existants
+	 * @return int Le nombre de membres
+	 */
+	abstract public function countUserc();
+
+	/**
+	 * Méthode retournant une liste de membres
+	 * @param $debut int Le premier membre à sélectionner
+	 * @param $limite int Le nombre de membres à sélectionner
+	 * @return array La liste des membres
+	 */
+	abstract public function getUsercSortByIdDesc_a($debut = -1, $limite = -1);
+
+	/**
 	 * Méthode permettant de récupérer un membre selon son pseudonyme
 	 * @param $pseudo string Le pseudonyme du membre
 	 * @return User

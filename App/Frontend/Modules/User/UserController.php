@@ -79,7 +79,7 @@ class UserController extends BackController {
 			if ($Connexion_Form_handler->getError_type() === ConnexionFormHandler::PASSWORD_INVALIDE)
 				Session::setFlash('Le mot de passe est incorrect.');
 			if ($Connexion_Form_handler->getError_type() === ConnexionFormHandler::COMPTE_INACTIF)
-				Session::setFlash('Ce compte est inactif.');
+				Session::setFlash('Erreur : ce compte est inactif.');
 		}
 	}
 

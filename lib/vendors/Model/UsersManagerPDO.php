@@ -5,6 +5,46 @@ use \Entity\User;
 
 class UsersManagerPDO extends UsersManager {
 	/**
+	 * Méthode retournant le nombre de membres existants
+	 * @return int Le nombre de membres
+	 */
+	public function countUserc() {
+		return $this->Dao->query('SELECT COUNT(*) FROM T_NEW_userc')->fetchColumn();
+	}
+
+	/**
+	 * Méthode retournant une liste de membres
+	 * @param $debut int Le premier membre à sélectionner
+	 * @param $limite int Le nombre de membres à sélectionner
+	 * @return array La liste des membres
+	 */
+	public function getUsercSortByIdDesc_a($debut = -1, $limite = -1) {
+		$select_query = '
+			SELECT NUC_id id, NUC_date Date, NUC_pseudonym pseudonym, NUC_password password, NUC_salt salt, NUC_email email, NUC_fk_NUY role, NUC_fk_NUE etat
+			FROM T_NEW_userc
+			ORDER BY NUC_id DESC';
+
+		if ($debut != -1 || $limite != -1) {
+			$select_query .= ' LIMIT ' . (int)$limite . ' OFFSET ' . (int)$debut;
+		}
+
+		$select_query_result = $this->Dao->query($select_query);
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$select_query_result->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\User');
+
+		$User_a = $select_query_result->fetchAll();
+
+		/** @var User[] $User_a */
+		foreach ($User_a as $User) {
+			$User->setDate(new \DateTime($User->getDate()));
+		}
+
+		$select_query_result->closeCursor();
+
+		return $User_a;
+	}
+
+	/**
 	 * Méthode permettant de récupérer un membre en BDD
 	 * @param $id int L'id du membre
 	 * @return User

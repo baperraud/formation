@@ -48,3 +48,12 @@ This part consist to add a functionnality for ask a route for a Controller and a
     * Le nom de l'auteur d'une news ou d'un commentaire qui fait référence à un compte utilisateurs/admin pointera vers une page de profil d'un utilisateur qui listera les news postées par ce membre et les commentaires écrits. OK
   * Mails.
     * Lorsqu'un nouveau commentaires est posté, envoyer un mail à tous les gens qui ont commenté cette même news précédement. OK
+
+# 7 - Improve your code : Url and Link
+* Mettre en place une centralisation pour la gestion des composants génériques du site.
+* Actuellement, le menu est géré dans le layout. On pourrait le faire évoluer, avec des
+* parties à afficher en fonction du membre connecté. Il faudrait contrôler le menu par le
+* code.
+* Idem pour la gestion de cookies pour la reconnexion, etc.
+* En fait, il faudrait gérer la centralisation des actions des contrôleurs dans un nouvel élément du framework
+* Il faut créer un nouveau composant (ne pas le mettre dans Application ou autre)
