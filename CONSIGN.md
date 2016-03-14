@@ -49,11 +49,11 @@ This part consist to add a functionnality for ask a route for a Controller and a
   * Mails.
     * Lorsqu'un nouveau commentaires est posté, envoyer un mail à tous les gens qui ont commenté cette même news précédement. OK
 
-# 7 - Improve your code : Url and Link
+# 7 - Centralisation - gestion des composants génériques du site
 * Mettre en place une centralisation pour la gestion des composants génériques du site.
 * Actuellement, le menu est géré dans le layout. On pourrait le faire évoluer, avec des
 * parties à afficher en fonction du membre connecté. Il faudrait contrôler le menu par le
 * code.
-* Idem pour la gestion de cookies pour la reconnexion, etc.
+* Idem pour la gestion de cookies pour la reconnexion, pour la redirection automatique en cas de non connexion lors de certaines actions, etc.
 * En fait, il faudrait gérer la centralisation des actions des contrôleurs dans un nouvel élément du framework
 * Il faut créer un nouveau composant (ne pas le mettre dans Application ou autre)
