@@ -12,29 +12,21 @@ class BackendApplication extends Application {
 	}
 
 	public function run() {
-		// Si l'utilisateur est authentifié en tant qu'admin
-		if (Session::isAdmin()) {
-			// Obtention du contrôleur
-			/** @var BackController $controller */
-			$controller = $this->getController();
+		// Si l'utilisateur n'est pas connecté ou n'a pas les droits
+		$this->GenericComponentHandler->checkAndredirectToLogin('Vous devez vous connecter en tant qu\'administrateur pour accéder à cette page.');
+		$this->GenericComponentHandler->checkAndredirectToLogin('Vous devez vous reconnecter en tant qu\'administrateur pour accéder à cette page.', true);
 
-			// On exécute le contrôleur
-			$controller->execute();
+		// Obtention du contrôleur
+		/** @var BackController $controller */
+		$controller = $this->getController();
 
-			// Assignation de la page créée par le contrôleur à la réponse
-			$this->Http_response->setPage($controller->getPage());
+		// Exécution du contrôleur
+		$controller->execute();
 
-			// Envoi de la réponse
-			$this->Http_response->send();
+		// Assignation de la page créée par le contrôleur à la réponse
+		$this->Http_response->setPage($controller->getPage());
 
-		} // Si l'utilisateur n'a pas les droits
-		elseif (Session::isAuthenticated()) {
-			Session::setFlash('Vous devez vous reconnecter en tant qu\'administrateur pour accéder à cette page.');
-			$this->getHttpResponse()->redirect('/');
-		} // Sinon, redirection vers la page de connexion
-		else {
-			Session::setFlash('Vous devez vous connecter en tant qu\'administrateur pour accéder à cette page.');
-			$this->getHttpResponse()->redirect('/login.html');
-		}
+		// Envoi de la réponse
+		$this->Http_response->send();
 	}
 }

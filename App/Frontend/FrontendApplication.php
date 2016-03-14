@@ -25,6 +25,4 @@ class FrontendApplication extends Application {
 		// Envoi de la réponse
 		$this->Http_response->send();
 	}
-
-
 }
