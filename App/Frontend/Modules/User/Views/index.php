@@ -4,9 +4,9 @@
 
 <h2>Connexion</h2>
 <form action="" method="post">
-	<p>
-		<?= $form ?>
+    <p>
+        <?= $form ?>
 
-		<input type="submit" value="Connexion" />
-	</p>
+        <input type="submit" value="Connexion"/>
+    </p>
 </form>

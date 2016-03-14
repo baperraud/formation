@@ -4,9 +4,9 @@
 
 <h2>Modifier un commentaire</h2>
 <form action="" method="post">
-	<p>
-		<?= $form ?>
+    <p>
+        <?= $form ?>
 
-		<input type="submit" value="Modifier" />
-	</p>
+        <input type="submit" value="Modifier"/>
+    </p>
 </form>

@@ -15,146 +15,146 @@ use OCFram\Session;
 
 class NewsController extends BackController {
 
-	use GenericActionHandler;
+    use GenericActionHandler;
 
-	/**
-	 * Action permettant d'afficher la liste des news
-	 */
-	public function executeIndex() {
-		/*------------------------*/
-		/* Traitements génériques */
-		/*------------------------*/
-		$this->title = 'Gestion des news';
-		$this->admin_required = true;
-		$this->runActionHandler();
-
-
-		/*-------------------------*/
-		/* Traitements spécifiques */
-		/*-------------------------*/
-		/**
-		 * @var NewsManager $NewsManager *
-		 * @var News[] $News_a
-		 */
-		$NewsManager = $this->Managers->getManagerOf('News');
-		$News_a = $NewsManager->getNewscSortByIdDesc_a();
-
-		// On envoie la liste des news et leur nombre à la vue
-		$this->Page->addVar('News_a', $News_a);
-		$this->Page->addVar('nombre_news', $NewsManager->countNewsc());
-
-		// On récupère les routes associées que l'on envoie à la vue
-		$news_url_a = [];
-		$news_update_url_a = [];
-		$news_delete_url_a = [];
-		$user_url_a = [];
-
-		foreach ($News_a as $News) {
-			$news_url_a[$News->getId()] = Application::getRoute('Frontend', $this->getModule(), 'show', array($News['id']));
-			$news_update_url_a[$News->getId()] = Application::getRoute($this->App->getName(), $this->getModule(), 'update', array($News['id']));
-			$news_delete_url_a[$News->getId()] = Application::getRoute($this->App->getName(), $this->getModule(), 'delete', array($News['id']));
-
-			// On récupère l'id de l'auteur de la news
-			$user_id = $NewsManager->getUsercIdUsingNewscId($News->getId());
-			if (!empty($user_id))
-				$user_url_a[$News->getId()] = Application::getRoute('Frontend', 'User', 'show', array($user_id));
-			else throw new \RuntimeException('Erreur de récupération de l\'auteur de la news');
-		}
-
-		$this->Page->addVar('news_url_a', $news_url_a);
-		$this->Page->addVar('news_update_url_a', $news_update_url_a);
-		$this->Page->addVar('news_delete_url_a', $news_delete_url_a);
-		$this->Page->addVar('user_url_a', $user_url_a);
-	}
-
-	/**
-	 * Action permettant de modifier une news
-	 * @param $Request HTTPRequest La requête de l'utilisateur
-	 */
-	public function executeUpdate(HTTPRequest $Request) {
-		/*------------------------*/
-		/* Traitements génériques */
-		/*------------------------*/
-		$this->title = 'Modification d\'une news';
-		$this->admin_required = true;
-		$this->runActionHandler();
+    /**
+     * Action permettant d'afficher la liste des news
+     */
+    public function executeIndex() {
+        /*------------------------*/
+        /* Traitements génériques */
+        /*------------------------*/
+        $this->title = 'Gestion des news';
+        $this->admin_required = true;
+        $this->runActionHandler();
 
 
-		/*-------------------------*/
-		/* Traitements spécifiques */
-		/*-------------------------*/
-		$this->processForm($Request);
-	}
+        /*-------------------------*/
+        /* Traitements spécifiques */
+        /*-------------------------*/
+        /**
+         * @var NewsManager $NewsManager *
+         * @var News[] $News_a
+         */
+        $NewsManager = $this->Managers->getManagerOf('News');
+        $News_a = $NewsManager->getNewscSortByIdDesc_a();
 
-	/**
-	 * Action permettant de supprimer une news
-	 * @param $Request HTTPRequest La requête de l'utilisateur
-	 */
-	public function executeDelete(HTTPRequest $Request) {
-		/*------------------------*/
-		/* Traitements génériques */
-		/*------------------------*/
-		$this->admin_required = true;
-		$this->runActionHandler();
+        // On envoie la liste des news et leur nombre à la vue
+        $this->Page->addVar('News_a', $News_a);
+        $this->Page->addVar('nombre_news', $NewsManager->countNewsc());
+
+        // On récupère les routes associées que l'on envoie à la vue
+        $news_url_a = [];
+        $news_update_url_a = [];
+        $news_delete_url_a = [];
+        $user_url_a = [];
+
+        foreach ($News_a as $News) {
+            $news_url_a[$News->getId()] = Application::getRoute('Frontend', $this->getModule(), 'show', array($News['id']));
+            $news_update_url_a[$News->getId()] = Application::getRoute($this->App->getName(), $this->getModule(), 'update', array($News['id']));
+            $news_delete_url_a[$News->getId()] = Application::getRoute($this->App->getName(), $this->getModule(), 'delete', array($News['id']));
+
+            // On récupère l'id de l'auteur de la news
+            $user_id = $NewsManager->getUsercIdUsingNewscId($News->getId());
+            if (!empty($user_id))
+                $user_url_a[$News->getId()] = Application::getRoute('Frontend', 'User', 'show', array($user_id));
+            else throw new \RuntimeException('Erreur de récupération de l\'auteur de la news');
+        }
+
+        $this->Page->addVar('news_url_a', $news_url_a);
+        $this->Page->addVar('news_update_url_a', $news_update_url_a);
+        $this->Page->addVar('news_delete_url_a', $news_delete_url_a);
+        $this->Page->addVar('user_url_a', $user_url_a);
+    }
+
+    /**
+     * Action permettant de modifier une news
+     * @param $Request HTTPRequest La requête de l'utilisateur
+     */
+    public function executeUpdate(HTTPRequest $Request) {
+        /*------------------------*/
+        /* Traitements génériques */
+        /*------------------------*/
+        $this->title = 'Modification d\'une news';
+        $this->admin_required = true;
+        $this->runActionHandler();
 
 
-		/*-------------------------*/
-		/* Traitements spécifiques */
-		/*-------------------------*/
-		$news_id = $Request->getGetData('id');
+        /*-------------------------*/
+        /* Traitements spécifiques */
+        /*-------------------------*/
+        $this->processForm($Request);
+    }
 
-		// On supprime la news
-		/** @var NewsManager $NewsManager */
-		$NewsManager = $this->Managers->getManagerOf('News');
-		$NewsManager->deleteNewscUsingId($news_id);
+    /**
+     * Action permettant de supprimer une news
+     * @param $Request HTTPRequest La requête de l'utilisateur
+     */
+    public function executeDelete(HTTPRequest $Request) {
+        /*------------------------*/
+        /* Traitements génériques */
+        /*------------------------*/
+        $this->admin_required = true;
+        $this->runActionHandler();
 
-		// On supprime les commentaires associés
-		/** @var CommentsManager $CommentsManager */
-		$CommentsManager = $this->Managers->getManagerOf('Comments');
-		$CommentsManager->deleteCommentcUsingNewcId($news_id);
 
-		Session::setFlash('La news a bien été supprimée !');
+        /*-------------------------*/
+        /* Traitements spécifiques */
+        /*-------------------------*/
+        $news_id = $Request->getGetData('id');
 
-		$this->App->getHttpResponse()->redirect('.');
-	}
+        // On supprime la news
+        /** @var NewsManager $NewsManager */
+        $NewsManager = $this->Managers->getManagerOf('News');
+        $NewsManager->deleteNewscUsingId($news_id);
 
-	protected function processForm(HTTPRequest $Request) {
-		/** @var NewsManager $NewsManager */
-		$NewsManager = $this->Managers->getManagerOf('News');
+        // On supprime les commentaires associés
+        /** @var CommentsManager $CommentsManager */
+        $CommentsManager = $this->Managers->getManagerOf('Comments');
+        $CommentsManager->deleteCommentcUsingNewcId($news_id);
 
-		if ($Request->getMethod() == 'POST') {
-			$News = new News([
-				'auteur' => $Request->getPostData('auteur'),
-				'titre' => $Request->getPostData('titre'),
-				'contenu' => $Request->getPostData('contenu')
-			]);
+        Session::setFlash('La news a bien été supprimée !');
 
-			if ($Request->getExists('id')) {
-				$News->setId($Request->getGetData('id'));
-			}
+        $this->App->getHttpResponse()->redirect('.');
+    }
 
-		} else {
-			// L'identifiant de la news est transmis si on veut la modifier
-			if ($Request->getExists('id')) {
-				$News = $NewsManager->getNewscUsingId($Request->getGetData('id'));
-			} else {
-				$News = new News;
-			}
-		}
+    protected function processForm(HTTPRequest $Request) {
+        /** @var NewsManager $NewsManager */
+        $NewsManager = $this->Managers->getManagerOf('News');
 
-		$Form_builder = new NewsFormBuilder($News);
-		$Form_builder->build();
+        if ($Request->getMethod() == 'POST') {
+            $News = new News([
+                'auteur' => $Request->getPostData('auteur'),
+                'titre' => $Request->getPostData('titre'),
+                'contenu' => $Request->getPostData('contenu')
+            ]);
 
-		$Form = $Form_builder->getForm();
+            if ($Request->getExists('id')) {
+                $News->setId($Request->getGetData('id'));
+            }
 
-		$Form_handler = new FormHandler($Form, $NewsManager, $Request);
+        } else {
+            // L'identifiant de la news est transmis si on veut la modifier
+            if ($Request->getExists('id')) {
+                $News = $NewsManager->getNewscUsingId($Request->getGetData('id'));
+            } else {
+                $News = new News;
+            }
+        }
 
-		if ($Form_handler->process()) {
-			Session::setFlash('La news a bien été modifiée !');
-			$news_url = Application::getRoute('Frontend', 'News', 'show', array($News->getId()));
-			$this->App->getHttpResponse()->redirect($news_url);
-		}
+        $Form_builder = new NewsFormBuilder($News);
+        $Form_builder->build();
 
-		$this->Page->addVar('form', $Form->createView());
-	}
+        $Form = $Form_builder->getForm();
+
+        $Form_handler = new FormHandler($Form, $NewsManager, $Request);
+
+        if ($Form_handler->process()) {
+            Session::setFlash('La news a bien été modifiée !');
+            $news_url = Application::getRoute('Frontend', 'News', 'show', array($News->getId()));
+            $this->App->getHttpResponse()->redirect($news_url);
+        }
+
+        $this->Page->addVar('form', $Form->createView());
+    }
 }

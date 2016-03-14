@@ -10,20 +10,20 @@ use OCFram\BackController;
 
 
 class UserController extends BackController {
-	use GenericActionHandler;
+    use GenericActionHandler;
 
-	public function executeIndex() {
-		$this->Page->addVar('title', 'Gestion des membres');
+    public function executeIndex() {
+        $this->Page->addVar('title', 'Gestion des membres');
 
-		/** @var UsersManager $UsersManager */
-		$UsersManager = $this->Managers->getManagerOf('Users');
+        /** @var UsersManager $UsersManager */
+        $UsersManager = $this->Managers->getManagerOf('Users');
 
-		/** @var User[] $User_a */
-		$User_a = $UsersManager->getUsercSortByIdDesc_a();
+        /** @var User[] $User_a */
+        $User_a = $UsersManager->getUsercSortByIdDesc_a();
 
-		// On envoie la liste des membres et leur nombre à la vue
-		$this->Page->addVar('User_a', $User_a);
-		$this->Page->addVar('nombre_membres', $UsersManager->countUserc());
+        // On envoie la liste des membres et leur nombre à la vue
+        $this->Page->addVar('User_a', $User_a);
+        $this->Page->addVar('nombre_membres', $UsersManager->countUserc());
 
 //		// On récupère les routes de modification/suppression de news
 //		// puis on les envoie à la vue
@@ -37,5 +37,5 @@ class UserController extends BackController {
 
 //		$this->Page->addVar('news_update_url_a', $news_update_url_a);
 //		$this->Page->addVar('news_delete_url_a', $news_delete_url_a);
-	}
+    }
 }

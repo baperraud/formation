@@ -5,9 +5,9 @@
 <h2>Écrire un commentaire</h2>
 
 <form action="" method="post">
-	<p>
-		<?= $form ?>
+    <p>
+        <?= $form ?>
 
-		<input type="submit" value="Envoyer" />
-	</p>
+        <input type="submit" value="Envoyer"/>
+    </p>
 </form>
