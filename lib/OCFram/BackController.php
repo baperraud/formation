@@ -38,7 +38,8 @@ abstract class BackController extends ApplicationComponent {
             throw new \InvalidArgumentexception('La vue doit être une chaîne de caractères valide');
         }
         $this->view = $view;
-        $this->Page->setContentFile(__DIR__ . '/../../App/' . $this->App->getName() . '/Modules/' . $this->module . '/Views/' . $this->view . '.php');
+        $is_json = $this->App->getHttpRequest()->getGetData('f') == 'json';
+        $this->Page->setContentFile(__DIR__ . '/../../App/' . $this->App->getName() . '/Modules/' . $this->module . '/Views/' . $this->view . ($is_json ? '_json.php' : '.php'));
     }
 
     public function getAction() { return $this->action; }

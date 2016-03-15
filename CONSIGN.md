@@ -56,11 +56,22 @@ This part consist to add a functionnality for ask a route for a Controller and a
 * En fait, il faudrait gérer la centralisation des actions des contrôleurs dans un nouvel élément du framework
 * Il faut créer un nouveau composant (ne pas le mettre dans Application ou autre)
 
-
-
 # 8 - Add Feature : Ajax ! Flower Party :)
-* Change the comportment of the form to add a comment in a news page.
+* Change the behaviour of the form to add a comment in a news page.
 * Form to add new comment must work now with ajax. So when user submit his form, don't reload the page but post an ajax query to valid the form.
 * Show errors or add new comment directly if there are no error.
 * The returned data of any ajax call need to be a JSON Object.
+
+
+* Corrections :
+1. Pas de génération du form via AJAX
+2. Utiliser localement les triggers/listeners
+3. Externaliser le script
+4. Modifier les routes pour attribut format
+5. Ajouter les actions de ce format dans les classes spécifiques
+6. Modifier les contrôleurs pour avoir une action différente lorsque le format est différent
+7. Modifier la génération du retour (pas ob_flush, json_encode)
+8. Deux ids pour les deux forms (ou utiliser this)
+9. Gérer la récupération de tous les commentaires depuis le dernier affiché lorsqu'on en poste un nouveau
+10. Pour les kékés qui ont du temps libre : sync les formulaires
 

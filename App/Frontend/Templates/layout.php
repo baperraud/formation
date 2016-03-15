@@ -19,6 +19,8 @@ use OCFram\Session;
     <meta charset="utf-8"/>
 
     <link rel="stylesheet" href="/css/Envision.css" type="text/css"/>
+
+    <script src="//code.jquery.com/jquery-2.2.1.min.js"></script>
 </head>
 
 <body>

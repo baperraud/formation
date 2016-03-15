@@ -19,6 +19,7 @@ class Router {
 
             /** Route[] $vars_values */
             if (($vars_values = $Route->match($url)) !== false) {
+
                 // Si elle a des variables
                 if ($Route->hasVars()) {
                     $varsNames = $Route->getVarsNames_a();

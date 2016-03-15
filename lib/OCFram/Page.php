@@ -4,6 +4,7 @@ namespace OCFram;
 class Page extends ApplicationComponent {
     protected $contentFile;
     protected $vars_a = [];
+    protected $format;
 
     public function addVar($var, $value) {
         if (!is_string($var) || is_numeric($var) || empty($var)) {
@@ -14,7 +15,7 @@ class Page extends ApplicationComponent {
 
     public function getGeneratedPage() {
         if (!file_exists($this->contentFile)) {
-            throw new \RuntimeException('La vue spécifiée n\'existe pas');
+            throw new \RuntimeException('La vue ' . $this->contentFile . ' n\'existe pas');
         }
 
         /** @var Session $Session */
@@ -29,10 +30,19 @@ class Page extends ApplicationComponent {
         /** @noinspection PhpUnusedLocalVariableInspection */
         $content = ob_get_clean();
 
-        ob_start();
-        /** @noinspection PhpIncludeInspection */
-        require __DIR__ . '/../../App/' . $this->App->getName() . '/Templates/layout.php';
-        return ob_get_clean();
+        // Traitement standard -> HTML
+        if (!$this->App->getHttpRequest()->getGetData('f') == 'json') {
+
+            ob_start();
+            /** @noinspection PhpIncludeInspection */
+            require __DIR__ . '/../../App/' . $this->App->getName() . '/Templates/layout.php';
+            return ob_get_clean();
+        }
+
+        // Traitement alternatif -> JSON
+        return $content;
+
+
     }
 
     public function setContentFile($contentFile) {

@@ -9,17 +9,16 @@
  * @var string $news_user_url
  */
 
-use OCFram\Application;
 use OCFram\Session;
 
 ?>
 
-    <p>Par <em><a href="<?= $news_user_url ?>"><?= htmlspecialchars($News['auteur']) ?></a></em>,
-        le <?= $News['Date_ajout']->format('d/m/Y à H\hi') ?></p>
+<p>Par <em><a href="<?= $news_user_url ?>"><?= htmlspecialchars($News['auteur']) ?></a></em>,
+    le <?= $News['Date_ajout']->format('d/m/Y à H\hi') ?></p>
 
-    <h2 class="overflow_hidden"><?= htmlspecialchars($News['titre']) ?></h2>
+<h2 class="overflow_hidden"><?= htmlspecialchars($News['titre']) ?></h2>
 
-    <p class="overflow_hidden"><?= htmlspecialchars($News['contenu']) ?></p>
+<p class="overflow_hidden"><?= htmlspecialchars($News['contenu']) ?></p>
 
 <?php if ($News['Date_ajout'] != $News['Date_modif']): ?>
     <p style="text-align: right;">
@@ -27,7 +26,9 @@ use OCFram\Session;
     </p>
 <?php endif; ?>
 
-    <p><a href=<?= $comment_news_url ?>>Ajouter un commentaire</a></p>
+<p><a class="add_comment" href="#">Ajouter un commentaire</a></p>
+
+<div class="form_container"></div>
 
 <?php
 if (empty($Comment_a)): ?>
@@ -59,6 +60,63 @@ if (empty($Comment_a)): ?>
     endforeach;
 endif; ?>
 
-    <p><a href=<?= $comment_news_url ?>>Ajouter un commentaire</a></p>
+<p><a class="add_comment" href="#">Ajouter un commentaire</a></p>
 
-<?php
+<div class="form_container"></div>
+
+<script>
+
+    $(document).ready(function () {
+
+        // On génère un formulaire
+        $(".add_comment").click(function (e) {
+            $(".form_container").empty();
+
+            $.get(
+                'http://' + document.domain + '<?= $comment_news_url ?>' + '?f=json',
+                false,
+                function (data) {
+
+                    //var obj = jQuery.parseJSON(data);
+
+                    //alert(obj);
+
+                    if ($(e.target).is('.add_comment:first')) {
+                        $(".form_container").first().html(data);
+                        $(document).scrollTop( $(".add_comment").first().offset().top );
+                    }
+                    else {
+                        $(".form_container").last().html(data);
+                        $(document).scrollTop( $(".add_comment").last().offset().top );
+
+                    }
+                },
+                'text'
+            );
+        });
+
+
+        $(document).on("submit", "#submit", function () {
+            alert('click');
+            return false;
+            $.post(
+                'http://' + document.domain + '<?= $comment_news_url ?>' + '?f=json',
+                {
+                    pseudonym: $("#pseudonym").val(),
+                    email: $("#email").val(),
+                    contenu: $("#contenu").val()
+                },
+
+                function (data) {
+                    alert(data);
+                },
+                'text'
+            );
+
+
+
+        });
+
+    });
+
+</script>
