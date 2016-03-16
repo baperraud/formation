@@ -75,3 +75,8 @@ This part consist to add a functionnality for ask a route for a Controller and a
 9. Gérer la récupération de tous les commentaires depuis le dernier affiché lorsqu'on en poste un nouveau : OK
 10. Pour les kékés qui ont du temps libre : sync les formulaires : en cours
 
+TODO :
+* empêcher l'accès à la route json via l'url
+* gérer le comportement normal sans js (supprimer la vue, etc.)
+* gérer la synchronisation (cf ci-dessus)
+
