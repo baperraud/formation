@@ -9,6 +9,7 @@
  * @var string $news_user_url
  */
 
+use FormBuilder\CommentFormBuilder;
 use OCFram\Session;
 
 ?>
@@ -26,9 +27,22 @@ use OCFram\Session;
     </p>
 <?php endif; ?>
 
-<p><a class="add_comment" href="#">Ajouter un commentaire</a></p>
+<?php
+$Form_builder = new CommentFormBuilder(new \Entity\Comment());
+$Form_builder->build();
+$Form = $Form_builder->getForm();
+?>
 
-<div class="form_container"></div>
+<div id="insert_comment_form_container_top" class="insert_comment_form_container">
+    <h3>Insérer un commentaire :</h3>
+    <form action="<?= $comment_news_url ?>" method="post">
+        <p>
+            <?= $Form->createView() ?>
+
+            <input type="submit" value="Commenter"/>
+        </p>
+    </form>
+</div>
 
 <?php
 if (empty($Comment_a)): ?>
@@ -60,63 +74,70 @@ if (empty($Comment_a)): ?>
     endforeach;
 endif; ?>
 
-<p><a class="add_comment" href="#">Ajouter un commentaire</a></p>
+<div id="insert_comment_form_container_bottom" class="insert_comment_form_container">
+    <h3>Insérer un commentaire :</h3>
+    <form action="<?= $comment_news_url ?>" method="post">
+        <p>
+            <?= $Form->createView() ?>
 
-<div class="form_container"></div>
+            <input type="submit" value="Commenter"/>
+        </p>
+    </form>
+</div>
 
 <script>
 
-    $(document).ready(function () {
-
-        // On génère un formulaire
-        $(".add_comment").click(function (e) {
-            $(".form_container").empty();
-
-            $.get(
-                'http://' + document.domain + '<?= $comment_news_url ?>' + '?f=json',
-                false,
-                function (data) {
-
-                    //var obj = jQuery.parseJSON(data);
-
-                    //alert(obj);
-
-                    if ($(e.target).is('.add_comment:first')) {
-                        $(".form_container").first().html(data);
-                        $(document).scrollTop( $(".add_comment").first().offset().top );
-                    }
-                    else {
-                        $(".form_container").last().html(data);
-                        $(document).scrollTop( $(".add_comment").last().offset().top );
-
-                    }
-                },
-                'text'
-            );
-        });
-
-
-        $(document).on("submit", "#submit", function () {
-            alert('click');
-            return false;
-            $.post(
-                'http://' + document.domain + '<?= $comment_news_url ?>' + '?f=json',
-                {
-                    pseudonym: $("#pseudonym").val(),
-                    email: $("#email").val(),
-                    contenu: $("#contenu").val()
-                },
-
-                function (data) {
-                    alert(data);
-                },
-                'text'
-            );
-
-
-
-        });
-
-    });
+    //    $(document).ready(function () {
+    //
+    //        // On génère un formulaire
+    //        $(".add_comment").click(function (e) {
+    //            $(".form_container").empty();
+    //
+    //            $.get(
+    //                'http://' + document.domain + '<?//= $comment_news_url ?>//' + '?f=json',
+    //                false,
+    //                function (data) {
+    //
+    //                    //var obj = jQuery.parseJSON(data);
+    //
+    //                    //alert(obj);
+    //
+    //                    if ($(e.target).is('.add_comment:first')) {
+    //                        $(".form_container").first().html(data);
+    //                        $(document).scrollTop( $(".add_comment").first().offset().top );
+    //                    }
+    //                    else {
+    //                        $(".form_container").last().html(data);
+    //                        $(document).scrollTop( $(".add_comment").last().offset().top );
+    //
+    //                    }
+    //                },
+    //                'text'
+    //            );
+    //        });
+    //
+    //
+    //        $(document).on("submit", "#submit", function () {
+    //            alert('click');
+    //            return false;
+    //            $.post(
+    //                'http://' + document.domain + '<?//= $comment_news_url ?>//' + '?f=json',
+    //                {
+    //                    pseudonym: $("#pseudonym").val(),
+    //                    email: $("#email").val(),
+    //                    contenu: $("#contenu").val()
+    //                },
+    //
+    //                function (data) {
+    //                    alert(data);
+    //                },
+    //                'text'
+    //            );
+    //
+    //
+    //
+    //        });
+    //
+    //    });
 
 </script>

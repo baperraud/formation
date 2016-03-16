@@ -64,7 +64,7 @@ This part consist to add a functionnality for ask a route for a Controller and a
 
 
 * Corrections :
-1. Pas de génération du form via AJAX
+1. Pas de génération du form via AJAX : OK
 2. Utiliser localement les triggers/listeners
 3. Externaliser le script
 4. Modifier les routes pour attribut format
