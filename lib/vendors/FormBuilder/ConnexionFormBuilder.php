@@ -7,7 +7,7 @@ use OCFram\NotNullValidator;
 use OCFram\StringField;
 
 class ConnexionFormBuilder extends FormBuilder {
-    public function build() {
+    public function build($id = null) {
         $this->Form->add(new StringField([
             'label' => 'Pseudo',
             'name' => 'pseudonym',

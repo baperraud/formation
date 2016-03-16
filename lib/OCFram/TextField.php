@@ -13,7 +13,7 @@ class TextField extends Field {
             $widget .= $this->error_message . '<br />';
         }
 
-        $widget .= '<label ' . ($this->isRequired() ? 'class="required"' : '') . ' for="' . $this->name . '">' . $this->label . '</label><textarea name="' . $this->name . '" id="' . $this->name . '"';
+        $widget .= '<label ' . ($this->isRequired() ? 'class="required"' : '') . ' for="' . $this->name . '">' . $this->label . '</label><textarea name="' . $this->name . '" id="' . $this->name . $this->id . '"';
 
         if (!empty($this->cols)) {
             $widget .= ' cols="' . $this->cols . '"';

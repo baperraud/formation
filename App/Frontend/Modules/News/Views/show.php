@@ -28,17 +28,20 @@ use OCFram\Session;
 <?php endif; ?>
 
 <?php
-$Form_builder = new CommentFormBuilder(new \Entity\Comment());
-$Form_builder->build();
-$Form = $Form_builder->getForm();
+$Form_builder_top = new CommentFormBuilder(new \Entity\Comment());
+$Form_builder_top->build('Top');
+$Form_top = $Form_builder_top->getForm();
+$Form_builder_bottom = new CommentFormBuilder(new \Entity\Comment());
+$Form_builder_bottom->build('Bottom');
+$Form_bottom = $Form_builder_bottom->getForm();
 ?>
 
 <div id="insert_comment_form_container_top" class="insert_comment_form_container">
     <h3>Insérer un commentaire :</h3>
-    <form id="insert_comment_form_top" class="insert_comment_form" action="<?= $comment_news_url_a['html'] ?>"
+    <form id="insert_comment_form_top" class="insert_comment_form" action="<?= $comment_news_url_a['html'] ?>" data-id="Top"
           method="post">
         <p>
-            <?= $Form->createView() ?>
+            <?= $Form_top->createView() ?>
 
             <input type="submit" value="Commenter"/>
 
@@ -46,7 +49,7 @@ $Form = $Form_builder->getForm();
     </form>
 </div>
 
-<div id="comments_container" data-json="<?= $comment_news_url_a['json'] ?>" data-last_comment="<?= $Comment_a[0]['id'] ?>">
+<div id="comments_container" data-json="<?= $comment_news_url_a['json'] ?>" data-last_comment="<?= empty($Comment_a) ? 0 : $Comment_a[0]['id'] ?>">
 
     <?php
     if (empty($Comment_a)): ?>
@@ -82,10 +85,10 @@ $Form = $Form_builder->getForm();
 
 <div id="insert_comment_form_container_bottom" class="insert_comment_form_container">
     <h3>Insérer un commentaire :</h3>
-    <form id="insert_comment_form_bottom" class="insert_comment_form" action="<?= $comment_news_url_a['html'] ?>"
+    <form id="insert_comment_form_bottom" class="insert_comment_form" action="<?= $comment_news_url_a['html'] ?>" data-id="Bottom"
           method="post">
         <p>
-            <?= $Form->createView() ?>
+            <?= $Form_bottom->createView() ?>
 
             <input type="submit" value="Commenter"/>
         </p>

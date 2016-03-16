@@ -21,15 +21,16 @@ $(document).ready(function () {
     });
 
     $(document).on("submit", ".insert_comment_form", function () {
-        var $this = $(this);
+        var $this = $(this),
+            $comments_container = $('#comments_container');
 
         $.post(
-            $('#comments_container').data('json'),
+            $comments_container.data('json'),
             {
-                pseudonym: $("#pseudonym").val(),
-                email: $("#email").val(),
-                contenu: $("#contenu").val(),
-                last_comment: $('#comments_container').data('last_comment')
+                pseudonym: $('#pseudonym' + $this.data('id')).val(),
+                email: $('#email' + $this.data('id')).val(),
+                contenu: $('#contenu' + $this.data('id')).val(),
+                last_comment: $comments_container.data('last_comment')
             },
             function (data) {
                 var json_answer = jQuery.parseJSON(data);
@@ -45,7 +46,7 @@ $(document).ready(function () {
 
                     // On génère les nouveaux commentaires
                     for (i = 0; i < json_answer.comments.length; i++) {
-                        $('#comments_container').prepend(
+                        $comments_container.prepend(
                             '<fieldset id="commentaire-' + json_answer.comments[i]['id'] + '">' +
                             '<legend>' +
                             'Posté par <strong>' +
@@ -61,7 +62,7 @@ $(document).ready(function () {
                     }
 
                     // On update l'id du dernier commentaire inséré
-                    $('#comments_container').data('last_comment', json_answer.comments[0]['id']);
+                    $comments_container.data('last_comment', json_answer.comments[0]['id']);
 
                     // On centre l'affichage sur le dernier commentaire inséré
                     var viewportHeight = jQuery(window).height(),

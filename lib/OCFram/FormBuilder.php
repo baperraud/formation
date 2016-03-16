@@ -10,7 +10,7 @@ abstract class FormBuilder {
         $this->setForm(new Form($Entity));
     }
 
-    abstract public function build();
+    abstract public function build($id = '');
 
     public function getForm() { return $this->Form; }
 

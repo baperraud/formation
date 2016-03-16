@@ -14,10 +14,11 @@ use OCFram\MaxLengthValidator;
 use OCFram\NotNullValidator;
 
 class CommentFormBuilder extends FormBuilder {
-    public function build() {
+    public function build($id = null) {
         // Si l'utilisateur n'est pas connecté, on affiche les champs pseudo et email
         if (!Session::isAuthenticated()) {
             $this->Form->add(new StringField([
+                'id' => $id,
                 'label' => 'Pseudo',
                 'name' => 'pseudonym',
                 'max_length' => 50,
@@ -29,6 +30,7 @@ class CommentFormBuilder extends FormBuilder {
                     new NoSpaceValidator('Veuillez ne pas utiliser le caractère d\'espacement')
                 ]
             ]))->add(new StringField([
+                'id' => $id,
                 'label' => 'E-mail',
                 'name' => 'email',
                 'max_length' => 50,
@@ -41,6 +43,7 @@ class CommentFormBuilder extends FormBuilder {
         }
 
         $this->Form->add(new TextField([
+            'id' => $id,
             'label' => 'Contenu',
             'name' => 'contenu',
             'required' => true,

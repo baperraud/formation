@@ -9,7 +9,7 @@ use OCFram\MaxLengthValidator;
 use OCFram\NotNullValidator;
 
 class NewsFormBuilder extends FormBuilder {
-    public function build() {
+    public function build($id = null) {
         $this->Form->add(new StringField([
             'label' => 'Titre',
             'name' => 'titre',
