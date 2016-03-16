@@ -8,11 +8,11 @@ abstract class BackController extends ApplicationComponent {
     protected $view = '';
     protected $Managers = NULL;
 
-    public function __construct(Application $app, $module, $action) {
+    public function __construct(Application $app, $module, $action, $format) {
         parent::__construct($app);
 
         $this->Managers = new Managers('PDO', PDOFactory::getMysqlConnexion());
-        $this->Page = new Page($app);
+        $this->Page = new Page($app, $format);
 
         $this->setModule($module);
         $this->setAction($action);
@@ -38,8 +38,7 @@ abstract class BackController extends ApplicationComponent {
             throw new \InvalidArgumentexception('La vue doit être une chaîne de caractères valide');
         }
         $this->view = $view;
-        $is_json = $this->App->getHttpRequest()->getGetData('f') == 'json';
-        $this->Page->setContentFile(__DIR__ . '/../../App/' . $this->App->getName() . '/Modules/' . $this->module . '/Views/' . $this->view . ($is_json ? '_json.php' : '.php'));
+        $this->Page->setContentFile(__DIR__ . '/../../App/' . $this->App->getName() . '/Modules/' . $this->module . '/Views/' . $this->view . '.php');
     }
 
     public function getAction() { return $this->action; }

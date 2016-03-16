@@ -7,12 +7,14 @@ class Route {
     protected $url;
     protected $vars_names_a;
     protected $vars_a = [];
+    protected $format;
 
-    public function __construct($url, $module, $action, array $vars_names_a) {
+    public function __construct($url, $module, $action, array $vars_names_a, $format = '') {
         $this->setUrl($url);
         $this->setModule($module);
         $this->setAction($action);
         $this->setVarsNames($vars_names_a);
+        $this->setFormat($format);
     }
 
     public function hasVars() { return !empty($this->vars_names_a); }
@@ -49,6 +51,12 @@ class Route {
         }
     }
 
+    public function setFormat($format) {
+        if (is_string($format) && !(empty($format))) {
+            $this->format = $format;
+        }
+    }
+
     public function setVarsNames(array $vars_names_a) { $this->vars_names_a = $vars_names_a; }
 
     public function setVars(array $vars_a) { $this->vars_a = $vars_a; }
@@ -57,4 +65,5 @@ class Route {
     public function getModule() { return $this->module; }
     public function getVars_a() { return $this->vars_a; }
     public function getVarsNames_a() { return $this->vars_names_a; }
+    public function getFormat() { return $this->format; }
 }

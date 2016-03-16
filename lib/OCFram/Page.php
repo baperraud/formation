@@ -6,6 +6,11 @@ class Page extends ApplicationComponent {
     protected $vars_a = [];
     protected $format;
 
+    public function __construct(Application $App, $format) {
+        parent::__construct($App);
+        $this->format = $format;
+    }
+
     public function addVar($var, $value) {
         if (!is_string($var) || is_numeric($var) || empty($var)) {
             throw new \InvalidArgumentException('Le nom de la variable doit être une chaîne de caractères non nulle');
@@ -24,14 +29,17 @@ class Page extends ApplicationComponent {
 
         extract($this->vars_a);
 
-        ob_start();
-        /** @noinspection PhpIncludeInspection */
-        require $this->contentFile;
-        /** @noinspection PhpUnusedLocalVariableInspection */
-        $content = ob_get_clean();
+        //die('stop');
 
-        // Traitement standard -> HTML
-        if (!$this->App->getHttpRequest()->getGetData('f') == 'json') {
+        /* Traitement standard -> HTML */
+        if ($this->format != 'json') {
+            //die('html');
+
+            ob_start();
+            /** @noinspection PhpIncludeInspection */
+            require $this->contentFile;
+            /** @noinspection PhpUnusedLocalVariableInspection */
+            $content = ob_get_clean();
 
             ob_start();
             /** @noinspection PhpIncludeInspection */
@@ -39,10 +47,11 @@ class Page extends ApplicationComponent {
             return ob_get_clean();
         }
 
-        // Traitement alternatif -> JSON
-        return $content;
-
-
+        /* Traitement alternatif -> JSON */
+        /** @noinspection PhpIncludeInspection */
+        require $this->contentFile;
+        /** @var string $json */
+        return $json;
     }
 
     public function setContentFile($contentFile) {

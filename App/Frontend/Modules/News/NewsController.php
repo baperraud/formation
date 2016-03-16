@@ -10,6 +10,7 @@ use Model\CommentsManager;
 use Model\NewsManager;
 use OCFram\Application;
 use OCFram\BackController;
+use OCFram\Field;
 use OCFram\FormHandler;
 use OCFram\HTTPRequest;
 use OCFram\Session;
@@ -129,9 +130,11 @@ class NewsController extends BackController {
         $this->Page->addVar('comment_delete_url_a', $comment_delete_url_a);
         $this->Page->addVar('comment_user_url_a', $comment_user_url_a);
 
-        // On envoie le lien pour commenter la news
-        $comment_news_url = Application::getRoute($this->App->getName(), $this->getModule(), 'insertComment', array($News['id']));
-        $this->Page->addVar('comment_news_url', $comment_news_url);
+        // On envoie les liens pour commenter la news
+        $comment_news_url_a = [];
+        $comment_news_url_a['html'] = Application::getRoute($this->App->getName(), $this->getModule(), 'insertComment', array($News['id']));
+        $comment_news_url_a['json'] = Application::getRoute($this->App->getName(), $this->getModule(), 'insertCommentJson', array($News['id']));
+        $this->Page->addVar('comment_news_url_a', $comment_news_url_a);
     }
 
     /**
@@ -176,7 +179,9 @@ class NewsController extends BackController {
         if ($Form_handler->process()) {
             Session::setFlash('Le commentaire a bien été ajouté, merci !');
 
-            // On envoie un mail à tous ceux qui ont déjà commenté la news
+            /*------------------------------------------------------*/
+            /* Envoi d'un mail à ceux qui ont déjà commenté la news */
+            /*------------------------------------------------------*/
 
             $mail = new \PHPMailer();
 
@@ -221,6 +226,112 @@ class NewsController extends BackController {
         $this->Page->addVar('Comment', $Comment);
         // On passe le formulaire généré à la vue
         $this->Page->addVar('form', $Form->createView());
+    }
+
+    /**
+     * Action permettant d'insérer un commentaire via JSON
+     * @param $Request HTTPRequest La requête de l'utilisateur
+     */
+    public function executeInsertCommentJson(HTTPRequest $Request) {
+        /** @var CommentsManager $CommentsManager */
+        $CommentsManager = $this->Managers->getManagerOf('Comments');
+
+        $Comment = new Comment([
+            'is_new' => true,
+            'news' => $Request->getGetData('news'),
+            'pseudonym' => $Request->getPostData('pseudonym'),
+            'email' => $Request->getPostData('email'),
+            'contenu' => $Request->getPostData('contenu')
+        ]);
+
+
+        $Form_builder = new CommentFormBuilder($Comment);
+        $Form_builder->build();
+
+        $Form = $Form_builder->getForm();
+
+        $Form_handler = new FormHandler($Form, $CommentsManager, $Request);
+
+        if ($Form_handler->process()) {
+
+            /*------------------------------------------------------*/
+            /* Envoi d'un mail à ceux qui ont déjà commenté la news */
+            /*------------------------------------------------------*/
+
+            $mail = new \PHPMailer();
+
+            $mail->isSMTP();
+            $mail->SMTPDebug = 0;
+            $mail->Debugoutput = 'html';
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'dreamcenturyfaformation@gmail.com';
+            $mail->Password = 'UJ691vWtcdrm';
+            $mail->SMTPSecure = 'ssl';
+            $mail->Port = 465;
+
+            $mail->setFrom('notifier@dreamcentury.com', 'Notifier');
+
+            // Récupération de tous les mails et pseudos de ceux qui ont commenté la news
+            $email_and_pseudo_a = $CommentsManager->getEmailAndPseudoUsingNewscId_a($Comment->getNews());
+
+            foreach ($email_and_pseudo_a as $email_and_pseudo) {
+                // On exclue le mail du commentaire en train d'être inséré
+                if ($email_and_pseudo['email'] !== $Comment->getEmail())
+                    // On ajoute un destinataire
+                    $mail->addAddress($email_and_pseudo['email'], $email_and_pseudo['pseudo']);
+            }
+
+            $mail->Subject = 'Notification : New Comment Inserted';
+
+            $comment_news_url = $_SERVER['HTTP_ORIGIN'] . Application::getRoute($this->App->getName(), 'News', 'show', array($Comment['news']));
+            $comment_news_url .= '#commentaire-' . $Comment['id'];
+
+            $mail->Body = '<h1>New posted comment</h1>
+<b>Alert:</b> A new comment has been posted on a news you previously commented!<br /><br /><a href="' . $comment_news_url . '">Check it now</a>';
+            $mail->AltBody = 'A new comment has been posted on a news you previously commented! Check it now here: ' . $comment_news_url;
+
+            // Envoi du mail
+            $mail->send();
+        }
+
+        $error_message_a = [];
+        /** @var Field $Field */
+        foreach ($Form->getField_a() as $Field) {
+            $error_message = $Field->getError_message();
+            if (!empty($error_message))
+                $error_message_a[] = $Field->getError_message();
+        }
+
+        /* Récupération de tous les commentaires récents */
+        /** @var Comment[] $Comment_a */
+        $Comment_a = $CommentsManager->getCommentcSortByIdDesc_a($Request->getPostData('last_comment'));
+
+        /* On récupère les routes de modification/suppression de commentaires
+        ainsi que les id des auteurs des commentaires et si il y a droit de
+        modification ou suppression */
+        $comment_update_url_a = [];
+        $comment_delete_url_a = [];
+        $comment_user_url_a = [];
+        $comment_write_access_a = [];
+
+        foreach ($Comment_a as $Comment) {
+            $comment_update_url_a[$Comment['id']] = Application::getRoute('Frontend', $this->getModule(), 'updateComment', array($Comment['id']));
+            $comment_delete_url_a[$Comment['id']] = Application::getRoute('Frontend', $this->getModule(), 'deleteComment', array($Comment['id']));
+            $user_id = $CommentsManager->getUsercIdUsingCommentcId($Comment->getId());
+            $comment_user_url_a[$Comment['id']] = empty($user_id) ? NULL : Application::getRoute('Frontend', 'User', 'show', array($user_id));
+            $comment_write_access_a[$Comment['id']] = (Session::isAdmin()
+                || $Comment['pseudonym'] === Session::getAttribute('pseudo'));
+        }
+
+        $this->Page->addVar('comment_update_url_a', $comment_update_url_a);
+        $this->Page->addVar('comment_delete_url_a', $comment_delete_url_a);
+        $this->Page->addVar('comment_user_url_a', $comment_user_url_a);
+        $this->Page->addVar('comment_write_access_a', $comment_write_access_a);
+
+
+        $this->Page->addVar('error_message_a', $error_message_a);
+        $this->Page->addVar('Comment_a', $Comment_a);
     }
 
     /**

@@ -7,6 +7,10 @@ class News extends Entity {
     protected $auteur;
     protected $titre;
     protected $contenu;
+    /**
+     * @var \DateTime $Date_ajout
+     * @var \DateTime $Date_modif
+     */
     protected $Date_ajout;
     protected $Date_modif;
 

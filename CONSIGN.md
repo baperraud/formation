@@ -65,13 +65,13 @@ This part consist to add a functionnality for ask a route for a Controller and a
 
 * Corrections :
 1. Pas de génération du form via AJAX : OK
-2. Utiliser localement les triggers/listeners
-3. Externaliser le script
-4. Modifier les routes pour attribut format
-5. Ajouter les actions de ce format dans les classes spécifiques
-6. Modifier les contrôleurs pour avoir une action différente lorsque le format est différent
-7. Modifier la génération du retour (pas ob_flush, json_encode)
-8. Deux ids pour les deux forms (ou utiliser this)
-9. Gérer la récupération de tous les commentaires depuis le dernier affiché lorsqu'on en poste un nouveau
-10. Pour les kékés qui ont du temps libre : sync les formulaires
+2. Utiliser localement les triggers/listeners : OK
+3. Externaliser le script : OK
+4. Modifier les routes pour attribut format : OK
+5. Ajouter les actions de ce format dans les classes spécifiques : OK
+6. Modifier les contrôleurs pour avoir une action différente lorsque le format est différent : OK
+7. Modifier la génération du retour (pas ob_flush, json_encode) : OK
+8. Deux ids pour les deux forms (ou utiliser this) : OK
+9. Gérer la récupération de tous les commentaires depuis le dernier affiché lorsqu'on en poste un nouveau : OK
+10. Pour les kékés qui ont du temps libre : sync les formulaires : en cours
 

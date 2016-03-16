@@ -14,11 +14,6 @@ trait GenericActionHandler {
     public function runActionHandler() {
         if (isset($this->title)) $this->addTitle();
 
-        /*-----------------*/
-        /* Gestion du menu */
-        /*-----------------*/
-        $this->buildMenu();
-
         /*---------------------------------------*/
         /* Gestion des redirections de connexion */
         /*---------------------------------------*/
@@ -26,6 +21,11 @@ trait GenericActionHandler {
             $this->checkAndRedirectToLogin();
         if ($this->deconnection_required)
             $this->checkIfAlreadyConnected();
+
+        /*-----------------*/
+        /* Gestion du menu */
+        /*-----------------*/
+        $this->buildMenu();
     }
 
 

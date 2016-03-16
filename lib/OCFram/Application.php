@@ -47,7 +47,8 @@ abstract class Application {
                 $Route->getAttribute('url'),
                 $Route->getAttribute('module'),
                 $Route->getAttribute('action'),
-                $vars_a));
+                $vars_a,
+                $Route->getAttribute('format')));
         }
 
         try {
@@ -67,7 +68,7 @@ abstract class Application {
         // On instancie le contrôleur
         $controllerClass = 'App\\' . $this->name . '\\Modules\\' . $matchedRoute->getModule() .
             '\\' . $matchedRoute->getModule() . 'Controller';
-        return new $controllerClass($this, $matchedRoute->getModule(), $matchedRoute->getAction());
+        return new $controllerClass($this, $matchedRoute->getModule(), $matchedRoute->getAction(), $matchedRoute->getFormat());
     }
 
     /**

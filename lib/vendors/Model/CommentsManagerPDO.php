@@ -99,6 +99,42 @@ class CommentsManagerPDO extends CommentsManager {
     }
 
     /**
+     * Méthode retournant une les commentaires plus récents qu'un autre
+     * @param $comment_id int Le commentaire à partir duquel chercher
+     * @return array La liste des commentaires
+     */
+    public function getCommentcSortByIdDesc_a($comment_id) {
+        $select_query = '
+			SELECT NCC_id id, NCC_fk_NNC news, NCC_author pseudonym, NCC_email email, NCC_content contenu, NCC_date Date, 2 owner_type
+			FROM T_NEW_commentc
+			WHERE NCC_id > :id AND NCC_fk_NUC IS NULL
+			UNION
+			SELECT NCC_id id, NCC_fk_NNC news, NUC_pseudonym pseudonym, NULL email, NCC_content contenu, NCC_date Date, 1 owner_type
+			FROM T_NEW_commentc
+			INNER JOIN T_NEW_userc ON NUC_id = NCC_fk_NUC
+			WHERE NCC_id > :id
+			ORDER BY date DESC';
+
+        $select_query_result = $this->Dao->prepare($select_query);
+        $select_query_result->bindValue(':id', (int)$comment_id, \PDO::PARAM_INT);
+        $select_query_result->execute();
+
+        /** @noinspection PhpMethodParametersCountMismatchInspection */
+        $select_query_result->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\Comment');
+
+        $Comment_a = $select_query_result->fetchAll();
+
+        /** @var Comment[] $Comment_a */
+        foreach ($Comment_a as $Comment) {
+            $Comment->setDate(new \DateTime($Comment->getDate()));
+        }
+
+        $select_query_result->closeCursor();
+
+        return $Comment_a;
+    }
+
+    /**
      * Méthode permettant de récupérer la liste des commentaires d'une news spécifique
      * @param $news_id int L'id de la news dont on veut récupérer les commentaires
      * @return array

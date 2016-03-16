@@ -25,7 +25,7 @@ class CommentFormBuilder extends FormBuilder {
                 'Validator_a' => [
                     new MaxLengthValidator('Le pseudo spécifié est trop long (50 caractères maximum)', 50),
                     new NotNullValidator('Merci de spécifier votre pseudo'),
-                    new PseudoAvailableValidator('Erreur : un membre utilise ce pseudo. Veuillez vous connecter s\'il s\'agit du vôtre'),
+                    new PseudoAvailableValidator('Un membre utilise déjà ce pseudo. Veuillez vous connecter s\'il s\'agit du vôtre'),
                     new NoSpaceValidator('Veuillez ne pas utiliser le caractère d\'espacement')
                 ]
             ]))->add(new StringField([
@@ -35,7 +35,7 @@ class CommentFormBuilder extends FormBuilder {
                 'type' => 'email',
                 'Validator_a' => [
                     new IsEmailValidator('Merci de renseigner un email valide'),
-                    new EmailAvailableValidator('Erreur : un membre utilise cet email. Veuillez vous connecter s\'il s\'agit du vôtre'),
+                    new EmailAvailableValidator('Un membre utilise déjà cet email. Veuillez vous connecter s\'il s\'agit du vôtre'),
                 ]
             ]));
         }

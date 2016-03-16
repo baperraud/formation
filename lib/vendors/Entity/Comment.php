@@ -9,6 +9,7 @@ class Comment extends Entity {
     protected $pseudonym;
     protected $email;
     protected $contenu;
+    /** @var  \DateTime $Date */
     protected $Date;
     protected $owner_type;
 

@@ -36,6 +36,7 @@ abstract class Field {
         return true;
     }
 
+    public function getError_message() { return $this->error_message; }
     public function getLabel() { return $this->label; }
     public function getName() { return $this->name; }
     public function getValue() { return $this->value; }
