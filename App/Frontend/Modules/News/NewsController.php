@@ -233,6 +233,16 @@ class NewsController extends BackController {
      * @param $Request HTTPRequest La requête de l'utilisateur
      */
     public function executeInsertCommentJson(HTTPRequest $Request) {
+        /*------------------------*/
+        /* Traitements génériques */
+        /*------------------------*/
+        $this->ajax_required = true;
+        $this->runActionHandler();
+
+
+        /*-------------------------*/
+        /* Traitements spécifiques */
+        /*-------------------------*/
         /** @var CommentsManager $CommentsManager */
         $CommentsManager = $this->Managers->getManagerOf('Comments');
 

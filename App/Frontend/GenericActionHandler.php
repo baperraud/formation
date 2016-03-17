@@ -9,6 +9,7 @@ trait GenericActionHandler {
     protected $connection_required;
     protected $deconnection_required;
     protected $admin_required;
+    protected $ajax_required;
     protected $menu_a = [];
 
     public function runActionHandler() {
@@ -21,6 +22,8 @@ trait GenericActionHandler {
             $this->checkAndRedirectToLogin();
         if ($this->deconnection_required)
             $this->checkIfAlreadyConnected();
+        if ($this->ajax_required)
+            $this->checkIfAjaxElse404();
 
         /*-----------------*/
         /* Gestion du menu */
@@ -102,5 +105,17 @@ trait GenericActionHandler {
         $this->menu_a = array_merge($this->getMainRoutes(), $this->menu_a);
 
         $this->getPage()->addVar('menu_a', $this->menu_a);
+    }
+
+    /**
+     * Méthode permettant de renvoyer une erreur 404 en cas de requête AJAX
+     * passée via url
+     * @return void
+     */
+    protected function checkIfAjaxElse404() {
+        // Si ce n'est pas une requête AJAX valide
+        if (strtolower(filter_input(INPUT_SERVER, 'HTTP_X_REQUESTED_WITH')) !== 'xmlhttprequest') {
+            $this->App->getHttpResponse()->redirect404();
+        }
     }
 }
