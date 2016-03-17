@@ -39,7 +39,7 @@ abstract class CommentsManager extends Manager {
      * @param $limite int Le nombree de commentaires à récupérer
      * @return array
      */
-    abstract public function getCommentcUsingNewscIdSortByDateDesc_a($news_id, $debut = -1, $limite = -1);
+    abstract public function getCommentcUsingNewscIdSortByIdDesc_a($news_id, $debut = -1, $limite = -1);
 
     /**
      * Méthode permettant de récupérer la liste des mails et pseudos
@@ -69,7 +69,7 @@ abstract class CommentsManager extends Manager {
      * @param $news_id int La news dans laquelle chercher
      * @return array La liste des commentaires
      */
-    abstract public function getCommentcSortByIdDesc_a($comment_id, $news_id);
+    abstract public function getCommentcAfterOtherSortByIdDesc_a($comment_id, $news_id);
 
     /**
      * Méthode permettant de supprimer un commentaire

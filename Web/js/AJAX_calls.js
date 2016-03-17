@@ -51,8 +51,9 @@ $(document).ready(function () {
 
                     var $last_comment;
                     // On génère les nouveaux commentaires
-                    for (i = 0; i < data.comments.length; i++) {
-                        $last_comment = news_buildCommentHTML(data.comments[i]);
+                    var $comments_a = data.comments.reverse();
+                    for (i = 0; i < $comments_a.length; i++) {
+                        $last_comment = news_buildCommentHTML($comments_a[i]);
                         $comments_container.prepend(
                             $last_comment
                         );

@@ -104,7 +104,7 @@ class CommentsManagerPDO extends CommentsManager {
      * @param $news_id int La news dans laquelle chercher
      * @return array La liste des commentaires
      */
-    public function getCommentcSortByIdDesc_a($comment_id, $news_id) {
+    public function getCommentcAfterOtherSortByIdDesc_a($comment_id, $news_id) {
         $select_query = '
 			SELECT NCC_id id, NCC_fk_NNC news, NCC_author pseudonym, NCC_email email, NCC_content contenu, NCC_date Date, 2 owner_type
 			FROM T_NEW_commentc
@@ -114,7 +114,7 @@ class CommentsManagerPDO extends CommentsManager {
 			FROM T_NEW_commentc
 			INNER JOIN T_NEW_userc ON NUC_id = NCC_fk_NUC
 			WHERE NCC_fk_NNC = :news AND NCC_id > :comment
-			ORDER BY date DESC';
+			ORDER BY id DESC';
 
         $select_query_result = $this->Dao->prepare($select_query);
         $select_query_result->bindValue(':comment', (int)$comment_id, \PDO::PARAM_INT);
@@ -143,7 +143,7 @@ class CommentsManagerPDO extends CommentsManager {
      * @param $limite int Le nombree de commentaires à récupérer
      * @return array
      */
-    public function getCommentcUsingNewscIdSortByDateDesc_a($news_id, $debut = -1, $limite = -1) {
+    public function getCommentcUsingNewscIdSortByIdDesc_a($news_id, $debut = -1, $limite = -1) {
         $select_query = '
 			SELECT NCC_id id, NCC_fk_NNC news, NCC_author pseudonym, NCC_email email, NCC_content contenu, NCC_date Date, 2 owner_type
 			FROM T_NEW_commentc
@@ -153,7 +153,7 @@ class CommentsManagerPDO extends CommentsManager {
 			FROM T_NEW_commentc
 			INNER JOIN T_NEW_userc ON NUC_id = NCC_fk_NUC
 			WHERE NCC_fk_NNC = :news
-			ORDER BY date DESC';
+			ORDER BY id DESC';
 
         if ($debut != -1 || $limite != -1) {
             $select_query .= ' LIMIT ' . (int)$limite . ' OFFSET ' . (int)$debut;

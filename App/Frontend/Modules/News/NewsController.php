@@ -108,7 +108,7 @@ class NewsController extends BackController {
          */
         $nombre_commentaires = $this->App->getConfig()->get('nombre_commentaires');
         $CommentsManager = $this->Managers->getManagerOf('Comments');
-        $Comment_a = $CommentsManager->getCommentcUsingNewscIdSortByDateDesc_a($News->getId(), 0, $nombre_commentaires);
+        $Comment_a = $CommentsManager->getCommentcUsingNewscIdSortByIdDesc_a($News->getId(), 0, $nombre_commentaires);
         $this->Page->addVar('nombre_commentaires', $nombre_commentaires);
 
         $this->Page->addVar('Comment_a', $Comment_a);
@@ -329,7 +329,7 @@ class NewsController extends BackController {
 
         /* Récupération de tous les commentaires récents */
         /** @var Comment[] $Comment_a */
-        $Comment_a = $CommentsManager->getCommentcSortByIdDesc_a($Request->getPostData('last_comment'), $Comment['news']);
+        $Comment_a = $CommentsManager->getCommentcAfterOtherSortByIdDesc_a($Request->getPostData('last_comment'), $Comment['news']);
 
         /* On récupère les routes de modification/suppression de commentaires
         ainsi que les id des auteurs des commentaires et si il y a droit de
@@ -383,7 +383,7 @@ class NewsController extends BackController {
         $nombre_commentaires = $this->App->getConfig()->get('nombre_commentaires');
         $news_id = $Request->getGetData('news');
         $rang = $Request->getPostData('rang');
-        $Comment_a = $CommentsManager->getCommentcUsingNewscIdSortByDateDesc_a($news_id, $rang * $nombre_commentaires, $nombre_commentaires);
+        $Comment_a = $CommentsManager->getCommentcUsingNewscIdSortByIdDesc_a($news_id, $rang * $nombre_commentaires, $nombre_commentaires);
 
         $this->Page->addVar('Comment_a', $Comment_a);
 
