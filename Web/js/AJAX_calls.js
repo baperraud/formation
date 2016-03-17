@@ -17,6 +17,7 @@ $(document).ready(function () {
         },
         ajaxStop: function () {
             $body.removeClass("loading");
+            if ($('#flash_message').length) $('#flash_message').remove();
         }
     });
 
@@ -42,6 +43,10 @@ $(document).ready(function () {
                     // On clean le formulaire et les messages d'erreur
                     $this.find("input[type=text], input[type=email], textarea").val("");
                     $this.children('p.error').remove();
+
+                    // On retire le message 'Aucun commentaire...' si c'est le 1er
+                    if ($comments_container.data('last_comment') == 0)
+                        $('#no_comment_alert').remove();
 
                     // On génère les nouveaux commentaires
                     for (i = 0; i < data.comments.length; i++) {

@@ -53,7 +53,7 @@ $Form_bottom = $Form_builder_bottom->getForm();
 
     <?php
     if (empty($Comment_a)): ?>
-        <p>Aucun commentaire n'a encore été posté. Soyez le premier à en laisser un !</p>
+        <p id="no_comment_alert">Aucun commentaire n'a encore été posté. Soyez le premier à en laisser un !</p>
     <?php else:
         foreach ($Comment_a as $Comment): ?>
             <fieldset id="<?= 'commentaire-' . $Comment['id'] ?>">

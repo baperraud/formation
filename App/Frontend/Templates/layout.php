@@ -44,7 +44,7 @@ use OCFram\Session;
 
     <div id="content-wrap">
         <section id="main">
-            <?php if (Session::hasFlash()) echo '<p style="text-align: center;">', Session::getFlash(), '</p>'; ?>
+            <?php if (Session::hasFlash()) echo '<p id="flash_message" style="text-align: center;">', Session::getFlash(), '</p>'; ?>
 
             <?= $content ?>
         </section>
