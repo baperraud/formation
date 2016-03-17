@@ -1,6 +1,7 @@
 <?php
 /**
  * @var \Entity\News $News
+ * @var \OCFram\Form $Form
  * @var \Entity\Comment[] $Comment_a
  * @var array $comment_news_url_a
  * @var array $comment_update_url_a
@@ -27,21 +28,12 @@ use OCFram\Session;
     </p>
 <?php endif; ?>
 
-<?php
-$Form_builder_top = new CommentFormBuilder(new \Entity\Comment());
-$Form_builder_top->build('Top');
-$Form_top = $Form_builder_top->getForm();
-$Form_builder_bottom = new CommentFormBuilder(new \Entity\Comment());
-$Form_builder_bottom->build('Bottom');
-$Form_bottom = $Form_builder_bottom->getForm();
-?>
-
 <div id="insert_comment_form_container_top" class="insert_comment_form_container">
     <h3>Insérer un commentaire :</h3>
-    <form id="insert_comment_form_top" class="insert_comment_form" action="<?= $comment_news_url_a['html'] ?>" data-id="Top"
+    <form id="insert_comment_form_top" class="insert_comment_form" action="<?= $comment_news_url_a['html'] ?>" data-id="Top" data-ajax="<?= $comment_news_url_a['json'] ?>"
           method="post">
         <p>
-            <?= $Form_top->createView() ?>
+            <?= $Form->createView() ?>
 
             <input type="submit" value="Commenter"/>
 
@@ -49,14 +41,14 @@ $Form_bottom = $Form_builder_bottom->getForm();
     </form>
 </div>
 
-<div id="comments_container" data-json="<?= $comment_news_url_a['json'] ?>" data-last_comment="<?= empty($Comment_a) ? 0 : $Comment_a[0]['id'] ?>">
+<div id="comments_container">
 
     <?php
     if (empty($Comment_a)): ?>
         <p id="no_comment_alert">Aucun commentaire n'a encore été posté. Soyez le premier à en laisser un !</p>
     <?php else:
         foreach ($Comment_a as $Comment): ?>
-            <fieldset id="<?= 'commentaire-' . $Comment['id'] ?>">
+            <fieldset id="<?= 'commentaire-' . $Comment['id'] ?>" data-id="<?= $Comment['id'] ?>">
                 <legend>
                     Posté par <strong>
                         <?php
@@ -85,10 +77,10 @@ $Form_bottom = $Form_builder_bottom->getForm();
 
 <div id="insert_comment_form_container_bottom" class="insert_comment_form_container">
     <h3>Insérer un commentaire :</h3>
-    <form id="insert_comment_form_bottom" class="insert_comment_form" action="<?= $comment_news_url_a['html'] ?>" data-id="Bottom"
+    <form id="insert_comment_form_bottom" class="insert_comment_form" action="<?= $comment_news_url_a['html'] ?>" data-id="Bottom" data-ajax="<?= $comment_news_url_a['json'] ?>"
           method="post">
         <p>
-            <?= $Form_bottom->createView() ?>
+            <?= $Form->createView() ?>
 
             <input type="submit" value="Commenter"/>
         </p>

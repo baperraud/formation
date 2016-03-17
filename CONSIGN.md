@@ -73,9 +73,8 @@ This part consist to add a functionnality for ask a route for a Controller and a
 7. Modifier la génération du retour (pas ob_flush, json_encode) : OK
 8. Deux ids pour les deux forms (ou utiliser this) : OK
 9. Gérer la récupération de tous les commentaires depuis le dernier affiché lorsqu'on en poste un nouveau : OK
-10. Pour les kékés qui ont du temps libre : sync les formulaires : en cours
 
-TODO :
-* gérer le comportement normal sans js (supprimer la vue, etc.)
-* gérer la synchronisation (cf ci-dessus)
-
+# 9 - Autres fonctionnalités avec les commentaires
+* Limiter l'affichage de commentaires à 15 par défaut
+* Il faut recharger les plus anciens quand on descend en scrollant (de 15 en 15)
+* Ajouter un rafraichissement des nouveaux commentaires automatique

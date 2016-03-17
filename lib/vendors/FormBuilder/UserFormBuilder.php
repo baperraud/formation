@@ -15,7 +15,7 @@ use OCFram\SimilarCheckValidator;
 // TODO: Factoriser en un param par défaut les messages d'erreur des validateurs
 
 class UserFormBuilder extends FormBuilder {
-    public function build($id = null) {
+    public function build() {
         $this->Form->add(new StringField([
             'label' => 'Pseudo',
             'name' => 'pseudonym',

@@ -44,7 +44,7 @@ class Form {
     }
 
     public function getEntity() { return $this->Entity; }
-    public function getField_a() { return$this->Field_a; }
+    public function getField_a() { return $this->Field_a; }
 
     public function setEntity(Entity $Entity) { $this->Entity = $Entity; }
 }

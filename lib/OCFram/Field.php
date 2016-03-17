@@ -8,7 +8,6 @@ abstract class Field {
 
     protected $error_message;
     protected $label;
-    protected $id;
     protected $name;
     protected $value;
     protected $required;
@@ -37,7 +36,6 @@ abstract class Field {
         return true;
     }
 
-    public function getId() { return $this->id; }
     public function getError_message() { return $this->error_message; }
     public function getLabel() { return $this->label; }
     public function getName() { return $this->name; }
@@ -49,11 +47,6 @@ abstract class Field {
         return empty($this->required) ? false : $this->required;
     }
 
-    public function setId($id) {
-        if (is_string($id)) {
-            $this->id = $id;
-        }
-    }
     public function setLabel($label) {
         if (is_string($label)) {
             $this->label = $label;

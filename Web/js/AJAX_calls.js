@@ -1,14 +1,5 @@
 $(document).ready(function () {
 
-    function escapeHtml(unsafe) {
-        return unsafe
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
-
     var $body = $("body");
 
     $(document).on({
@@ -17,7 +8,8 @@ $(document).ready(function () {
         },
         ajaxStop: function () {
             $body.removeClass("loading");
-            if ($('#flash_message').length) $('#flash_message').remove();
+            var $flash = $('#flash_message');
+            if ($flash.length) $flash.remove();
         }
     });
 
@@ -26,12 +18,12 @@ $(document).ready(function () {
             $comments_container = $('#comments_container');
 
         $.post(
-            $comments_container.data('json'),
+            $this.data('ajax'),
             {
-                pseudonym: $('#pseudonym' + $this.data('id')).val(),
-                email: $('#email' + $this.data('id')).val(),
-                contenu: $('#contenu' + $this.data('id')).val(),
-                last_comment: $comments_container.data('last_comment')
+                pseudonym: $('#pseudonym',$this).val(),
+                email: $('#email',$this).val(),
+                contenu: $('#contenu',$this).val(),
+                last_comment: $comments_container.find('fieldset:first').data('id')
             },
             function (data) {
                 if (data.errors_exists) {
@@ -48,32 +40,27 @@ $(document).ready(function () {
                     if ($comments_container.data('last_comment') == 0)
                         $('#no_comment_alert').remove();
 
+                    var $last_comment = false;
                     // On génère les nouveaux commentaires
                     for (i = 0; i < data.comments.length; i++) {
+                        $last_comment = news_buildCommentHTML(data.comments[i]);
                         $comments_container.prepend(
-                            '<fieldset id="commentaire-' + data.comments[i]['id'] + '">' +
-                            '<legend>' +
-                            'Posté par <strong>' +
-                            (data.comments[i]['owner_type'] == 1
-                                ? '<a href="' + data.comments[i]['user'] + '">' + escapeHtml(data.comments[i]['pseudonym']) + '</a>' : escapeHtml(data.comments[i]['pseudonym']) + ' (visiteur)') +
-                            '</strong>' +
-                            ' le ' + data.comments[i]['date'] +
-                            (data.comments[i]['write_access'] == true ? '- <a href="' + data.comments[i]['update'] + '">Modifier</a> | <a href="' + data.comments[i]['delete'] + '">Supprimer</a>' : '') +
-                            '</legend>' +
-                            '<p class="overflow_hidden">' + escapeHtml(data.comments[i]['contenu']) + '</p>' +
-                            '</fieldset>'
+                            $last_comment
                         );
                     }
 
                     // On update l'id du dernier commentaire inséré
-                    $comments_container.data('last_comment', data.comments[0]['id']);
+                    //$comments_container.data('last_comment', data.comments[0]['id']);
+
+                    var $window = $(window);
 
                     // On centre l'affichage sur le dernier commentaire inséré
-                    var viewportHeight = jQuery(window).height(),
-                        last_comment = $('#comments_container fieldset:first'),
-                        elHeight = last_comment.height(),
-                        elOffset = last_comment.offset();
-                    jQuery(window).scrollTop(elOffset.top + (elHeight / 2) - (viewportHeight / 2));
+                    var viewportHeight = $window.height(),
+                        //last_comment = $('#comments_container fieldset:first'),
+                        elHeight = $last_comment.height(),
+                        elOffset = $last_comment.offset();
+                    //$window.animate({'scrollTop' : (elOffset.top + (elHeight / 2) - (viewportHeight / 2) ) },300);
+                    $('html, body').animate({scrollTop : (elOffset.top + (elHeight / 2) - (viewportHeight / 2) )  },300);
                 }
             }
             ,
@@ -86,4 +73,60 @@ $(document).ready(function () {
 
 })
 ;
+
+function news_buildCommentHTML(comment) {
+    var user = null;
+    if (comment.owner_type == 1)
+       user = $('<a></a>')
+                        .attr('href',comment.user)
+                        .text(comment.pseudonym);
+    else
+       user = comment.pseudonym+' (visiteur)';
+
+    var edit_button = '';
+    var delete_button = '';
+    if (comment.write_access) {
+        edit_button = $('<a></a>')
+            .attr('href',comment.update)
+            .text('Modifier');
+        delete_button = $('<a></a>')
+            .attr('href',comment.delete)
+            .text('Supprimer');
+    }
+
+    return $('<fieldset></fieldset>')
+        .attr('id','commentaire-'+comment.id)
+        .attr('data-id',comment.id)
+        .append(
+            $('<legend></legend>')
+                .append(
+                    'Posté par ',
+                    $('<strong></strong>')
+                        .append(
+                            user
+                        ),
+                    ' le '+comment.date,
+                    (comment.write_access)?' - ':'',
+                    edit_button,
+                    (comment.write_access)?' | ':'',
+                    delete_button
+                ),
+            $('<p></p>')
+                .addClass('overflow_hidden')
+                .text(comment.contenu)
+        );
+        //'<fieldset id="commentaire-' + data.comments[i]['id'] + '">' +
+        //'<legend>' +
+        //'Posté par <strong>' +
+        //(data.comments[i]['owner_type'] == 1
+        //    ? '<a href="' + data.comments[i]['user'] + '">' + escapeHtml(data.comments[i]['pseudonym']) + '</a>' : escapeHtml(data.comments[i]['pseudonym']) + ' (visiteur)') +
+        //'</strong>' +
+        //' le ' + data.comments[i]['date'] +
+        //(data.comments[i]['write_access'] == true ? '- <a href="' + data.comments[i]['update'] + '">Modifier</a> | <a href="' + data.comments[i]['delete'] + '">Supprimer</a>' : '') +
+        //'</legend>' +
+        //'<p class="overflow_hidden">' + escapeHtml(data.comments[i]['contenu']) + '</p>' +
+        //'</fieldset>'
+    //);
+
+}
 

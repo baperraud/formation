@@ -135,6 +135,12 @@ class NewsController extends BackController {
         $comment_news_url_a['html'] = Application::getRoute($this->App->getName(), $this->getModule(), 'insertComment', array($News['id']));
         $comment_news_url_a['json'] = Application::getRoute($this->App->getName(), $this->getModule(), 'insertCommentJson', array($News['id']));
         $this->Page->addVar('comment_news_url_a', $comment_news_url_a);
+
+        // On génère et envoie le formulaire
+        $Form_builder = new CommentFormBuilder(new Comment());
+        $Form_builder->build();
+        $Form = $Form_builder->getForm();
+        $this->Page->addVar('Form', $Form);
     }
 
     /**
