@@ -140,11 +140,13 @@ class NewsController extends BackController {
         $comment_news_url_a['json'] = Application::getRoute($this->App->getName(), $this->getModule(), 'insertCommentJson', array($News['id']));
         $this->Page->addVar('comment_news_url_a', $comment_news_url_a);
 
-        // On envoie le lien pour charger les anciens/nouveaux commentaires
-        $load_comments_url_a = [];
-        $load_comments_url_a['old'] = Application::getRoute($this->App->getName(), $this->getModule(), 'loadCommentsJson', array('old', $News['id']));
-        $load_comments_url_a['new'] = Application::getRoute($this->App->getName(), $this->getModule(), 'loadCommentsJson', array('new', $News['id']));
-        $this->Page->addVar('load_comments_url_a', $load_comments_url_a);
+        /* On envoie le lien pour charger les anciens/nouveaux commentaires
+        ainsi que pour obtenir les commentaires supprimés à la volée */
+        $json_comments_url_a = [];
+        $json_comments_url_a['old'] = Application::getRoute($this->App->getName(), $this->getModule(), 'loadCommentsJson', array('old', $News['id']));
+        $json_comments_url_a['new'] = Application::getRoute($this->App->getName(), $this->getModule(), 'loadCommentsJson', array('new', $News['id']));
+        $json_comments_url_a['deleted'] = Application::getRoute($this->App->getName(), $this->getModule(), 'getDeletedCommentsJson', array($News['id']));
+        $this->Page->addVar('json_comments_url_a', $json_comments_url_a);
 
         // On génère et envoie le formulaire
         $Form_builder = new CommentFormBuilder(new Comment());
@@ -417,6 +419,36 @@ class NewsController extends BackController {
         $this->Page->addVar('comment_user_url_a', $comment_user_url_a);
         $this->Page->addVar('comment_write_access_a', $comment_write_access_a);
 
+    }
+
+    /**
+     * Action permettant de récupérer les commentaires ayant été supprimé
+     * depuis le chargement de la page via JSON
+     * @param $Request HTTPRequest La requête AJAX
+     */
+    public function executeGetDeletedCommentsJson(HTTPRequest $Request) {
+        /*------------------------*/
+        /* Traitements génériques */
+        /*------------------------*/
+        $this->ajax_required = true;
+        $this->runActionHandler();
+
+
+        /*-------------------------*/
+        /* Traitements spécifiques */
+        /*-------------------------*/
+
+        /** @var CommentsManager $CommentsManager */
+        $CommentsManager = $this->Managers->getManagerOf('Comments');
+        $news_id = $Request->getGetData('news');
+        $comment_a = $Request->getPostData('comments');
+
+        // On récupère les commentaires encore existants
+        $comment_exists_a = $CommentsManager->getCommentcIdUsingId_a($comment_a, $news_id);
+
+        // On ne garde que ceux qui ont été supprimé
+        $comment_delete_a = array_diff($comment_a, $comment_exists_a);
+        $this->Page->addVar('comment_a', $comment_delete_a);
     }
 
     /**

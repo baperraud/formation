@@ -8,7 +8,7 @@
  * @var array $comment_delete_url_a
  * @var array $comment_user_url_a
  * @var string $news_user_url
- * @var array $load_comments_url_a
+ * @var array $json_comments_url_a
  * @var string $nombre_commentaires
  */
 
@@ -42,7 +42,7 @@ use OCFram\Session;
     </form>
 </div>
 
-<div id="comments_container" data-load_old="<?= $load_comments_url_a['old'] ?>" data-load_new="<?= $load_comments_url_a['new'] ?>" data-limit="<?= $nombre_commentaires ?>">
+<div id="comments_container" data-load_old="<?= $json_comments_url_a['old'] ?>" data-load_new="<?= $json_comments_url_a['new'] ?>" data-get_deleted="<?= $json_comments_url_a['deleted'] ?>" data-limit="<?= $nombre_commentaires ?>">
 
     <?php
     if (empty($Comment_a)): ?>

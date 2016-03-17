@@ -64,12 +64,20 @@ abstract class CommentsManager extends Manager {
     abstract public function getCommentcUsingUsercIdSortByDateDesc_a($user_id);
 
     /**
-     * Méthode retournant une les commentaires plus récents qu'un autre d'une news
+     * Méthode retournant les commentaires plus récents qu'un autre d'une news
      * @param $comment_id int Le commentaire à partir duquel chercher
      * @param $news_id int La news dans laquelle chercher
      * @return array La liste des commentaires
      */
     abstract public function getCommentcAfterOtherSortByIdDesc_a($comment_id, $news_id);
+
+    /**
+     * Méthode récupérant une liste d'ids de commentaires s'ils existent
+     * @param $comment_a array Les ids des commentaires
+     * @param $news_id int La news dans laquelle chercher
+     * @return array La liste des ids des commentaires trouvés
+     */
+    abstract public function getCommentcIdUsingId_a($comment_a, $news_id);
 
     /**
      * Méthode permettant de supprimer un commentaire

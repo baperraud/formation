@@ -99,7 +99,7 @@ class CommentsManagerPDO extends CommentsManager {
     }
 
     /**
-     * Méthode retournant une les commentaires plus récents qu'un autre d'une news
+     * Méthode retournant les commentaires plus récents qu'un autre d'une news
      * @param $comment_id int Le commentaire à partir duquel chercher
      * @param $news_id int La news dans laquelle chercher
      * @return array La liste des commentaires
@@ -134,6 +134,37 @@ class CommentsManagerPDO extends CommentsManager {
         $select_query_result->closeCursor();
 
         return $Comment_a;
+    }
+
+    /**
+     * Méthode récupérant une liste d'ids de commentaires s'ils existent
+     * @param $comment_a array Les ids des commentaires
+     * @param $news_id int La news dans laquelle chercher
+     * @return array La liste des ids des commentaires trouvés
+     */
+    public function getCommentcIdUsingId_a($comment_a, $news_id) {
+
+        $ids = $comment_a;
+
+        $in_subquery = implode(',', array_fill(0, count($ids), '?'));
+
+        $select_query = '
+			SELECT NCC_id
+			FROM T_NEW_commentc
+			WHERE NCC_id IN (' . $in_subquery . ')';
+
+        /** @var \PDOStatement $select_query_result */
+        $select_query_result = $this->Dao->prepare($select_query);
+        foreach ($ids as $k => $id) $select_query_result->bindValue(($k + 1), $id, \PDO::PARAM_INT);
+        $select_query_result->execute();
+
+        $comment_exists__a = [];
+
+        foreach ($select_query_result->fetchAll(\PDO::FETCH_COLUMN) as $row) {
+            $comment_exists__a[] = $row;
+        }
+
+        return $comment_exists__a;
     }
 
     /**

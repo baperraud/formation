@@ -115,9 +115,10 @@ $(document).ready(function () {
     });
 
 
-    /* Requête AJAX pour l'affichage des nouveaux commentaires */
+    /* Requête AJAX de rafraichissment */
     window.setInterval(function () {
 
+        // On affiche les nouveaux commentaires
         $.post(
             $comments_container.data('load_new'),
             {
@@ -133,10 +134,31 @@ $(document).ready(function () {
             'json'
         );
 
+        // On efface les commentaires ayant été supprimé
+        var $comment_a = $comments_container.find('fieldset'),
+            $comment_id_a = [];
+        for (var i = 0; i < $comment_a.length; i++) {
+            $comment_id_a.push($($comment_a[i]).data('id'));
+        }
+        $.post(
+            $comments_container.data('get_deleted'),
+            {
+                comments: $comment_id_a
+            },
+            function (data) {
+                // On retire les commentaires qui ont été supprimé
+                for (var i = 0; i < data.deleted.length; i++) {
+                    $comments_container.find("[data-id='" + data.deleted[i] + "']").remove();
+                }
+            },
+            'json'
+        );
+
     }, 5000);
 
 
-});
+})
+;
 
 function news_buildCommentHTML(comment) {
     var user = null;
