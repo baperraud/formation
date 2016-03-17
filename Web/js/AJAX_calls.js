@@ -3,10 +3,10 @@ $(document).ready(function () {
     var $body = $("body"),
         $window = $(window),
         $comments_rank = 1,
-        $load_active = true;
+        $load_active = true,
+        $comments_container = $('#comments_container');
 
 
-    //noinspection JSUnusedGlobalSymbols
     $(document).on({
         ajaxStart: function () {
             setTimeout(function () {
@@ -22,9 +22,9 @@ $(document).ready(function () {
     });
 
 
+    /* Requête AJAX pour l'envoi du formulaire (poster un commentaire) */
     $(document).on("submit", ".insert_comment_form", function () {
-        var $this = $(this),
-            $comments_container = $('#comments_container');
+        var $this = $(this);
 
         $.post(
             $this.data('ajax'),
@@ -73,6 +73,8 @@ $(document).ready(function () {
         return false;
     });
 
+
+    /* Requête AJAX pour l'affichage des anciens commentaires */
     var timer;
     $window.scroll(function () {
         clearTimeout(timer);
@@ -80,11 +82,11 @@ $(document).ready(function () {
 
 
             if ($load_active) {
-                var $comments_container = $('#comments_container');
+
                 if (news_isOnScreen($comments_container.find('fieldset:last'))) {
 
                     $.post(
-                        $comments_container.data('load'),
+                        $comments_container.data('load_old'),
                         {
                             rang: $comments_rank
                         },
@@ -111,6 +113,27 @@ $(document).ready(function () {
 
         }, 250);
     });
+
+
+    /* Requête AJAX pour l'affichage des nouveaux commentaires */
+    window.setInterval(function () {
+
+        $.post(
+            $comments_container.data('load_new'),
+            {
+                last_comment: $comments_container.find('fieldset:first').data('id')
+            },
+            function (data) {
+                // On génère les nouveaux commentaires
+                var $comments_a = data.comments.reverse();
+                for (var i = 0; i < $comments_a.length; i++) {
+                    $comments_container.prepend(news_buildCommentHTML($comments_a[i]));
+                }
+            },
+            'json'
+        );
+
+    }, 5000);
 
 
 });

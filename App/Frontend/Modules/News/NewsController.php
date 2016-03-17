@@ -140,9 +140,11 @@ class NewsController extends BackController {
         $comment_news_url_a['json'] = Application::getRoute($this->App->getName(), $this->getModule(), 'insertCommentJson', array($News['id']));
         $this->Page->addVar('comment_news_url_a', $comment_news_url_a);
 
-        // On envoie le lien pour charger les commentaires récents
-        $load_comments_url = Application::getRoute($this->App->getName(), $this->getModule(), 'loadCommentsJson', array($News['id']));
-        $this->Page->addVar('load_comments_url', $load_comments_url);
+        // On envoie le lien pour charger les anciens/nouveaux commentaires
+        $load_comments_url_a = [];
+        $load_comments_url_a['old'] = Application::getRoute($this->App->getName(), $this->getModule(), 'loadCommentsJson', array('old', $News['id']));
+        $load_comments_url_a['new'] = Application::getRoute($this->App->getName(), $this->getModule(), 'loadCommentsJson', array('new', $News['id']));
+        $this->Page->addVar('load_comments_url_a', $load_comments_url_a);
 
         // On génère et envoie le formulaire
         $Form_builder = new CommentFormBuilder(new Comment());
@@ -374,7 +376,6 @@ class NewsController extends BackController {
         /* Traitements spécifiques */
         /*-------------------------*/
 
-        // On récupère les 15 commentaires les plus récents
         /**
          * @var CommentsManager $CommentsManager
          * @var Comment[] $Comment_a
@@ -383,7 +384,14 @@ class NewsController extends BackController {
         $nombre_commentaires = $this->App->getConfig()->get('nombre_commentaires');
         $news_id = $Request->getGetData('news');
         $rang = $Request->getPostData('rang');
-        $Comment_a = $CommentsManager->getCommentcUsingNewscIdSortByIdDesc_a($news_id, $rang * $nombre_commentaires, $nombre_commentaires);
+        $last_comment = $Request->getPostData('last_comment');
+
+        if ($rang > 0)
+            // On récupère les 15 prochains commentaires
+            $Comment_a = $CommentsManager->getCommentcUsingNewscIdSortByIdDesc_a($news_id, $rang * $nombre_commentaires, $nombre_commentaires);
+        else
+            // On récupère les nouveaux commentaires
+            $Comment_a = $CommentsManager->getCommentcAfterOtherSortByIdDesc_a($Request->getPostData('last_comment'), $news_id);
 
         $this->Page->addVar('Comment_a', $Comment_a);
 
