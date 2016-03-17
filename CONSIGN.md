@@ -78,3 +78,4 @@ This part consist to add a functionnality for ask a route for a Controller and a
 * Limiter l'affichage de commentaires à 15 par défaut : OK
 * Il faut recharger les plus anciens quand on descend en scrollant (de 15 en 15) : OK
 * Ajouter un rafraichissement des nouveaux commentaires automatique : OK
+* Gérer la suppression dans le rafraichissement : En cours
