@@ -139,9 +139,11 @@ class CommentsManagerPDO extends CommentsManager {
     /**
      * Méthode permettant de récupérer la liste des commentaires d'une news spécifique
      * @param $news_id int L'id de la news dont on veut récupérer les commentaires
+     * @param $debut int Le premier commentaire à récupérer
+     * @param $limite int Le nombree de commentaires à récupérer
      * @return array
      */
-    public function getCommentcUsingNewscIdSortByDateDesc_a($news_id) {
+    public function getCommentcUsingNewscIdSortByDateDesc_a($news_id, $debut = -1, $limite = -1) {
         $select_query = '
 			SELECT NCC_id id, NCC_fk_NNC news, NCC_author pseudonym, NCC_email email, NCC_content contenu, NCC_date Date, 2 owner_type
 			FROM T_NEW_commentc
@@ -152,6 +154,10 @@ class CommentsManagerPDO extends CommentsManager {
 			INNER JOIN T_NEW_userc ON NUC_id = NCC_fk_NUC
 			WHERE NCC_fk_NNC = :news
 			ORDER BY date DESC';
+
+        if ($debut != -1 || $limite != -1) {
+            $select_query .= ' LIMIT ' . (int)$limite . ' OFFSET ' . (int)$debut;
+        }
 
         $select_query_result = $this->Dao->prepare($select_query);
         $select_query_result->bindValue(':news', (int)$news_id, \PDO::PARAM_INT);

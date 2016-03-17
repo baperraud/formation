@@ -101,17 +101,21 @@ class NewsController extends BackController {
         $news_user_url = Application::getRoute('Frontend', 'User', 'show', array($user_id));
         $this->Page->addVar('news_user_url', $news_user_url);
 
-        // On récupère les commentaires associés également
-        /** @var CommentsManager $CommentsManager */
+        // On récupère les 15 commentaires les plus récents
+        /**
+         * @var CommentsManager $CommentsManager
+         * @var Comment[] $Comment_a
+         */
+        $nombre_commentaires = $this->App->getConfig()->get('nombre_commentaires');
         $CommentsManager = $this->Managers->getManagerOf('Comments');
-        /** @var Comment[] $Comment_a */
-        $Comment_a = $CommentsManager->getCommentcUsingNewscIdSortByDateDesc_a($News->getId());
+        $Comment_a = $CommentsManager->getCommentcUsingNewscIdSortByDateDesc_a($News->getId(), 0, $nombre_commentaires);
+        $this->Page->addVar('nombre_commentaires', $nombre_commentaires);
 
         $this->Page->addVar('Comment_a', $Comment_a);
 
-        // On récupère les routes de modification/suppression de commentaires
-        // ainsi que les id des auteurs des commentaires
-        // puis on les envoie à la vue
+        /* On récupère les routes de modification/suppression de commentaires
+        ainsi que les id des auteurs des commentaires
+        puis on les envoie à la vue */
         $comment_update_url_a = [];
         $comment_delete_url_a = [];
         $comment_user_url_a = [];
@@ -135,6 +139,10 @@ class NewsController extends BackController {
         $comment_news_url_a['html'] = Application::getRoute($this->App->getName(), $this->getModule(), 'insertComment', array($News['id']));
         $comment_news_url_a['json'] = Application::getRoute($this->App->getName(), $this->getModule(), 'insertCommentJson', array($News['id']));
         $this->Page->addVar('comment_news_url_a', $comment_news_url_a);
+
+        // On envoie le lien pour charger les commentaires récents
+        $load_comments_url = Application::getRoute($this->App->getName(), $this->getModule(), 'loadCommentsJson', array($News['id']));
+        $this->Page->addVar('load_comments_url', $load_comments_url);
 
         // On génère et envoie le formulaire
         $Form_builder = new CommentFormBuilder(new Comment());
@@ -236,7 +244,7 @@ class NewsController extends BackController {
 
     /**
      * Action permettant d'insérer un commentaire via JSON
-     * @param $Request HTTPRequest La requête de l'utilisateur
+     * @param $Request HTTPRequest La requête AJAX
      */
     public function executeInsertCommentJson(HTTPRequest $Request) {
         /*------------------------*/
@@ -348,6 +356,59 @@ class NewsController extends BackController {
 
         $this->Page->addVar('error_message_a', $error_message_a);
         $this->Page->addVar('Comment_a', $Comment_a);
+    }
+
+    /**
+     * Action permettant de récupérer un jeu de commentaires d'une news via JSON
+     * @param $Request HTTPRequest La requête AJAX
+     */
+    public function executeLoadCommentsJson(HTTPRequest $Request) {
+        /*------------------------*/
+        /* Traitements génériques */
+        /*------------------------*/
+        $this->ajax_required = true;
+        $this->runActionHandler();
+
+
+        /*-------------------------*/
+        /* Traitements spécifiques */
+        /*-------------------------*/
+
+        // On récupère les 15 commentaires les plus récents
+        /**
+         * @var CommentsManager $CommentsManager
+         * @var Comment[] $Comment_a
+         */
+        $CommentsManager = $this->Managers->getManagerOf('Comments');
+        $nombre_commentaires = $this->App->getConfig()->get('nombre_commentaires');
+        $news_id = $Request->getGetData('news');
+        $rang = $Request->getPostData('rang');
+        $Comment_a = $CommentsManager->getCommentcUsingNewscIdSortByDateDesc_a($news_id, $rang * $nombre_commentaires, $nombre_commentaires);
+
+        $this->Page->addVar('Comment_a', $Comment_a);
+
+        /* On récupère les routes de modification/suppression de commentaires
+        ainsi que les id des auteurs des commentaires et si il y a droit de
+        modification ou suppression */
+        $comment_update_url_a = [];
+        $comment_delete_url_a = [];
+        $comment_user_url_a = [];
+        $comment_write_access_a = [];
+
+        foreach ($Comment_a as $Comment) {
+            $comment_update_url_a[$Comment['id']] = Application::getRoute('Frontend', $this->getModule(), 'updateComment', array($Comment['id']));
+            $comment_delete_url_a[$Comment['id']] = Application::getRoute('Frontend', $this->getModule(), 'deleteComment', array($Comment['id']));
+            $user_id = $CommentsManager->getUsercIdUsingCommentcId($Comment->getId());
+            $comment_user_url_a[$Comment['id']] = empty($user_id) ? NULL : Application::getRoute('Frontend', 'User', 'show', array($user_id));
+            $comment_write_access_a[$Comment['id']] = (Session::isAdmin()
+                || $Comment['pseudonym'] === Session::getAttribute('pseudo'));
+        }
+
+        $this->Page->addVar('comment_update_url_a', $comment_update_url_a);
+        $this->Page->addVar('comment_delete_url_a', $comment_delete_url_a);
+        $this->Page->addVar('comment_user_url_a', $comment_user_url_a);
+        $this->Page->addVar('comment_write_access_a', $comment_write_access_a);
+
     }
 
     /**

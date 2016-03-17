@@ -35,9 +35,11 @@ abstract class CommentsManager extends Manager {
     /**
      * Méthode permettant de récupérer la liste des commentaires d'une news spécifique
      * @param $news_id int L'id de la news dont on veut récupérer les commentaires
+     * @param $debut int Le premier commentaire à récupérer
+     * @param $limite int Le nombree de commentaires à récupérer
      * @return array
      */
-    abstract public function getCommentcUsingNewscIdSortByDateDesc_a($news_id);
+    abstract public function getCommentcUsingNewscIdSortByDateDesc_a($news_id, $debut = -1, $limite = -1);
 
     /**
      * Méthode permettant de récupérer la liste des mails et pseudos

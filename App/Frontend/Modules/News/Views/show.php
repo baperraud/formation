@@ -8,9 +8,10 @@
  * @var array $comment_delete_url_a
  * @var array $comment_user_url_a
  * @var string $news_user_url
+ * @var string $load_comments_url
+ * @var string $nombre_commentaires
  */
 
-use FormBuilder\CommentFormBuilder;
 use OCFram\Session;
 
 ?>
@@ -41,7 +42,7 @@ use OCFram\Session;
     </form>
 </div>
 
-<div id="comments_container">
+<div id="comments_container" data-load="<?= $load_comments_url ?>" data-limit="<?= $nombre_commentaires ?>">
 
     <?php
     if (empty($Comment_a)): ?>
