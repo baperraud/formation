@@ -99,24 +99,26 @@ class CommentsManagerPDO extends CommentsManager {
     }
 
     /**
-     * Méthode retournant une les commentaires plus récents qu'un autre
+     * Méthode retournant une les commentaires plus récents qu'un autre d'une news
      * @param $comment_id int Le commentaire à partir duquel chercher
+     * @param $news_id int La news dans laquelle chercher
      * @return array La liste des commentaires
      */
-    public function getCommentcSortByIdDesc_a($comment_id) {
+    public function getCommentcSortByIdDesc_a($comment_id, $news_id) {
         $select_query = '
 			SELECT NCC_id id, NCC_fk_NNC news, NCC_author pseudonym, NCC_email email, NCC_content contenu, NCC_date Date, 2 owner_type
 			FROM T_NEW_commentc
-			WHERE NCC_id > :id AND NCC_fk_NUC IS NULL
+			WHERE NCC_fk_NNC = :news AND NCC_id > :comment AND NCC_fk_NUC IS NULL
 			UNION
 			SELECT NCC_id id, NCC_fk_NNC news, NUC_pseudonym pseudonym, NULL email, NCC_content contenu, NCC_date Date, 1 owner_type
 			FROM T_NEW_commentc
 			INNER JOIN T_NEW_userc ON NUC_id = NCC_fk_NUC
-			WHERE NCC_id > :id
+			WHERE NCC_fk_NNC = :news AND NCC_id > :comment
 			ORDER BY date DESC';
 
         $select_query_result = $this->Dao->prepare($select_query);
-        $select_query_result->bindValue(':id', (int)$comment_id, \PDO::PARAM_INT);
+        $select_query_result->bindValue(':comment', (int)$comment_id, \PDO::PARAM_INT);
+        $select_query_result->bindValue(':news', (int)$news_id, \PDO::PARAM_INT);
         $select_query_result->execute();
 
         /** @noinspection PhpMethodParametersCountMismatchInspection */

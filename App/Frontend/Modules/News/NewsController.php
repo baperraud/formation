@@ -305,7 +305,7 @@ class NewsController extends BackController {
 
         /* Récupération de tous les commentaires récents */
         /** @var Comment[] $Comment_a */
-        $Comment_a = $CommentsManager->getCommentcSortByIdDesc_a($Request->getPostData('last_comment'));
+        $Comment_a = $CommentsManager->getCommentcSortByIdDesc_a($Request->getPostData('last_comment'), $Comment['news']);
 
         /* On récupère les routes de modification/suppression de commentaires
         ainsi que les id des auteurs des commentaires et si il y a droit de

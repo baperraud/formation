@@ -33,11 +33,10 @@ $(document).ready(function () {
                 last_comment: $comments_container.data('last_comment')
             },
             function (data) {
-                var json_answer = jQuery.parseJSON(data);
-                if (json_answer.errors_exists) {
+                if (data.errors_exists) {
                     $this.children('p.error').remove();
-                    for (var i = 0; i < json_answer.errors.length; i++) {
-                        $this.append('<p class="error">' + json_answer.errors[i] + '</p>');
+                    for (var i = 0; i < data.errors.length; i++) {
+                        $this.append('<p class="error">' + data.errors[i] + '</p>');
                     }
                 } else {
                     // On clean le formulaire et les messages d'erreur
@@ -45,24 +44,24 @@ $(document).ready(function () {
                     $this.children('p.error').remove();
 
                     // On génère les nouveaux commentaires
-                    for (i = 0; i < json_answer.comments.length; i++) {
+                    for (i = 0; i < data.comments.length; i++) {
                         $comments_container.prepend(
-                            '<fieldset id="commentaire-' + json_answer.comments[i]['id'] + '">' +
+                            '<fieldset id="commentaire-' + data.comments[i]['id'] + '">' +
                             '<legend>' +
                             'Posté par <strong>' +
-                            (json_answer.comments[i]['owner_type'] == 1
-                                ? '<a href="' + json_answer.comments[i]['user'] + '">' + escapeHtml(json_answer.comments[i]['pseudonym']) + '</a>' : escapeHtml(json_answer.comments[i]['pseudonym']) + ' (visiteur)') +
+                            (data.comments[i]['owner_type'] == 1
+                                ? '<a href="' + data.comments[i]['user'] + '">' + escapeHtml(data.comments[i]['pseudonym']) + '</a>' : escapeHtml(data.comments[i]['pseudonym']) + ' (visiteur)') +
                             '</strong>' +
-                            ' le ' + json_answer.comments[i]['date'] +
-                            (json_answer.comments[i]['write_access'] == true ? '- <a href="' + json_answer.comments[i]['update'] + '">Modifier</a> | <a href="' + json_answer.comments[i]['delete'] + '">Supprimer</a>' : '') +
+                            ' le ' + data.comments[i]['date'] +
+                            (data.comments[i]['write_access'] == true ? '- <a href="' + data.comments[i]['update'] + '">Modifier</a> | <a href="' + data.comments[i]['delete'] + '">Supprimer</a>' : '') +
                             '</legend>' +
-                            '<p class="overflow_hidden">' + escapeHtml(json_answer.comments[i]['contenu']) + '</p>' +
+                            '<p class="overflow_hidden">' + escapeHtml(data.comments[i]['contenu']) + '</p>' +
                             '</fieldset>'
                         );
                     }
 
                     // On update l'id du dernier commentaire inséré
-                    $comments_container.data('last_comment', json_answer.comments[0]['id']);
+                    $comments_container.data('last_comment', data.comments[0]['id']);
 
                     // On centre l'affichage sur le dernier commentaire inséré
                     var viewportHeight = jQuery(window).height(),
@@ -73,7 +72,7 @@ $(document).ready(function () {
                 }
             }
             ,
-            'text'
+            'json'
         );
 
         return false;
