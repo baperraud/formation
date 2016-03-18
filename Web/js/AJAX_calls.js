@@ -11,7 +11,7 @@ $(document).ready(function () {
         className: "success",
         elementPosition: "right middle",
         globalPosition: "right middle",
-        autoHideDelay: 3000
+        autoHideDelay: 5000
     });
 
     var $body = $("body"),
@@ -183,7 +183,7 @@ $(document).ready(function () {
                 }
 
                 if (data.deleted.length)
-                    $.notify(data.deleted.length + (data.deleted.length == 1 ? " commentaire a été supprimé entre-temps !" : " commentaires ont été supprimés entre-temps !"), "info");
+                    $.notify(data.deleted.length + (data.deleted.length == 1 ? " commentaire vient d'être supprimé !" : " commentaires viennent d'être supprimés !"), "info");
             }
         );
 
@@ -238,15 +238,4 @@ function news_buildCommentHTML(comment) {
                 .text(comment.contenu)
         );
 
-}
-
-function news_isOnScreen(comment) {
-    var element = comment.get(0);
-    var bounds = element.getBoundingClientRect();
-    return bounds.top < window.innerHeight && bounds.bottom > 0;
-}
-
-function removeFlash() {
-    var $flash = $('#flash_message');
-    if ($flash.length) $flash.remove();
 }
