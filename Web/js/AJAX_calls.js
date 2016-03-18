@@ -16,8 +16,6 @@ $(document).ready(function () {
         },
         ajaxStop: function () {
             $body.removeClass("loading");
-            var $flash = $('#flash_message');
-            if ($flash.length) $flash.remove();
         }
     });
 
@@ -69,6 +67,8 @@ $(document).ready(function () {
             },
             'json'
         );
+
+        removeFlash();
 
         return false;
     });
@@ -208,4 +208,9 @@ function news_isOnScreen(comment) {
     var element = comment.get(0);
     var bounds = element.getBoundingClientRect();
     return bounds.top < window.innerHeight && bounds.bottom > 0;
+}
+
+function removeFlash() {
+    var $flash = $('#flash_message');
+    if ($flash.length) $flash.remove();
 }
