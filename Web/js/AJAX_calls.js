@@ -119,7 +119,7 @@ $(document).ready(function () {
 
                             // On génère les anciens commentaires
                             for (var i = 0; i < data.comments.length; i++) {
-                                $comments_container.append(news_buildCommentHTML(data.comments[i]));
+                                $comments_container.append($(news_buildCommentHTML(data.comments[i]).hide().fadeIn()));
                             }
 
                             // On incrémente le rang des commentaires à afficher
@@ -154,10 +154,10 @@ $(document).ready(function () {
                 // On génère les nouveaux commentaires
                 var $comments_a = data.comments.reverse();
                 for (i = 0; i < $comments_a.length; i++) {
-                    $last_comment = news_buildCommentHTML($comments_a[i]);
+                    var $last_comment = news_buildCommentHTML($comments_a[i]);
                     // Si le commentaire n'existe pas déjà
                     if (!news_commentExists($last_comment.data('id')))
-                        $comments_container.prepend($last_comment);
+                        $comments_container.prepend($last_comment.hide().fadeIn());
                 }
 
                 if (data.comments.length)
