@@ -26,7 +26,7 @@ class CommentFormBuilder extends FormBuilder {
                     new MaxLengthValidator('Le pseudo spécifié est trop long (50 caractères maximum)', 50),
                     new NotNullValidator('Merci de spécifier votre pseudo'),
                     new PseudoAvailableValidator('Un membre utilise déjà ce pseudo. Veuillez vous connecter s\'il s\'agit du vôtre'),
-                    new NoSpaceValidator('Veuillez ne pas utiliser le caractère d\'espacement')
+                    new NoSpaceValidator('Veuillez ne pas utiliser le caractère d\'espacement dans le pseudo')
                 ]
             ]))->add(new StringField([
                 'label' => 'E-mail',

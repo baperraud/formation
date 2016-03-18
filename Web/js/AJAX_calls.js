@@ -4,7 +4,8 @@ $(document).ready(function () {
         $window = $(window),
         $comments_rank = 1,
         $load_active = true,
-        $comments_container = $('#comments_container');
+        $comments_container = $('#comments_container'),
+        timer;
 
 
     $(document).on({
@@ -47,17 +48,16 @@ $(document).ready(function () {
                     if ($comments_container.data('last_comment') == 0)
                         $('#no_comment_alert').remove();
 
-                    var $last_comment;
+                    var $comment, $last_comment;
                     // On génère les nouveaux commentaires
                     var $comments_a = data.comments.reverse();
                     for (i = 0; i < $comments_a.length; i++) {
-                        $last_comment = news_buildCommentHTML($comments_a[i]);
-                        $comments_container.prepend(
-                            $last_comment
-                        );
+                        $comment = news_buildCommentHTML($comments_a[i]);
+                        if ($comment.length)
+                            $comments_container.prepend($comment);
                     }
 
-
+                    $last_comment = $comments_container.find('fieldset:first');
                     // On centre l'affichage sur le dernier commentaire inséré
                     var viewportHeight = $window.height(),
                         elHeight = $last_comment.height(),
@@ -75,7 +75,6 @@ $(document).ready(function () {
 
 
     /* Requête AJAX pour l'affichage des anciens commentaires */
-    var timer;
     $window.scroll(function () {
         clearTimeout(timer);
         timer = setTimeout(function () {
@@ -161,7 +160,11 @@ $(document).ready(function () {
 ;
 
 function news_buildCommentHTML(comment) {
-    var user = null;
+    // On vérifie que le commentaire n'a pas déjà été inséré
+    if (($('#comments_container').find("[data-id='" + comment.id + "']")).length != 0)
+        return [];
+
+    var user = '';
     if (comment.owner_type == 1)
         user = $('<a></a>')
             .attr('href', comment.user)
