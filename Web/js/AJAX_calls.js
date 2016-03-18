@@ -1,9 +1,12 @@
 $(document).ready(function () {
 
+    // Délai de rafraichissement (en ms)
+    const REFRESH_TIMOUT = 5000;
+
     // Configuration par défaut des requêtes AJAX
     $.ajaxSetup({
         dataType: "json",
-        timeout: 5000
+        timeout: REFRESH_TIMOUT
     });
 
     // Paramètres par défaut pour les notifications
@@ -49,9 +52,9 @@ $(document).ready(function () {
         jqxhr = $.post(
             $this.data('ajax'),
             {
-                pseudonym: $('#pseudonym', $this).val(),
-                email: $('#email', $this).val(),
-                contenu: $('#contenu', $this).val(),
+                pseudonym: $("[name='pseudonym']", $this).val(),
+                email: $("[name='email']", $this).val(),
+                contenu: $("[name='contenu']", $this).val(),
                 last_comment: $comments_container.find('fieldset:first').data('id')
             });
 
@@ -187,11 +190,17 @@ $(document).ready(function () {
             }
         );
 
-    }, 5000);
+    }, REFRESH_TIMOUT);
 
 
-    // On désactive les attributs for du formulaire du bas
-    $('#insert_comment_form_bottom').find('label').removeAttr('for');
+    /* On modifie le formulaire du bas pour ne pas avoir de conflits d'ids */
+    var $bottom_form = $('#insert_comment_form_bottom');
+    $bottom_form.find("label[for='pseudonym']").attr('for', 'pseudonymBottom');
+    $bottom_form.find("input[id='pseudonym']").attr('id', 'pseudonymBottom');
+    $bottom_form.find("label[for='email']").attr('for', 'emailBottom');
+    $bottom_form.find("input[id='email']").attr('id', 'emailBottom');
+    $bottom_form.find("label[for='contenu']").attr('for', 'contenuBottom');
+    $bottom_form.find("textarea[id='contenu']").attr('id', 'contenuBottom');
 });
 
 function news_commentExists(id) {
