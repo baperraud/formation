@@ -56,7 +56,7 @@ $(document).ready(function () {
             });
 
         // En cas de réussite
-        jqxhr.done(function(data) {
+        jqxhr.done(function (data) {
             if (data.errors_exists) {
                 $this.children('p.error').remove();
                 for (var i = 0; i < data.errors.length; i++) {
@@ -92,7 +92,7 @@ $(document).ready(function () {
         });
 
         // En cas d'erreur
-        jqxhr.fail(function() {
+        jqxhr.fail(function () {
             $.notify("Erreur de l'ajout du commentaire,\nveuillez réessayer !", "error");
             jqxhr.abort();
         });
@@ -190,6 +190,8 @@ $(document).ready(function () {
     }, 5000);
 
 
+    // On désactive les attributs for du formulaire du bas
+    $('#insert_comment_form_bottom').find('label').removeAttr('for');
 });
 
 function news_commentExists(id) {
