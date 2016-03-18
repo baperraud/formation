@@ -48,16 +48,16 @@ $(document).ready(function () {
                     if ($comments_container.data('last_comment') == 0)
                         $('#no_comment_alert').remove();
 
-                    var $comment, $last_comment;
+                    var $last_comment;
                     // On génère les nouveaux commentaires
                     var $comments_a = data.comments.reverse();
                     for (i = 0; i < $comments_a.length; i++) {
-                        $comment = news_buildCommentHTML($comments_a[i]);
-                        if ($comment.length)
-                            $comments_container.prepend($comment);
+                        $last_comment = news_buildCommentHTML($comments_a[i]);
+                        // Si le commentaire n'existe pas déjà
+                        if (!news_commentExists($last_comment.data('id')))
+                            $comments_container.prepend($last_comment);
                     }
 
-                    $last_comment = $comments_container.find('fieldset:first');
                     // On centre l'affichage sur le dernier commentaire inséré
                     var viewportHeight = $window.height(),
                         elHeight = $last_comment.height(),
@@ -126,8 +126,11 @@ $(document).ready(function () {
             function (data) {
                 // On génère les nouveaux commentaires
                 var $comments_a = data.comments.reverse();
-                for (var i = 0; i < $comments_a.length; i++) {
-                    $comments_container.prepend(news_buildCommentHTML($comments_a[i]));
+                for (i = 0; i < $comments_a.length; i++) {
+                    $last_comment = news_buildCommentHTML($comments_a[i]);
+                    // Si le commentaire n'existe pas déjà
+                    if (!news_commentExists($last_comment.data('id')))
+                        $comments_container.prepend($last_comment);
                 }
             },
             'json'
@@ -156,14 +159,13 @@ $(document).ready(function () {
     }, 5000);
 
 
-})
-;
+});
+
+function news_commentExists(id) {
+    return $('#comments_container').find("[data-id='" + id + "']").length != 0;
+}
 
 function news_buildCommentHTML(comment) {
-    // On vérifie que le commentaire n'a pas déjà été inséré
-    if (($('#comments_container').find("[data-id='" + comment.id + "']")).length != 0)
-        return [];
-
     var user = '';
     if (comment.owner_type == 1)
         user = $('<a></a>')

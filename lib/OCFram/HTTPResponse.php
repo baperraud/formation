@@ -1,7 +1,7 @@
 <?php
 namespace OCFram;
 
-// TODO: trouver une solution pour retirer la redondance (menu) qui provient du trait GenericActionHandler
+// TODO: trouver une solution pour retirer la redondance (menu) qui provient du double trait GenericActionHandler (factoriser dans un nouveau trait ?)
 
 class HTTPResponse extends ApplicationComponent {
     /** @var  Page $Page */
