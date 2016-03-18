@@ -53,6 +53,7 @@ use OCFram\Session;
     <footer></footer>
 </div>
 
+<!--suppress JSUnresolvedLibraryURL -->
 <script src="//code.jquery.com/jquery-2.2.1.min.js"></script>
 <script src="/js/user_functions.js"></script>
 <script src="/js/notify.js"></script>

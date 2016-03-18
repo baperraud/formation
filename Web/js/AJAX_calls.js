@@ -25,6 +25,7 @@ $(document).ready(function () {
         timer;
 
     // On active le logo de chargement en cas de requête AJAX en cours
+    //noinspection JSUnusedGlobalSymbols,JSUnusedGlobalSymbols,JSUnusedGlobalSymbols
     $(document).on({
         ajaxStart: function () {
             setTimeout(function () {
@@ -59,6 +60,7 @@ $(document).ready(function () {
             });
 
         // En cas de réussite
+        //noinspection JSCheckFunctionSignatures
         jqxhr.done(function (data) {
             if (data.errors_exists) {
                 $this.children('p.error').remove();
@@ -95,6 +97,7 @@ $(document).ready(function () {
         });
 
         // En cas d'erreur
+        //noinspection JSCheckFunctionSignatures
         jqxhr.fail(function () {
             $.notify("Erreur de l'ajout du commentaire,\nveuillez réessayer !", "error");
             jqxhr.abort();

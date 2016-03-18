@@ -41,10 +41,12 @@ trait GenericActionHandler {
         // Si l'utilisateur n'est pas identifié
         if (!Session::isAuthenticated()) {
             Session::setFlash('Vous devez être connecté pour accéder à cette page');
+            /** @noinspection PhpUndefinedFieldInspection */
             $this->App->getHttpResponse()->redirect(Application::getRoute('Frontend', 'User', 'index'));
         } // S'il n'a pas les droits admin qui sont requis
         elseif ($this->admin_required && !Session::isAdmin()) {
             Session::setFlash('Vous devez être connecté en tant qu\'admin pour accéder à cette page');
+            /** @noinspection PhpUndefinedFieldInspection */
             $this->App->getHttpResponse()->redirect(Application::getRoute('Frontend', 'News', 'index'));
         }
     }
@@ -57,6 +59,7 @@ trait GenericActionHandler {
         // Si l'utilisateur est déjà connecté
         if (Session::isAuthenticated()) {
             Session::setFlash('Vous êtes déjà connecté !');
+            /** @noinspection PhpUndefinedFieldInspection */
             $this->App->getHttpResponse()->redirect('.');
         }
     }
@@ -67,6 +70,7 @@ trait GenericActionHandler {
      */
     protected function addTitle() {
         if (!empty($this->title) && is_string($this->title))
+            /** @noinspection PhpUndefinedMethodInspection */
             $this->getPage()->addVar('title', $this->title);
     }
 
@@ -104,6 +108,7 @@ trait GenericActionHandler {
 
         $this->menu_a = array_merge($this->getMainRoutes(), $this->menu_a);
 
+        /** @noinspection PhpUndefinedMethodInspection */
         $this->getPage()->addVar('menu_a', $this->menu_a);
     }
 
@@ -115,6 +120,7 @@ trait GenericActionHandler {
     protected function checkIfAjaxElse404() {
         // Si ce n'est pas une requête AJAX valide
         if (strtolower(filter_input(INPUT_SERVER, 'HTTP_X_REQUESTED_WITH')) !== 'xmlhttprequest') {
+            /** @noinspection PhpUndefinedFieldInspection */
             $this->App->getHttpResponse()->redirect404();
         }
     }
