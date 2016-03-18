@@ -54,6 +54,7 @@ use OCFram\Session;
 </div>
 
 <script src="//code.jquery.com/jquery-2.2.1.min.js"></script>
+<script src="/js/notify.js"></script>
 <script src="/js/AJAX_calls.js"></script>
 </body>
 </html>

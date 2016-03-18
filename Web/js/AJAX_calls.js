@@ -1,5 +1,19 @@
 $(document).ready(function () {
 
+    // Configuration par défaut des requêtes AJAX
+    $.ajaxSetup({
+        dataType: "json",
+        timeout: 5000
+    });
+
+    // Paramètres par défaut pour les notifications
+    $.notify.defaults({
+        className: "success",
+        elementPosition: "right middle",
+        globalPosition: "right middle",
+        autoHideDelay: 3000
+    });
+
     var $body = $("body"),
         $window = $(window),
         $comments_rank = 1,
@@ -7,7 +21,7 @@ $(document).ready(function () {
         $comments_container = $('#comments_container'),
         timer;
 
-
+    // On active le logo de chargement en cas de requête AJAX en cours
     $(document).on({
         ajaxStart: function () {
             setTimeout(function () {
@@ -17,60 +31,73 @@ $(document).ready(function () {
         },
         ajaxStop: function () {
             $body.removeClass("loading");
+        },
+        ajaxError: function () {
+            $body.removeClass("loading");
         }
     });
 
 
     /* Requête AJAX pour l'envoi du formulaire (poster un commentaire) */
-    $(document).on("submit", ".insert_comment_form", function () {
-        var $this = $(this);
+    $(document).on("submit", ".insert_comment_form", function (event) {
 
-        $.post(
+        event.preventDefault();
+
+        var $this = $(this), jqxhr;
+
+        // On lance la requête
+        jqxhr = $.post(
             $this.data('ajax'),
             {
                 pseudonym: $('#pseudonym', $this).val(),
                 email: $('#email', $this).val(),
                 contenu: $('#contenu', $this).val(),
                 last_comment: $comments_container.find('fieldset:first').data('id')
-            },
-            function (data) {
-                if (data.errors_exists) {
-                    $this.children('p.error').remove();
-                    for (var i = 0; i < data.errors.length; i++) {
-                        $this.append('<p class="error">' + data.errors[i] + '</p>');
-                    }
-                } else {
-                    // On clean le formulaire et les messages d'erreur
-                    $this.find("input[type=text], input[type=email], textarea").val("");
-                    $this.children('p.error').remove();
+            });
 
-                    // On retire le message 'Aucun commentaire...' si c'est le 1er
-                    if ($comments_container.data('last_comment') == 0)
-                        $('#no_comment_alert').remove();
-
-                    var $last_comment;
-                    // On génère les nouveaux commentaires
-                    var $comments_a = data.comments.reverse();
-                    for (i = 0; i < $comments_a.length; i++) {
-                        $last_comment = news_buildCommentHTML($comments_a[i]);
-                        // Si le commentaire n'existe pas déjà
-                        if (!news_commentExists($last_comment.data('id')))
-                            $comments_container.prepend($last_comment);
-                    }
-
-                    // On centre l'affichage sur le dernier commentaire inséré
-                    var viewportHeight = $window.height(),
-                        elHeight = $last_comment.height(),
-                        elOffset = $last_comment.offset();
-                    $('html, body').animate({scrollTop: (elOffset.top + (elHeight / 2) - (viewportHeight / 2) )}, 300);
+        // En cas de réussite
+        jqxhr.done(function(data) {
+            if (data.errors_exists) {
+                $this.children('p.error').remove();
+                for (var i = 0; i < data.errors.length; i++) {
+                    $this.append('<p class="error">' + data.errors[i] + '</p>');
                 }
-            },
-            'json'
-        );
+            } else {
+                // On clean le formulaire et les messages d'erreur
+                $this.find("input[type=text], input[type=email], textarea").val("");
+                $this.children('p.error').remove();
+
+                // On retire le message 'Aucun commentaire...' si c'est le 1er
+                if ($comments_container.data('last_comment') == 0)
+                    $('#no_comment_alert').remove();
+
+                var $last_comment;
+                // On génère les nouveaux commentaires
+                var $comments_a = data.comments.reverse();
+                for (i = 0; i < $comments_a.length; i++) {
+                    $last_comment = news_buildCommentHTML($comments_a[i]);
+                    // Si le commentaire n'existe pas déjà
+                    if (!news_commentExists($last_comment.data('id')))
+                        $comments_container.prepend($last_comment);
+                }
+
+                // On centre l'affichage sur le dernier commentaire inséré
+                var viewportHeight = $window.height(),
+                    elHeight = $last_comment.height(),
+                    elOffset = $last_comment.offset();
+                $('html, body').animate({scrollTop: (elOffset.top + (elHeight / 2) - (viewportHeight / 2) )}, 300);
+
+                $.notify("Le commentaire a bien été inséré !");
+            }
+        });
+
+        // En cas d'erreur
+        jqxhr.fail(function() {
+            $.notify("Erreur de l'ajout du commentaire,\nveuillez réessayer !", "error");
+            jqxhr.abort();
+        });
 
         removeFlash();
-
-        return false;
     });
 
 
@@ -78,7 +105,6 @@ $(document).ready(function () {
     $window.scroll(function () {
         clearTimeout(timer);
         timer = setTimeout(function () {
-
 
             if ($load_active) {
 
@@ -103,8 +129,9 @@ $(document).ready(function () {
                              alors il n'y en a plus à charger */
                             if (data.comments.length < $comments_container.data('limit'))
                                 $load_active = false;
-                        },
-                        'json'
+
+                            $.notify(data.comments.length + " commentaires plus anciens ont été chargés !", "info");
+                        }
                     );
 
                 }
@@ -132,8 +159,10 @@ $(document).ready(function () {
                     if (!news_commentExists($last_comment.data('id')))
                         $comments_container.prepend($last_comment);
                 }
-            },
-            'json'
+
+                if (data.comments.length)
+                    $.notify(data.comments.length + (data.comments.length == 1 ? " nouveau commentaire a été chargé !" : " nouveaux commentaires ont été chargés !"), "info");
+            }
         );
 
         // On efface les commentaires ayant été supprimé
@@ -152,8 +181,10 @@ $(document).ready(function () {
                 for (var i = 0; i < data.deleted.length; i++) {
                     $comments_container.find("[data-id='" + data.deleted[i] + "']").remove();
                 }
-            },
-            'json'
+
+                if (data.deleted.length)
+                    $.notify(data.deleted.length + (data.deleted.length == 1 ? " commentaire a été supprimé entre-temps !" : " commentaires ont été supprimés entre-temps !"), "info");
+            }
         );
 
     }, 5000);
