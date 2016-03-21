@@ -26,7 +26,7 @@ class UserController extends BackController {
      * Action permettant de se connecter
      * @param $Request HTTPRequest La requête de l'utilisateur
      */
-    public function executeIndex(HTTPRequest $Request) {
+    public function executeLogin(HTTPRequest $Request) {
         /*------------------------*/
         /* Traitements génériques */
         /*------------------------*/

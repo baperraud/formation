@@ -102,7 +102,7 @@ trait GenericActionHandler {
             $this->menu_a['Se déconnecter'] = Application::getRoute('Frontend', 'User', 'logout');
         } // Sinon
         else {
-            $this->menu_a['Se connecter'] = Application::getRoute('Frontend', 'User', 'index');
+            $this->menu_a['Se connecter'] = Application::getRoute('Frontend', 'User', 'login');
             $this->menu_a['S\'inscrire'] = Application::getRoute('Frontend', 'User', 'signup');
         }
 
