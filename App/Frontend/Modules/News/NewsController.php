@@ -385,12 +385,12 @@ class NewsController extends BackController {
         $CommentsManager = $this->Managers->getManagerOf('Comments');
         $nombre_commentaires = $this->App->getConfig()->get('nombre_commentaires');
         $news_id = $Request->getGetData('news');
-        $rang = $Request->getPostData('rang');
+        $type = $Request->getPostData('type');
         $last_comment = $Request->getPostData('last_comment');
 
-        if ($rang > 0)
-            // On récupère les 15 prochains commentaires
-            $Comment_a = $CommentsManager->getCommentcUsingNewscIdSortByIdDesc_a($news_id, $rang * $nombre_commentaires, $nombre_commentaires);
+        if ($type == 'old')
+            // On récupère 15 commentaires plus anciens
+            $Comment_a = $CommentsManager->getCommentcBeforeOtherSortByIdDesc_a($last_comment, $news_id, $nombre_commentaires);
         else
             // On récupère les nouveaux commentaires
             $Comment_a = $CommentsManager->getCommentcAfterOtherSortByIdDesc_a($last_comment, $news_id);
