@@ -15,7 +15,7 @@ class ConnexionFormHandler extends FormHandler {
 
     public function process() {
 
-        if ($this->Request->getMethod() == 'POST') {
+        if ($this->Request->getMethod() == 'POST' && $this->Form->isValid()) {
 
             $this->setUser($this->Manager->getUsercUsingPseudo($this->Request->getPostData('pseudonym')));
 

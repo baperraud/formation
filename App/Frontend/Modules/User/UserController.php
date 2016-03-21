@@ -25,7 +25,7 @@ class UserController extends BackController {
     /**
      * Action permettant de construire puis d'afficher le formulaire de connexion
      * @param $Request HTTPRequest La requête de l'utilisateur
-     * @param $field_value_a Les champs renseignés par l'utilisateur
+     * @param $field_value_a array Les champs renseignés par l'utilisateur
      */
     public function executeLogin(HTTPRequest $Request, array $field_value_a = NULL) {
         /*------------------------*/
@@ -39,17 +39,20 @@ class UserController extends BackController {
         /*-------------------------*/
         /* Traitements spécifiques */
         /*-------------------------*/
-        if ($field_value_a)
-            $User = new User([
-                'pseudonym' => $field_value_a['login']
-            ]);
-        else
+        if ($field_value_a) {
+            $this->Page->addVar('form', $field_value_a['Form']->createView());
+        }
+        else {
             $User = new User();
 
-        $Form_builder = new ConnexionFormBuilder($User);
-        $Form_builder->build();
-        $Form = $Form_builder->getForm();
-        $this->Page->addVar('form', $Form->createView());
+            $Form_builder = new ConnexionFormBuilder($User);
+            $Form_builder->build();
+            $Form = $Form_builder->getForm();
+            $this->Page->addVar('form', $Form->createView());
+
+        }
+
+
         $confirm_url = Application::getRoute('Frontend', 'User', 'loginConfirm');
         $this->Page->addVar('confirm_url', $confirm_url);
 
@@ -122,9 +125,9 @@ class UserController extends BackController {
         /*------------------------*/
         /* Traitements génériques */
         /*------------------------*/
-//        $this->deconnection_required = true;
-//        $this->title = 'Connexion réussie';
-//        $this->runActionHandler();
+        //$this->deconnection_required = true;
+        //$this->title = 'Connexion réussie';
+        //$this->runActionHandler();
 
 
         /*-------------------------*/
@@ -182,8 +185,7 @@ class UserController extends BackController {
 
 
             /** @noinspection PhpVoidFunctionResultUsedInspection */
-            return $this->redirectToAction('login', array('login' => $User['pseudonym']));
-
+            return $this->redirectToAction('login', array('Form' => $Form));
 
         }
 

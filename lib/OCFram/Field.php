@@ -24,6 +24,7 @@ abstract class Field {
 
     /**
      * Méthode permettant de vérifier que le champ est valide
+     * @return bool
      */
     public function isValid() {
         foreach ($this->Validator_a as $Validator) {
@@ -32,7 +33,6 @@ abstract class Field {
                 return false;
             }
         }
-
         return true;
     }
 
