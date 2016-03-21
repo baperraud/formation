@@ -45,13 +45,25 @@ abstract class BackController extends ApplicationComponent {
     public function getModule() { return $this->module; }
     public function getPage() { return $this->Page; }
 
-    public function execute() {
+    public function execute(array $data_a = null) {
+        // On vide le tableau de vars
+        $this->Page->clearVars();
+
         $method = 'execute' . ucfirst($this->action);
 
         if (!is_callable([$this, $method])) {
             throw new \RuntimeException('L\'action "' . $this->action . '" n\'est pas définie sur ce module');
         }
 
-        $this->$method($this->App->getHttpRequest());
+        if ($data_a === NULL)
+            $this->$method($this->App->getHttpRequest());
+        else
+            $this->$method($this->App->getHttpRequest(), $data_a);
+    }
+
+    public function redirectToAction($action, array $data_a = []) {
+        $this->setAction($action);
+        $this->setView($action);
+        $this->execute($data_a);
     }
 }

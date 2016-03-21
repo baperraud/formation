@@ -18,6 +18,10 @@ class Page extends ApplicationComponent {
         $this->vars_a[$var] = $value;
     }
 
+    public function clearVars() {
+        $this->vars_a = [];
+    }
+
     public function getGeneratedPage() {
         if (!file_exists($this->contentFile)) {
             throw new \RuntimeException('La vue ' . $this->contentFile . ' n\'existe pas');

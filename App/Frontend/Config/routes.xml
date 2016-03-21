@@ -14,6 +14,7 @@
     <route url="/get-deleted-comments-([0-9]+)\.json" module="News" action="getDeletedCommentsJson" vars="news" format="json"></route>
     <route url="/device\.html" module="Device" action="index"></route>
     <route url="/login\.html" module="User" action="login"></route>
+    <route url="/login-post\.html" module="User" action="loginConfirm"></route>
     <route url="/logout\.html" module="User" action="logout"></route>
     <route url="/membre-([0-9]+)\.html" module="User" action="show" vars="id"></route>
     <route url="/signup\.html" module="User" action="signup"></route>
