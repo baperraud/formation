@@ -136,7 +136,8 @@ $(document).ready(function () {
                             if (data.comments.length < $comments_container.data('limit'))
                                 $load_active = false;
 
-                            $.notify(data.comments.length + " commentaires plus anciens ont été chargés !", "info");
+                            if (data.comments.length)
+                                $.notify(data.comments.length + " commentaires plus anciens ont été chargés !", "info");
                         }
                     );
 
