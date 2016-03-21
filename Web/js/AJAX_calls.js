@@ -44,6 +44,7 @@ $(document).ready(function () {
     });
 
 
+    //TODO: ne faire qu'une requête SQL directe (pas de récursion)
     /* Centrage de l'affichage sur le commentaire de l'url si existant */
     var sharpPos = window.location.href.lastIndexOf("#"),
         anchor = window.location.href.substring(sharpPos + 1);
