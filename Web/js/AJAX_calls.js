@@ -1,4 +1,29 @@
+// Initialisation des variables globales
+var $body = $("body"),
+    $window = $(window),
+    $comments_rank = 1,
+    $load_active = true,
+    $comments_container = $('#comments_container'),
+    timer;
+
 $(document).ready(function () {
+
+    // On active le logo de chargement en cas de requête AJAX en cours
+    //noinspection JSUnusedGlobalSymbols,JSUnusedGlobalSymbols,JSUnusedGlobalSymbols
+    $(document).on({
+        ajaxStart: function () {
+            setTimeout(function () {
+                if ($.active > 0) $body.addClass("loading");
+            }, 250);
+
+        },
+        ajaxStop: function () {
+            $body.removeClass("loading");
+        },
+        ajaxError: function () {
+            $body.removeClass("loading");
+        }
+    });
 
     // Délai de rafraichissement (en ms)
     const REFRESH_TIMOUT = 5000;
@@ -17,29 +42,18 @@ $(document).ready(function () {
         autoHideDelay: 5000
     });
 
-    var $body = $("body"),
-        $window = $(window),
-        $comments_rank = 1,
-        $load_active = true,
-        $comments_container = $('#comments_container'),
-        timer;
 
-    // On active le logo de chargement en cas de requête AJAX en cours
-    //noinspection JSUnusedGlobalSymbols,JSUnusedGlobalSymbols,JSUnusedGlobalSymbols
-    $(document).on({
-        ajaxStart: function () {
-            setTimeout(function () {
-                if ($.active > 0) $body.addClass("loading");
-            }, 250);
+    /* Centrage de l'affichage sur le commentaire de l'url si existant */
+    var sharpPos = window.location.href.lastIndexOf("#"),
+        anchor = window.location.href.substring(sharpPos + 1),
+        $theComment = null;
 
-        },
-        ajaxStop: function () {
-            $body.removeClass("loading");
-        },
-        ajaxError: function () {
-            $body.removeClass("loading");
-        }
-    });
+    if (sharpPos >= 0) {
+        news_loadCommentsUntilOneFound(anchor);
+
+        $theComment = $comments_container.find("fieldset[id='" + anchor + "']");
+        centerViewportToElem($theComment);
+    }
 
 
     /* Requête AJAX pour l'envoi du formulaire (poster un commentaire) */
@@ -87,10 +101,8 @@ $(document).ready(function () {
                 }
 
                 // On centre l'affichage sur le dernier commentaire inséré
-                var viewportHeight = $window.height(),
-                    elHeight = $last_comment.height(),
-                    elOffset = $last_comment.offset();
-                $('html, body').animate({scrollTop: (elOffset.top + (elHeight / 2) - (viewportHeight / 2) )}, 300);
+                centerViewportToElem($last_comment);
+                $last_comment.hide().show(300);
 
                 $.notify("Le commentaire a bien été inséré !");
             }
@@ -186,7 +198,11 @@ $(document).ready(function () {
             function (data) {
                 // On retire les commentaires qui ont été supprimé
                 for (var i = 0; i < data.deleted.length; i++) {
-                    $comments_container.find("[data-id='" + data.deleted[i] + "']").remove();
+                    //$comments_container.find("[data-id='" + data.deleted[i] + "']").remove();
+                    var $comment_to_remove = $comments_container.find("[data-id='" + data.deleted[i] + "']");
+                    $comment_to_remove.hide(300, function () {
+                        this.remove();
+                    });
                 }
 
                 if (data.deleted.length)
@@ -253,4 +269,35 @@ function news_buildCommentHTML(comment) {
                 .text(comment.contenu)
         );
 
+}
+
+
+function news_loadCommentsUntilOneFound(anchor) {
+
+    //noinspection JSCheckFunctionSignatures
+    $.post({
+        async: false,
+        url: $comments_container.data('load_old'),
+        data: {
+            rang: $comments_rank
+        }
+    }).done(function (data) {
+
+        // On génère les anciens commentaires
+        for (var i = 0; i < data.comments.length; i++) {
+            $comments_container.append($(news_buildCommentHTML(data.comments[i]).hide().fadeIn()));
+        }
+
+        // On incrémente le rang des commentaires à afficher
+        $comments_rank = $comments_rank + 1;
+
+        /* Si l'on a renvoyé moins de 15 commentaires,
+         alors il n'y en a plus à charger */
+        if (data.comments.length < $comments_container.data('limit'))
+            $load_active = false;
+
+        // Si l'on n'a pas encore trouvé le commentaire, on recommence
+        if (!$comments_container.find("fieldset[id='" + anchor + "']").length && $load_active)
+            news_loadCommentsUntilOneFound(anchor);
+    });
 }

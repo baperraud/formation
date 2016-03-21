@@ -8,3 +8,10 @@ function removeFlash() {
     var $flash = $('#flash_message');
     if ($flash.length) $flash.remove();
 }
+
+function centerViewportToElem(elem, speed = 500) {
+    var viewportHeight = $(window).height(),
+        elHeight = elem.height(),
+        elOffset = elem.offset();
+    $('html, body').animate({scrollTop: (elOffset.top + (elHeight / 2) - (viewportHeight / 2) )}, speed);
+}
