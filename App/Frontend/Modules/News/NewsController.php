@@ -653,7 +653,7 @@ class NewsController extends BackController {
             Session::setFlash('Le commentaire a bien été modifié');
 
             $news_url = Application::getRoute('Frontend', 'News', 'show', array($Comment->getNews()));
-            $this->App->getHttpResponse()->redirect($news_url);
+            $this->App->getHttpResponse()->redirect($news_url . '#commentaire-' . $Comment['id']);
         }
 
         $this->Page->addVar('form', $Form->createView());
