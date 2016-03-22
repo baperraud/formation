@@ -81,6 +81,15 @@ abstract class CommentsManager extends Manager {
     abstract public function getCommentcBeforeOtherSortByIdDesc_a($comment_id, $news_id, $limite = -1);
 
     /**
+     * Méthode retournant les commentaires plus anciens qu'un autre d'une news
+     * @param $debut int Le commentaire à partir duquel chercher
+     * @param $fin int Le commentaire jusqu'auquel chercher
+     * @param $news_id int La news dans laquelle chercher
+     * @return array La liste des commentaires
+     */
+    abstract public function getCommentcWithinRangeSortByIdDesc_a($debut, $fin, $news_id);
+
+    /**
      * Méthode récupérant une liste d'ids de commentaires s'ils existent
      * @param $comment_a array Les ids des commentaires
      * @param $news_id int La news dans laquelle chercher

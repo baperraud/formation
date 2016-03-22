@@ -14,6 +14,7 @@ use Model\UsersManager;
 use OCFram\Application;
 use OCFram\BackController;
 use OCFram\ConnexionFormHandler;
+use OCFram\Form;
 use OCFram\FormHandler;
 use OCFram\HTTPRequest;
 use OCFram\Session;
@@ -40,7 +41,9 @@ class UserController extends BackController {
         /* Traitements spécifiques */
         /*-------------------------*/
         if ($field_value_a) {
-            $this->Page->addVar('form', $field_value_a['Form']->createView());
+            /** @var Form $Form */
+            $Form = $field_value_a['Form'];
+            $this->Page->addVar('form', $Form->createView());
         }
         else {
             $User = new User();

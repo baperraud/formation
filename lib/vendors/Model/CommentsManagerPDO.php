@@ -181,6 +181,49 @@ class CommentsManagerPDO extends CommentsManager {
     }
 
     /**
+     * Méthode retournant les commentaires plus anciens qu'un autre d'une news
+     * @param $debut int Le commentaire à partir duquel chercher
+     * @param $fin int Le commentaire jusqu'auquel chercher
+     * @param $news_id int La news dans laquelle chercher
+     * @return array La liste des commentaires
+     */
+    public function getCommentcWithinRangeSortByIdDesc_a($debut, $fin, $news_id) {
+
+        $select_query = '
+			SELECT NCC_id id, NCC_fk_NNC news, NCC_author pseudonym, NCC_email email, NCC_content contenu, NCC_date Date, 2 owner_type
+			FROM T_NEW_commentc
+			WHERE NCC_fk_NNC = :news AND NCC_id BETWEEN :debut AND :fin AND NCC_fk_NUC IS NULL
+			UNION
+			SELECT NCC_id id, NCC_fk_NNC news, NUC_pseudonym pseudonym, NULL email, NCC_content contenu, NCC_date Date, 1 owner_type
+			FROM T_NEW_commentc
+			INNER JOIN T_NEW_userc ON NUC_id = NCC_fk_NUC
+			WHERE NCC_fk_NNC = :news AND NCC_id BETWEEN :debut AND :fin
+			ORDER BY id DESC';
+
+
+        $select_query_result = $this->Dao->prepare($select_query);
+        $select_query_result->bindValue(':debut', (int)$debut, \PDO::PARAM_INT);
+        $select_query_result->bindValue(':fin', (int)$fin, \PDO::PARAM_INT);
+        $select_query_result->bindValue(':news', (int)$news_id, \PDO::PARAM_INT);
+        $select_query_result->execute();
+
+        /** @noinspection PhpMethodParametersCountMismatchInspection */
+        $select_query_result->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\Comment');
+
+        $Comment_a = $select_query_result->fetchAll();
+
+        /** @var Comment[] $Comment_a */
+        foreach ($Comment_a as $Comment) {
+            $Comment->setDate(new \DateTime($Comment->getDate()));
+        }
+
+        $select_query_result->closeCursor();
+
+        return $Comment_a;
+
+    }
+
+    /**
      * Méthode récupérant une liste d'ids de commentaires s'ils existent
      * @param $comment_a array Les ids des commentaires
      * @param $news_id int La news dans laquelle chercher

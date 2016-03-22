@@ -143,8 +143,7 @@ class NewsController extends BackController {
         /* On envoie le lien pour charger les anciens/nouveaux commentaires
         ainsi que pour obtenir les commentaires supprimés à la volée */
         $json_comments_url_a = [];
-        $json_comments_url_a['old'] = Application::getRoute($this->App->getName(), $this->getModule(), 'loadCommentsJson', array('old', $News['id']));
-        $json_comments_url_a['new'] = Application::getRoute($this->App->getName(), $this->getModule(), 'loadCommentsJson', array('new', $News['id']));
+        $json_comments_url_a['load'] = Application::getRoute($this->App->getName(), $this->getModule(), 'loadCommentsJson', array($News['id']));
         $json_comments_url_a['deleted'] = Application::getRoute($this->App->getName(), $this->getModule(), 'getDeletedCommentsJson', array($News['id']));
         $this->Page->addVar('json_comments_url_a', $json_comments_url_a);
 
@@ -385,12 +384,17 @@ class NewsController extends BackController {
         $CommentsManager = $this->Managers->getManagerOf('Comments');
         $nombre_commentaires = $this->App->getConfig()->get('nombre_commentaires');
         $news_id = $Request->getGetData('news');
+
         $type = $Request->getPostData('type');
+        $first_comment = $Request->getPostData('first_comment');
         $last_comment = $Request->getPostData('last_comment');
 
+        // On récupère 15 commentaires plus anciens
         if ($type == 'old')
-            // On récupère 15 commentaires plus anciens
             $Comment_a = $CommentsManager->getCommentcBeforeOtherSortByIdDesc_a($last_comment, $news_id, $nombre_commentaires);
+        // On récupère les commentaires entre deux bornes
+        elseif ($type == 'range')
+            $Comment_a = $CommentsManager->getCommentcWithinRangeSortByIdDesc_a($first_comment, $last_comment, $news_id);
         else
             // On récupère les nouveaux commentaires
             $Comment_a = $CommentsManager->getCommentcAfterOtherSortByIdDesc_a($last_comment, $news_id);

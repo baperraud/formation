@@ -10,7 +10,7 @@
     <route url="/comment-delete-([0-9]+)\.html" module="News" action="deleteComment" vars="id"></route>
     <route url="/commenter-([0-9]+)\.html" module="News" action="insertComment" vars="news"></route>
     <route url="/commenter-([0-9]+)\.json" module="News" action="insertCommentJson" vars="news" format="json"></route>
-    <route url="/load-(old|new)-comments-([0-9]+)\.json" module="News" action="loadCommentsJson" vars="type,news" format="json"></route>
+    <route url="/load-comments-([0-9]+)\.json" module="News" action="loadCommentsJson" vars="news" format="json"></route>
     <route url="/get-deleted-comments-([0-9]+)\.json" module="News" action="getDeletedCommentsJson" vars="news" format="json"></route>
     <route url="/device\.html" module="Device" action="index"></route>
     <route url="/login\.html" module="User" action="login"></route>

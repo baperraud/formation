@@ -42,7 +42,7 @@ use OCFram\Session;
     </form>
 </div>
 
-<div id="comments_container" data-load_old="<?= $json_comments_url_a['old'] ?>" data-load_new="<?= $json_comments_url_a['new'] ?>" data-get_deleted="<?= $json_comments_url_a['deleted'] ?>" data-limit="<?= $nombre_commentaires ?>">
+<div id="comments_container" data-load="<?= $json_comments_url_a['load'] ?>" data-get_deleted="<?= $json_comments_url_a['deleted'] ?>" data-limit="<?= $nombre_commentaires ?>">
 
     <?php
     if (empty($Comment_a)): ?>

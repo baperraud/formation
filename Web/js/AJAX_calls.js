@@ -44,12 +44,12 @@ $(document).ready(function () {
     });
 
 
-    //TODO: ne faire qu'une requête SQL directe (pas de récursion)
     /* Centrage de l'affichage sur le commentaire de l'url si existant */
     var sharpPos = window.location.href.lastIndexOf("#"),
-        anchor = window.location.href.substring(sharpPos + 1);
+        dashPos = window.location.href.lastIndexOf("-"),
+        id = window.location.href.substring(dashPos + 1);
 
-    if (sharpPos >= 0) news_loadCommentsUntilOneFound(anchor);
+    if (sharpPos >= 0) news_loadCommentsUntilOneFound(id);
 
 
     /* Requête AJAX pour l'envoi du formulaire (poster un commentaire) */
@@ -118,7 +118,7 @@ $(document).ready(function () {
         //noinspection JSCheckFunctionSignatures
         jqxhr.fail(function () {
             //noinspection JSUnresolvedFunction
-            $.notify("Erreur de l'ajout du commentaire,\nveuillez réessayer !", "error");
+            $.notify("Erreur de l'ajout du commentaire,\nveuillez réessayer", "error");
             jqxhr.abort();
         });
 
@@ -139,13 +139,17 @@ $(document).ready(function () {
 
                     //noinspection JSCheckFunctionSignatures
                     news_loadOldComments().done(function (data) {
-
                         news_generateOldComments(data);
+                        news_stopLoadingComments(data);
 
                         // Si l'on a chargé des commentaires
                         if (data.comments.length) {
                             //noinspection JSUnresolvedFunction
-                            $.notify(data.comments.length + " commentaires plus anciens ont été chargés !", "info");
+                            $.notify(data.comments.length +
+                                (data.comments.length == 1 ?
+                                    " commentaire plus ancien a été chargé !" :
+                                    " commentaires plus anciens ont été chargés" ),
+                                "info");
                         }
                     });
                 }
@@ -160,7 +164,7 @@ $(document).ready(function () {
 
         // On affiche les nouveaux commentaires
         $.post(
-            $comments_container.data('load_new'),
+            $comments_container.data('load'),
             {
                 last_comment: $comments_container.find('fieldset:first').data('id')
             },
@@ -181,7 +185,7 @@ $(document).ready(function () {
             }
         );
 
-        // On efface les commentaires ayant été supprimé
+        // On efface les commentaires ayant été supprimés
         var $comment_a = $comments_container.find('fieldset'),
             $comment_id_a = [];
         for (var i = 0; i < $comment_a.length; i++) {
@@ -218,6 +222,7 @@ $(document).ready(function () {
                     //noinspection JSCheckFunctionSignatures
                     news_loadOldComments().done(function (data) {
                         news_generateOldComments(data);
+                        news_stopLoadingComments(data);
                     });
                 }
             }
@@ -264,16 +269,14 @@ function news_commentExists(id) {
  * @returns {JQuery|jQuery}
  */
 function news_buildCommentHTML(comment) {
-    var user = '';
-    if (comment.owner_type == 1)
-        user = $('<a></a>')
+    var user = (comment.owner_type == 1) ?
+        $('<a></a>')
             .attr('href', comment.user)
-            .text(comment.pseudonym);
-    else
-        user = comment.pseudonym + ' (visiteur)';
+            .text(comment.pseudonym)
+        : comment.pseudonym + ' (visiteur)';
 
-    var edit_button = '';
-    var delete_button = '';
+    var edit_button = '',
+        delete_button = '';
     if (comment.write_access) {
         edit_button = $('<a></a>')
             .attr('href', comment.update)
@@ -291,9 +294,7 @@ function news_buildCommentHTML(comment) {
                 .append(
                     'Posté par ',
                     $('<strong></strong>')
-                        .append(
-                            user
-                        ),
+                        .append(user),
                     ' le ' + comment.date,
                     (comment.write_access) ? ' - ' : '',
                     edit_button,
@@ -309,22 +310,29 @@ function news_buildCommentHTML(comment) {
 
 
 /**
- * Fonction permettant de charger les commentaires jusqu'à ce qu'un spécifique le soit
- * @param anchor L'id (html) du commentaire que l'on veut chargé
+ * Fonction permettant de charger les commentaires jusqu'à un commentaire précis
+ * @param id L'id du commentaire que l'on veut charger
  */
-function news_loadCommentsUntilOneFound(anchor) {
+function news_loadCommentsUntilOneFound(id) {
 
     //noinspection JSCheckFunctionSignatures
-    news_loadOldComments().done(function (data) {
+    news_loadOldCommentsWithinRange(id, $comments_container.find('fieldset:last').data('id')).done(function (data) {
 
         news_generateOldComments(data);
 
-        // Si l'on n'a pas encore trouvé le commentaire, on recommence
-        if (!$comments_container.find("fieldset[id='" + anchor + "']").length && $load_active)
-            news_loadCommentsUntilOneFound(anchor);
-        else
-            var $theComment = $comments_container.find("fieldset[id='" + anchor + "']");
-        centerViewportToElem($theComment);
+        /* On charge quand même les 15 commentaires qui le précèdent pour éviter
+         un chargement automatique lors du scrolling
+         */
+        //noinspection JSCheckFunctionSignatures
+        news_loadOldComments().done(function (data) {
+            news_generateOldComments(data);
+            /* Si l'on a renvoyé moins de 15 commentaires,
+             alors il n'y en a plus à charger */
+            if (data.comments.length < $comments_container.data('limit'))
+                $load_active = false;
+        });
+
+        centerViewportToElem($comments_container.find('fieldset:last'));
     });
 }
 
@@ -335,10 +343,28 @@ function news_loadCommentsUntilOneFound(anchor) {
  */
 function news_loadOldComments() {
     return $.post({
-        url: $comments_container.data('load_old'),
+        url: $comments_container.data('load'),
         data: {
             last_comment: $comments_container.find('fieldset:last').data('id'),
             type: 'old'
+        }
+    });
+}
+
+/**
+ * Fonction permettant d'exécuter une requête AJAX qui charge
+ * d'anciens commentaires entre deux bornes
+ * @param $first_comment_id L'id du premier commentaire (borne inf)
+ * @param $last_comment_id L'id du dernier commentaire (borne sup)
+ * @returns JQueryXHR
+ */
+function news_loadOldCommentsWithinRange($first_comment_id, $last_comment_id) {
+    return $.post({
+        url: $comments_container.data('load'),
+        data: {
+            first_comment: $first_comment_id,
+            last_comment: $last_comment_id,
+            type: 'range'
         }
     });
 }
@@ -353,9 +379,14 @@ function news_generateOldComments(data) {
     for (var i = 0; i < data.comments.length; i++) {
         $comments_container.append($(news_buildCommentHTML(data.comments[i]).hide().fadeIn()));
     }
+}
 
-    /* Si l'on a renvoyé moins de 15 commentaires,
-     alors il n'y en a plus à charger */
+/**
+ * Fonction permettant de désactiver le chargement
+ * des anciens commentaires lors du scrolling
+ * @param data La réponse JSON récupérée
+ */
+function news_stopLoadingComments(data) {
     if (data.comments.length < $comments_container.data('limit'))
         $load_active = false;
 }
