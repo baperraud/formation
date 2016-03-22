@@ -77,13 +77,11 @@ class NewsController extends BackController {
         /*------------------------*/
 
         // On récupère la news de la requête
-        /**
-         * @var NewsManager $NewsManager
-         * @var News $News
-         */
+        /** @var NewsManager $NewsManager */
         $NewsManager = $this->Managers->getManagerOf('News');
+
         $News = $NewsManager->getNewscUsingId($Request->getGetData('id'));
-        if (empty($News)) $this->App->getHttpResponse()->redirect404();
+        if ($News === null) $this->App->getHttpResponse()->redirect404();
         $this->Page->addVar('News', $News);
 
         $this->title = $News->getTitre();

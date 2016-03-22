@@ -44,11 +44,10 @@ use OCFram\Session;
 
 <div id="comments_container" data-load="<?= $json_comments_url_a['load'] ?>" data-get_deleted="<?= $json_comments_url_a['deleted'] ?>" data-limit="<?= $nombre_commentaires ?>">
 
-    <?php
-    if (empty($Comment_a)): ?>
+    <?php if (empty($Comment_a)): ?>
         <p id="no_comment_alert">Aucun commentaire n'a encore été posté. Soyez le premier à en laisser un !</p>
-    <?php else:
-        foreach ($Comment_a as $Comment): ?>
+    <?php else: ?>
+        <?php foreach ($Comment_a as $Comment): ?>
             <fieldset id="<?= 'commentaire-' . $Comment['id'] ?>" data-id="<?= $Comment['id'] ?>">
                 <legend>
                     Posté par <strong>
@@ -70,9 +69,8 @@ use OCFram\Session;
                 </legend>
                 <p class="overflow_hidden"><?= htmlspecialchars($Comment['contenu']) ?></p>
             </fieldset>
-            <?php
-        endforeach;
-    endif; ?>
+        <?php endforeach; ?>
+    <?php endif; ?>
 
 </div>
 

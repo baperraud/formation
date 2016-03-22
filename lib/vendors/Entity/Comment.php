@@ -5,6 +5,8 @@ use OCFram\Entity;
 use OCFram\Session;
 
 class Comment extends Entity {
+    public static $_prefix_ = 'NCC_';
+
     protected $news;
     protected $pseudonym;
     protected $email;
@@ -12,6 +14,11 @@ class Comment extends Entity {
     /** @var  \DateTime $Date */
     protected $Date;
     protected $owner_type;
+
+    /** @var  News $News */
+    protected $News;
+    /** @var  User $User */
+    protected $User;
 
     const PSEUDO_INVALIDE = 1, CONTENU_INVALIDE = 2, EMAIL_INVALIDE = 3;
     const MEMBER = 1, VISITOR = 2;
@@ -25,8 +32,11 @@ class Comment extends Entity {
         }
     }
 
+    //public function setUser(User $User) { $this->User = $User; }
+
+
     public function setNews($news) { $this->news = (int)$news; }
-    public function setpseudonym($pseudonym) {
+    public function setPseudonym($pseudonym) {
         if (!is_string($pseudonym) || empty($pseudonym)) {
             $this->erreur_a[] = self::PSEUDO_INVALIDE;
         }

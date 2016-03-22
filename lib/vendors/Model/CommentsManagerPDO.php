@@ -2,6 +2,7 @@
 namespace Model;
 
 use Entity\Comment;
+use Entity\User;
 use OCFram\Session;
 
 class CommentsManagerPDO extends CommentsManager {
@@ -96,6 +97,24 @@ class CommentsManagerPDO extends CommentsManager {
         $select_query_result->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, '\Entity\Comment');
 
         return $select_query_result->fetch();
+
+
+
+//
+//        $query_propre = 'SELECT *
+//			FROM T_NEW_commentc
+//			LEFT OUTER JOIN T_NEW_userc ON NUC_id = NCC_fk_NUC
+//			WHERE NCC_id = :id';
+//
+//        $select_query_result = $this->Dao->prepare($select_query);
+//        $select_query_result->bindValue(':id', (int)$comment_id, \PDO::PARAM_INT);
+//        $select_query_result->execute();
+//        $return = [];
+//        while($line = $select_query_result->fetch(\PDO::FETCH_ASSOC)) {
+//            $return[] = (new Comment($line))->setUser(new User($line));
+//        }
+
+
     }
 
     /**

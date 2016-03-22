@@ -1,6 +1,7 @@
 {
   "require": {
     "mobiledetect/mobiledetectlib": "^2.8",
-    "phpmailer/phpmailer": "~5.2"
+    "phpmailer/phpmailer": "~5.2",
+    "cboden/ratchet": "^0.3.4"
   }
 }
