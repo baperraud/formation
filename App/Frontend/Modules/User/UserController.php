@@ -58,66 +58,6 @@ class UserController extends BackController {
 
         $confirm_url = Application::getRoute('Frontend', 'User', 'loginConfirm');
         $this->Page->addVar('confirm_url', $confirm_url);
-
-
-//        /*-------------------------*/
-//        /* Traitements spécifiques */
-//        /*-------------------------*/
-//        /** @var UsersManager $UsersManager */
-//        $UsersManager = $this->Managers->getManagerOf('Users');
-//
-//        // Si le formulaire a été envoyé
-//        if ($Request->getMethod() == 'POST') {
-//            $User = new User([
-//                'pseudonym' => $Request->getPostData('pseudonym'),
-//                'password' => $Request->getPostData('password')
-//            ]);
-//        } else {
-//            $User = new User;
-//        }
-//
-//        $Form_builder = new ConnexionFormBuilder($User);
-//        $Form_builder->build();
-//
-//        $Form = $Form_builder->getForm();
-//
-//        $Connexion_Form_handler = new ConnexionFormHandler($Form, $UsersManager, $Request);
-//
-//        if ($Connexion_Form_handler->process()) {
-//
-//            $User = $Connexion_Form_handler->getUser();
-//
-//            // On initialise les variables de session
-//            Session::setAuthenticated(true);
-//            Session::setAttribute('admin', (int)$User['role']);
-//            Session::setAttribute('pseudo', $User['pseudonym']);
-//            Session::setAttribute('id', (int)$User['id']);
-//
-//            Session::setFlash('Connexion réussie !');
-//
-//            // On redirige l'utilisateur en fonction de ses droits
-//            if ($User['role'] == UsersManager::ROLE_ADMIN) {
-//                $admin_url = Application::getRoute('Backend', 'News', 'index');
-//                $this->App->getHttpResponse()->redirect($admin_url);
-//            } elseif ($User['role'] == UsersManager::ROLE_USER) {
-//                $home_url = Application::getRoute('Frontend', 'News', 'index');
-//                $this->App->getHttpResponse()->redirect($home_url);
-//            } else {
-//                throw new \RuntimeException('Role utilisateur non valide');
-//            }
-//
-//        } else {
-//            // On passe le formulaire généré à la vue
-//            $this->Page->addVar('form', $Form->createView());
-//
-//            // On récupère le message d'erreur s'il existe
-//            if ($Connexion_Form_handler->getError_type() === ConnexionFormHandler::PSEUDO_INEXISTANT)
-//                Session::setFlash('Il n\'existe pas de compte avec le pseudo renseigné');
-//            if ($Connexion_Form_handler->getError_type() === ConnexionFormHandler::PASSWORD_INVALIDE)
-//                Session::setFlash('Le mot de passe est incorrect.');
-//            if ($Connexion_Form_handler->getError_type() === ConnexionFormHandler::COMPTE_INACTIF)
-//                Session::setFlash('Erreur : ce compte est inactif.');
-//        }
     }
 
     /**
@@ -125,14 +65,6 @@ class UserController extends BackController {
      * @param $Request HTTPRequest La requête de l'utilisateur
      */
     public function executeLoginConfirm(HTTPRequest $Request) {
-        /*------------------------*/
-        /* Traitements génériques */
-        /*------------------------*/
-        //$this->deconnection_required = true;
-        //$this->title = 'Connexion réussie';
-        //$this->runActionHandler();
-
-
         /*-------------------------*/
         /* Traitements spécifiques */
         /*-------------------------*/
@@ -162,20 +94,12 @@ class UserController extends BackController {
             Session::setAttribute('pseudo', $User['pseudonym']);
             Session::setAttribute('id', (int)$User['id']);
 
+            /*------------------------*/
+            /* Traitements génériques */
+            /*------------------------*/
             $this->connection_required = true;
             $this->title = 'Connexion réussie';
             $this->runActionHandler();
-
-//            // On redirige l'utilisateur en fonction de ses droits
-//            if ($User['role'] == UsersManager::ROLE_ADMIN) {
-//                $admin_url = Application::getRoute('Backend', 'News', 'index');
-//                $this->App->getHttpResponse()->redirect($admin_url);
-//            } elseif ($User['role'] == UsersManager::ROLE_USER) {
-//                $home_url = Application::getRoute('Frontend', 'News', 'index');
-//                $this->App->getHttpResponse()->redirect($home_url);
-//            } else {
-//                throw new \RuntimeException('Role utilisateur non valide');
-//            }
 
         } else {
             // On récupère le message d'erreur s'il existe
@@ -191,23 +115,6 @@ class UserController extends BackController {
             return $this->redirectToAction('login', array('Form' => $Form));
 
         }
-
-
-//        /** @var UsersManager $UsersManager */
-//        $UsersManager = $this->Managers->getManagerOf('Users');
-//
-//        $User = new User([
-//            'pseudonym' => $Request->getPostData('pseudonym'),
-//            'password' => $Request->getPostData('password')
-//        ]);
-//
-//        $Form_builder = new ConnexionFormBuilder($User);
-//        $Form_builder->build();
-//
-//        $Form = $Form_builder->getForm();
-//
-//        $Connexion_Form_handler = new ConnexionFormHandler($Form, $UsersManager, $Request);
-
 
     }
 

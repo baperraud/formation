@@ -87,8 +87,8 @@ $(document).ready(function () {
                         $this.append('<p class="error">' + data.errors[i] + '</p>');
                     }
                 } else {
-                    // On clean le formulaire et les messages d'erreur
-                    $this.find("input[type=text], input[type=email], textarea").val("");
+                    // On clean les formulaires et les messages d'erreur
+                    $("input[type=text], input[type=email], textarea").val("");
                     $this.children('p.error').remove();
 
                     // On retire le message 'Aucun commentaire...' si c'est le 1er
@@ -203,9 +203,8 @@ $(document).ready(function () {
              * @param data.deleted Tableau des commentaires ayant été supprimés
              */
             function (data) {
-                // On retire les commentaires qui ont été supprimé
+                // On retire les commentaires qui ont été supprimés
                 for (var i = 0; i < data.deleted.length; i++) {
-                    //$comments_container.find("[data-id='" + data.deleted[i] + "']").remove();
                     var $comment_to_remove = $comments_container.find("[data-id='" + data.deleted[i] + "']");
                     $comment_to_remove.hide(300, function () {
                         this.remove();
@@ -231,14 +230,31 @@ $(document).ready(function () {
     }, REFRESH_TIMOUT);
 
 
+    var $bottom_form = $('#insert_comment_form_bottom'),
+        $top_form = $('#insert_comment_form_top');
+
     /* On modifie le formulaire du bas pour ne pas avoir de conflits d'ids */
-    var $bottom_form = $('#insert_comment_form_bottom');
     $bottom_form.find("label[for='pseudonym']").attr('for', 'pseudonymBottom');
     $bottom_form.find("input[id='pseudonym']").attr('id', 'pseudonymBottom');
     $bottom_form.find("label[for='email']").attr('for', 'emailBottom');
     $bottom_form.find("input[id='email']").attr('id', 'emailBottom');
     $bottom_form.find("label[for='contenu']").attr('for', 'contenuBottom');
     $bottom_form.find("textarea[id='contenu']").attr('id', 'contenuBottom');
+
+
+    /* Synchronisation des deux formulaires */
+    $(".insert_comment_form").on('input', function () {
+        if ($(this).is($top_form)) {
+            $bottom_form.find("input[name='pseudonym']").val($(this).find("input[name='pseudonym']").val());
+            $bottom_form.find("input[name='email']").val($(this).find("input[name='email']").val());
+            $bottom_form.find("textarea[name='contenu']").val($(this).find("textarea[name='contenu']").val());
+        }
+        else {
+            $top_form.find("input[name='pseudonym']").val($(this).find("input[name='pseudonym']").val());
+            $top_form.find("input[name='email']").val($(this).find("input[name='email']").val());
+            $top_form.find("textarea[name='contenu']").val($(this).find("textarea[name='contenu']").val());
+        }
+    });
 });
 
 /**
