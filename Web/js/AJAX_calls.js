@@ -92,8 +92,8 @@ $(document).ready(function () {
                     $this.children('p.error').remove();
 
                     // On retire le message 'Aucun commentaire...' si c'est le 1er
-                    if ($comments_container.data('last_comment') == 0)
-                        $('#no_comment_alert').remove();
+                    if (!$comments_container.find('fieldset').length)
+                        $('#no_comment_alert').hide();
 
                     var $last_comment;
                     // On génère les nouveaux commentaires

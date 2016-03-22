@@ -395,8 +395,8 @@ class NewsController extends BackController {
         // On récupère les commentaires entre deux bornes
         elseif ($type == 'range')
             $Comment_a = $CommentsManager->getCommentcWithinRangeSortByIdDesc_a($first_comment, $last_comment, $news_id);
+        // On récupère les nouveaux commentaires
         else
-            // On récupère les nouveaux commentaires
             $Comment_a = $CommentsManager->getCommentcAfterOtherSortByIdDesc_a($last_comment, $news_id);
 
         $this->Page->addVar('Comment_a', $Comment_a);
