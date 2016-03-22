@@ -57,6 +57,9 @@ use OCFram\Session;
 <script src="//code.jquery.com/jquery-2.2.1.min.js"></script>
 <script src="/js/user_functions.js"></script>
 <script src="/js/notify.js"></script>
-<script src="/js/AJAX_calls.js"></script>
+<?php if (preg_match('`^/news-[0-9]+\.html$`', $_SERVER['REQUEST_URI'])): ?>
+    <script src="/js/AJAX_calls.js"></script>
+<?php endif; ?>
+<script src="/js/WebSocket.js"></script>
 </body>
 </html>
