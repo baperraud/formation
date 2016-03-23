@@ -53,42 +53,36 @@ WebsocketClass.prototype = {
         console.log('socket opened Welcome - status ' + socket.readyState);
     },
     _onMessageEvent: function (e) {
-        e = JSON.parse(e.data);
+        data = JSON.parse(e.data);
         //if (e.comment.length > 0) e.comment = JSON.parse(e.comment);
 
 
-        /* Traitements après réception de la réponse */
+        /* Traitements après réception d'un commentaire */
+
+        // Construction du nouveau commentaire
+        var $comment = news_buildCommentHTML(data);
+        if (!news_commentExists($comment.data('id')))
+            $comments_container.prepend($comment);
 
 
-        //// On affiche le message
-        //contentMessage.innerHTML =
-        //    contentMessage.innerHTML +
-        //    '> <strong>' + e.msg.from + '</strong> : ' +
-        //    e.msg.message + '<br />';
+        //// On centre l'affichage sur le dernier commentaire inséré
+        //centerViewportToElem($comment);
+        //$comment.hide().show(300);
 
 
         console.log('message event launched');
-        console.log(e);
-        //console.log(e.comment);
-        //console.log(e.action);
+        console.log(data);
+
+
     },
     _onCloseEvent: function () {
         console.log('websocket closed - server not running');
     },
 
     /* Fonction permettant d'envoyer un commentaire au serveur */
-    sendComment: function ($form) {
-
-        var msg = {
-            pseudonym: $("[name='pseudonym']", $form).val(),
-            email: $("[name='email']", $form).val(),
-            contenu: $("[name='contenu']", $form).val()
-        };
-
-        var message = JSON.stringify(msg);
-
-
-        this.socket.send('{"action":"ctrl/chat/out", "comment":' + JSON.stringify(message) + '}');
+    sendComment: function (comment) {
+        console.log(JSON.stringify(comment));
+        this.socket.send(JSON.stringify(comment));
         console.log('websocket message send');
     }
 };
@@ -97,24 +91,24 @@ WebsocketClass.prototype = {
 //var web_socket = new WebsocketClass('ws://localhost:11345/phpwebsocket/server.php');
 
 
-$(document).ready(function () {
-
-    // Instanciation d'un objet WebsocketClass avec l'URL en paramètre
-    //var web_socket = new WebsocketClass('ws://localhost:11345/phpwebsocket/server.php');
-    var web_socket = new WebsocketClass('ws://localhost:11345/test.json');
-
-    // Initialisation de la connexion vers le serveur de socket
-    web_socket.initWebsocket();
-
-    $(document).on("submit", ".insert_comment_form", function (event) {
-        event.preventDefault();
-
-        web_socket.sendComment(this);
-
-    });
-
-
-});
+//$(document).ready(function () {
+//
+//    // Instanciation d'un objet WebsocketClass avec l'URL en paramètre
+//    //var web_socket = new WebsocketClass('ws://localhost:11345/phpwebsocket/server.php');
+//    var web_socket = new WebsocketClass('ws://localhost:11345/test.json');
+//
+//    // Initialisation de la connexion vers le serveur de socket
+//    web_socket.initWebsocket();
+//
+//    $(document).on("submit", ".insert_comment_form", function (event) {
+//        event.preventDefault();
+//
+//        web_socket.sendComment(this);
+//
+//    });
+//
+//
+//});
 
 
 

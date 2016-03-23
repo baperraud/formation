@@ -58,8 +58,8 @@ use OCFram\Session;
 <script src="/js/user_functions.js"></script>
 <script src="/js/notify.js"></script>
 <?php if (preg_match('`^/news-[0-9]+\.html$`', $_SERVER['REQUEST_URI'])): ?>
-    <script src="/js/news_show.js"></script>
     <script src="/js/news_show_websocket.js"></script>
+    <script src="/js/news_show.js"></script>
 <?php endif; ?>
 <script src="/js/WebSocket.js"></script>
 </body>
