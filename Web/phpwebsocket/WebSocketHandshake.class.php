@@ -62,5 +62,3 @@ class WebSocketHandshake {
 function WebSocketHandshake($buffer) {
     return (string)new WebSocketHandshake($buffer);
 }
-
-?>
