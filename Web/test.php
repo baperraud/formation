@@ -84,27 +84,39 @@
 </html>
 
 <script>
-    /* pseudo de l'utilisateur */
+    // pseudo de l'utilisateur
     var uId = '',
-    /* bouton d'envoi du message */
+    // bouton d'envoi du message
         button = document.getElementsByClassName('sii-chat-send')[0],
-    /* message à envoyer vers le serveur */
+    // message à envoyer vers le serveur
         messageInput = document.getElementsByName('sii-chat-message')[0],
-    /* bouton de soumission du pseudo */
+    // bouton de soumission du pseudo
         buttonUser = document.getElementsByClassName('sii-chat-login')[0],
-    /* div contenant les messages reçus par le serveur */
+    // div contenant les messages reçus par le serveur
         contentMessage = document.getElementsByClassName('sii-chat-content')[0];
 
+    /**
+     * Classe permettant d'initaliser la communication avec le serveur
+     * et de gérer l'ensemble des événements liés au websocket
+     * @param host string L'URL du serveur de socket
+     */
     var WebsocketClass = function (host) {
+        /** @var  WebSocket this.socket
+         * Instance de Websocket qui gérera les connexions avec le serveur
+         */
         this.socket = new WebSocket(host);
+        /** @var Élément du DOM utilisé comme console pour afficher des messages */
         this.console = document.getElementsByClassName('console')[0];
     };
 
+    /* On étend la classe grâce au prototypage */
     WebsocketClass.prototype = {
+
+        /* Initialisation du websocket */
         initWebsocket: function () {
             var $this = this;
             this.socket.onopen = function () {
-                $this.onOpenEvent(this);
+                $this._onOpenEvent(this);
             };
             this.socket.onmessage = function (e) {
                 $this._onMessageEvent(e);
@@ -117,21 +129,30 @@
             };
             this.console.innerHTML = this.console.innerHTML + 'websocket init <br />';
         },
+
+        /* Gestion des événements soulevés */
         _onErrorEvent: function (err) {
             console.log(err);
             this.console.innerHTML = this.console.innerHTML + 'websocket error <br />';
         },
-        onOpenEvent: function (socket) {
+        _onOpenEvent: function (socket) {
             console.log('socket opened');
             this.console.innerHTML = this.console.innerHTML + 'socket opened Welcome - status ' + socket.readyState + '<br />';
         },
         _onMessageEvent: function (e) {
             e = JSON.parse(e.data);
             if (e.msg.length > 0) e.msg = JSON.parse(e.msg);
-            contentMessage.innerHTML = contentMessage.innerHTML
-                + '><strong>' + e.msg.from + '</strong> : ' + e.msg.message + '<br />';
+
+            // On affiche le message
+            contentMessage.innerHTML =
+                contentMessage.innerHTML +
+                '> <strong>' + e.msg.from + '</strong> : ' +
+                e.msg.message + '<br />';
+
+            /* Scroll automatique vers le bas
+             dans la div contenant la réception des messages */
             contentMessage.scrollTop = contentMessage.scrollHeight;
-            /* permet de scroller automatiquement vers le bas dans la div contenant la réception des messages */
+
             this.console.innerHTML = this.console.innerHTML + 'message event launched <br />';
         },
         _onCloseEvent: function () {
@@ -142,6 +163,8 @@
             messageInput.disabled = 'disabled';
             button.disabled = 'disabled';
         },
+
+        /* Fonction permettant d'envoyer des messages */
         sendMessage: function () {
             var message = '{"from":"' + uId + '", "message":"' + messageInput.value + '"}';
             this.socket.send('{"action":"ctrl/chat/out", "msg":' + JSON.stringify(message) + '}');
@@ -150,32 +173,34 @@
         }
     };
 
+    /* Instanciation d'un objet WebsocketClass avec l'URL en paramètre */
+    var web_socket = new WebsocketClass('ws://localhost:11345/phpwebsocket/server.php');
 
-    var socket = new WebsocketClass('ws://localhost:11345/phpwebsocket/server.php');
-    /* on instancie un objet WebsocketClass avec l'URL en paramètre */
+
+    /* Mise en place du mécanismes de de listeners d'events */
     if (button.addEventListener) {
-        buttonUser.addEventListener('click', function (e) { /* on écoute l'évènement 'click' sur le bouton permettant de valider son pseudo */
+        /* En cas de click sur le bouton pour valider son pseudo */
+        buttonUser.addEventListener('click', function (e) {
             e.preventDefault();
-            /* on stoppe la propagation */
-            socket.initWebsocket();
-            /* initialisation de la connexion vers le serveur de socket */
+
+            // Initialisation de la connexion vers le serveur de socket
+            web_socket.initWebsocket();
+            // Récupération de la valeur du pseudo de l'utilisateur
             uId = document.getElementsByName('sii-chat-name')[0].value;
-            /* récupération de la valeur du pseudo de l'utilisateur */
+
+            // On permet l'accès au chat
             messageInput.disabled = '';
-            /* on permet l'accès au chat (aux champs permettant d'envoyer des messages) */
             button.disabled = '';
-            return false;
-            /* on évite le rechargement de page */
         }, true);
-        button.addEventListener('click', function (e) { /* on écoute l'évènement 'click' sur le bouton permettant d'envoyer le message */
+        /* En cas de click sur le bouton pour envoyer le message */
+        button.addEventListener('click', function (e) {
             e.preventDefault();
-            socket.sendMessage();
-            /* on envoie un message vers le serveur*/
-            return false;
+
+            // Envoi du message vers le serveur
+            web_socket.sendMessage();
         }, true);
-    } else {
-        console.log('votre navigateur n\'accepte pas le addevenlistener');
     }
+    else console.log('votre navigateur n\'accepte pas le addevenlistener');
 
 
 </script>
