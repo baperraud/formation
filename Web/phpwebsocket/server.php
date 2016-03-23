@@ -3,8 +3,19 @@
 // Run from command prompt > php -q server.php
 include "websocket.class.php";
 
-// Extended basic WebSocket as ChatBot
+date_default_timezone_set('UTC');
+
+/**
+ * Class ChatBot
+ * Héritage et implémentation de la classe WebSocket dans l'exemple d'un chat
+ */
 class ChatBot extends WebSocket {
+    /**
+     * Implémentation qui permet ici l'envoi du message (des données)
+     * à chaque utilisateur connecté sur le serveur de socket (et sur le même socket)
+     * @param $user UserSocket L'émetteur du message
+     * @param $msg string Le message à transmettre
+     */
     public function process($user, $msg) {
 
         $this->say("< " . $user->socket . " :" . $msg);

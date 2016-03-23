@@ -1,10 +1,13 @@
 <?php
 
 abstract class WebSocket {
+    /** @var resource $master La ressource socket */
     var $master;
+    /** @var resource[] Tableau contenant les futures sockets créées */
     var $sockets = array();
     /** @var UserSocket[] $users */
     var $users = array();
+    /** @var bool Mode debug (in)actif */
     var $debug = true;
 
     public function __construct($address, $port) {
@@ -16,24 +19,26 @@ abstract class WebSocket {
         socket_set_option($this->master, SOL_SOCKET, SO_REUSEADDR, 1) or die("socket_option() failed");
         socket_bind($this->master, $address, $port) or die("socket_bind() failed");
         socket_listen($this->master, 20) or die("socket_listen() failed");
+
         $this->sockets[] = $this->master;
+
         $this->say("Server Started : " . date('Y-m-d H:i:s'));
         $this->say("Listening on   : " . $address . " port " . $port);
         $this->say("Master socket  : " . $this->master . "\n");
-        if ($this->debug) {
-            $this->say("Debugging on\n");
-        }
+
+        if ($this->debug) $this->say("Debugging on\n");
 
         /*
          * Serveur WebSocket qui tourne en continu
          */
         while (true) {
             $changed = $this->sockets;
-            socket_select($changed, $write = null, $except = null, null);
+            $write = $except = null;
+            socket_select($changed, $write, $except, $tv_sec = null);
             foreach ($changed as $socket) {
                 if ($socket == $this->master) {
                     $client = socket_accept($this->master);
-                    if ($client < 0) {
+                    if ($client === false) {
                         $this->log("socket_accept() failed");
                         continue;
                     } else {
@@ -116,16 +121,28 @@ abstract class WebSocket {
         $this->say("len(" . strlen($data) . ")");
     }
 
+    /**
+     * Méthode permettant lors de la connexion d'un utilisateur sur le serveur
+     * de l'enregistrer
+     * @param $socket resource Le socket associé à l'utilisateur
+     */
     public function connect($socket) {
+        // Instanciation de l'utilisateur
         $user = new UserSocket();
         $user->id = uniqid();
         $user->socket = $socket;
+        // Ajout de l'utilisateur et du socket aux arrays correspondants
         array_push($this->users, $user);
         array_push($this->sockets, $socket);
-        $this->log($socket . " CONNECTED!");
+
+        $this->log("\n" . $socket . " CONNECTED!");
         $this->log(date("d/n/Y ") . "at " . date("H:i:s T"));
     }
 
+    /**
+     * Méthode permettant de déconnecter un utilisateur
+     * @param $socket resource Le socket de l'utilisateur à déconnecter
+     */
     public function disconnect($socket) {
         $found = null;
         $n = count($this->users);
@@ -136,19 +153,28 @@ abstract class WebSocket {
             }
         }
         if (!is_null($found)) {
+            // On supprime l'utilisateur de l'array des utilisateurs
             array_splice($this->users, $found, 1);
         }
         $index = array_search($socket, $this->sockets);
         socket_close($socket);
         $this->log($socket . " DISCONNECTED!");
         if ($index >= 0) {
+            // On supprime le socket de l'array des sockets
             array_splice($this->sockets, $index, 1);
         }
     }
 
+    /**
+     * Méthode permettant de vérifier la persistance de la connexion websocket
+     * @param $user
+     * @param $buffer
+     * @return bool
+     */
     public function dohandshake($user, $buffer) {
         $this->log("\nRequesting handshake...");
         $this->log($buffer);
+        /** @noinspection PhpUnusedLocalVariableInspection */
         list($resource, $host, $origin, $key1, $key2, $l8b, $key0) = $this->getheaders($buffer);
         $this->log("Handshaking...");
         $upgrade = "HTTP/1.1 101 WebSocket Protocol Handshake\r\n" .
@@ -171,7 +197,7 @@ abstract class WebSocket {
     }
 
     public function getheaders($req) {
-        $r = $h = $o = null;
+        $r = $h = $o = $sk1 = $sk2 = $l8b = $sk0 = null;
         if (preg_match("/GET (.*) HTTP/", $req, $match)) {
             $r = $match[1];
         }
@@ -196,6 +222,11 @@ abstract class WebSocket {
         return array($r, $h, $o, $sk1, $sk2, $l8b, $sk0);
     }
 
+    /**
+     * Méthode permettant de récupérer un utilisateur selon un socket donné
+     * @param $socket
+     * @return null|UserSocket
+     */
     public function getuserbysocket($socket) {
         $found = null;
         foreach ($this->users as $user) {
@@ -207,22 +238,29 @@ abstract class WebSocket {
         return $found;
     }
 
+    /*---------------------
+     * Méthodes utilitaires
+     ---------------------*/
+    /**
+     * Méthode écrivant un message sur le flux de sortie
+     * @param string $msg
+     */
     public function say($msg = "") { echo $msg . "\n"; }
 
-    public function log($msg = "") {
-        if ($this->debug) {
-            echo $msg . "\n";
-        }
-    }
+    /**
+     * Méthode écrivant un message sur le flux de sortie (mode debug uniquement)
+     * @param string $msg
+     */
+    public function log($msg = "") { if ($this->debug) $this->say($msg); }
 
     public function wrap($msg = "") { return chr(0) . $msg . chr(255); }
 
     // copied from http://lemmingzshadow.net/386/php-websocket-serverclient-nach-draft-hybi-10/
     public function unwrap($data = "") {
         $bytes = $data;
-        $dataLength = '';
-        $mask = '';
-        $coded_data = '';
+//        $dataLength = '';
+//        $mask = '';
+//        $coded_data = '';
         $decodedData = '';
         $secondByte = sprintf('%08b', ord($bytes[1]));
         $masked = ($secondByte[0] == '1') ? true : false;
@@ -257,7 +295,10 @@ abstract class WebSocket {
 
 
 class UserSocket {
+    /** @var  string Identifiant unique généré via uniqId() */
     var $id;
+    /** @var  resource Le socket associé à l'utilisateur */
     var $socket;
+    /** @var  bool $handshake True si la connexion a été validée par handshake */
     var $handshake;
 }
