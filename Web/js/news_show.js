@@ -53,77 +53,77 @@ $(document).ready(function () {
 
 
     /* Requête AJAX pour l'envoi du formulaire (poster un commentaire) */
-    $(document).on("submit", ".insert_comment_form", function (event) {
-
-        event.preventDefault();
-
-        var $this = $(this), jqxhr;
-
-        // On lance la requête
-        jqxhr = $.post(
-            $this.data('ajax'),
-            {
-                pseudonym: $("[name='pseudonym']", $this).val(),
-                email: $("[name='email']", $this).val(),
-                contenu: $("[name='contenu']", $this).val(),
-                last_comment: $comments_container.find('fieldset:first').data('id')
-            });
-
-        // En cas de réussite
-        //noinspection JSCheckFunctionSignatures
-        jqxhr.done(
-            /**
-             * Fonction qui génère les nouveaux commentaires ayant été postés
-             * depuis le chargement de la page
-             * @param data La réponse JSON récupérée
-             * @param data.errors_exists Booléan, vaut true si le formulaire contient des erreurs
-             * @param data.errors Tableau contenant les erreurs de formulaire
-             * @param data.comments Tableau contenant les nouveaux commentaires à afficher
-             */
-            function (data) {
-                if (data.errors_exists) {
-                    $this.children('p.error').remove();
-                    for (var i = 0; i < data.errors.length; i++) {
-                        $this.append('<p class="error">' + data.errors[i] + '</p>');
-                    }
-                } else {
-                    // On clean les formulaires et les messages d'erreur
-                    $("input[type=text], input[type=email], textarea").val("");
-                    $this.children('p.error').remove();
-
-                    // On retire le message 'Aucun commentaire...' si c'est le 1er
-                    if (!$comments_container.find('fieldset').length)
-                        $('#no_comment_alert').hide();
-
-                    var $last_comment;
-                    // On génère les nouveaux commentaires
-                    var $comments_a = data.comments.reverse();
-                    for (i = 0; i < $comments_a.length; i++) {
-                        $last_comment = news_buildCommentHTML($comments_a[i]);
-                        // Si le commentaire n'existe pas déjà
-                        if (!news_commentExists($last_comment.data('id')))
-                            $comments_container.prepend($last_comment);
-                    }
-
-                    // On centre l'affichage sur le dernier commentaire inséré
-                    centerViewportToElem($last_comment);
-                    $last_comment.hide().show(300);
-
-                    //noinspection JSUnresolvedFunction
-                    $.notify("Le commentaire a bien été inséré !");
-                }
-            });
-
-        // En cas d'erreur
-        //noinspection JSCheckFunctionSignatures
-        jqxhr.fail(function () {
-            //noinspection JSUnresolvedFunction
-            $.notify("Erreur de l'ajout du commentaire,\nveuillez réessayer", "error");
-            jqxhr.abort();
-        });
-
-        removeFlash();
-    });
+    //$(document).on("submit", ".insert_comment_form", function (event) {
+    //
+    //    event.preventDefault();
+    //
+    //    var $this = $(this), jqxhr;
+    //
+    //    // On lance la requête
+    //    jqxhr = $.post(
+    //        $this.data('ajax'),
+    //        {
+    //            pseudonym: $("[name='pseudonym']", $this).val(),
+    //            email: $("[name='email']", $this).val(),
+    //            contenu: $("[name='contenu']", $this).val(),
+    //            last_comment: $comments_container.find('fieldset:first').data('id')
+    //        });
+    //
+    //    // En cas de réussite
+    //    //noinspection JSCheckFunctionSignatures
+    //    jqxhr.done(
+    //        /**
+    //         * Fonction qui génère les nouveaux commentaires ayant été postés
+    //         * depuis le chargement de la page
+    //         * @param data La réponse JSON récupérée
+    //         * @param data.errors_exists Booléan, vaut true si le formulaire contient des erreurs
+    //         * @param data.errors Tableau contenant les erreurs de formulaire
+    //         * @param data.comments Tableau contenant les nouveaux commentaires à afficher
+    //         */
+    //        function (data) {
+    //            if (data.errors_exists) {
+    //                $this.children('p.error').remove();
+    //                for (var i = 0; i < data.errors.length; i++) {
+    //                    $this.append('<p class="error">' + data.errors[i] + '</p>');
+    //                }
+    //            } else {
+    //                // On clean les formulaires et les messages d'erreur
+    //                $("input[type=text], input[type=email], textarea").val("");
+    //                $this.children('p.error').remove();
+    //
+    //                // On retire le message 'Aucun commentaire...' si c'est le 1er
+    //                if (!$comments_container.find('fieldset').length)
+    //                    $('#no_comment_alert').hide();
+    //
+    //                var $last_comment;
+    //                // On génère les nouveaux commentaires
+    //                var $comments_a = data.comments.reverse();
+    //                for (i = 0; i < $comments_a.length; i++) {
+    //                    $last_comment = news_buildCommentHTML($comments_a[i]);
+    //                    // Si le commentaire n'existe pas déjà
+    //                    if (!news_commentExists($last_comment.data('id')))
+    //                        $comments_container.prepend($last_comment);
+    //                }
+    //
+    //                // On centre l'affichage sur le dernier commentaire inséré
+    //                centerViewportToElem($last_comment);
+    //                $last_comment.hide().show(300);
+    //
+    //                //noinspection JSUnresolvedFunction
+    //                $.notify("Le commentaire a bien été inséré !");
+    //            }
+    //        });
+    //
+    //    // En cas d'erreur
+    //    //noinspection JSCheckFunctionSignatures
+    //    jqxhr.fail(function () {
+    //        //noinspection JSUnresolvedFunction
+    //        $.notify("Erreur de l'ajout du commentaire,\nveuillez réessayer", "error");
+    //        jqxhr.abort();
+    //    });
+    //
+    //    removeFlash();
+    //});
 
 
     /* Requête AJAX pour l'affichage des anciens commentaires en scrollant */
