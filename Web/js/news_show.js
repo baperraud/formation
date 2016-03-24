@@ -3,8 +3,8 @@ var $body = $("body"),
     $window = $(window),
     $load_active = true,
     $comments_container = $("#comments_container"),
-    timer,
-    post_comment_lock = false;
+    post_comment_lock = false,
+    load_comments_on_scroll_lock = false;
 
 $(document).ready(function () {
 
@@ -162,40 +162,44 @@ $(document).ready(function () {
 
     /* Requête AJAX pour l'affichage des anciens commentaires en scrollant */
     $window.scroll(function () {
-        clearTimeout(timer);
-        timer = setTimeout(function () {
 
-            // S'il reste des commentaires à charger
-            if ($load_active) {
+        // S'il reste des commentaires à charger
+        if ($load_active) {
 
-                // Si le dernier commentaire chargé est visible
-                if (news_isOnScreen($comments_container.find('fieldset:last'))) {
+            // Si le dernier commentaire chargé est visible
+            if (news_isOnScreen($comments_container.find('fieldset:last'))) {
 
-                    //noinspection JSCheckFunctionSignatures
-                    news_loadOldComments().done(
-                        /**
-                         * Fonction qui affiche les commentaires en scrollant
-                         * @param data La réponse JSON récupérée
-                         * @param data.comments_count Le nombre de commentaires récupérés
-                         */
-                        function (data) {
-                            news_generateOldComments(data);
-                            news_stopLoadingComments(data);
+                if (load_comments_on_scroll_lock) return false;
+                // On verrouille le load-on-scroll
+                load_comments_on_scroll_lock = true;
 
-                            // Si l'on a chargé des commentaires
-                            if (data.comments_count) {
-                                //noinspection JSUnresolvedFunction
-                                $.notify(data.comments_count +
-                                    (data.comments_count == 1 ?
-                                        " commentaire plus ancien a été chargé !" :
-                                        " commentaires plus anciens ont été chargés" ),
-                                    "info");
-                            }
-                        });
-                }
+                //noinspection JSCheckFunctionSignatures
+                news_loadOldComments().done(
+                    /**
+                     * Fonction qui affiche les commentaires en scrollant
+                     * @param data La réponse JSON récupérée
+                     * @param data.comments_count Le nombre de commentaires récupérés
+                     */
+                    function (data) {
+                        news_generateOldComments(data);
+                        news_stopLoadingComments(data);
+
+                        // Si l'on a chargé des commentaires
+                        if (data.comments_count) {
+                            //noinspection JSUnresolvedFunction
+                            $.notify(data.comments_count +
+                                (data.comments_count == 1 ?
+                                    " commentaire plus ancien a été chargé !" :
+                                    " commentaires plus anciens ont été chargés" ),
+                                "info");
+                        }
+
+                        load_comments_on_scroll_lock = false;
+                    });
             }
+        }
 
-        }, 250);
+
     });
 
 
