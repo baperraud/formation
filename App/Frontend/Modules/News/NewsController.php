@@ -380,7 +380,6 @@ class NewsController extends BackController {
         $this->ajax_required = true;
         $this->runActionHandler();
 
-
         /*-------------------------*/
         /* Traitements spécifiques */
         /*-------------------------*/
