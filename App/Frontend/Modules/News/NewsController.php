@@ -110,14 +110,13 @@ class NewsController extends BackController {
         $Comment_a = $CommentsManager->getCommentcUsingNewscIdSortByIdDesc_a($News->getId(), 0, $nombre_commentaires);
         $this->Page->addVar('nombre_commentaires', $nombre_commentaires);
 
-        $this->Page->addVar('Comment_a', $Comment_a);
-
         /* On récupère les routes de modification/suppression de commentaires
         ainsi que les id des auteurs des commentaires
         puis on les envoie à la vue */
         $comment_update_url_a = [];
         $comment_delete_url_a = [];
         $comment_user_url_a = [];
+        $comment_write_access_a = [];
 
         foreach ($Comment_a as $Comment) {
             $comment_update_url_a[$Comment->getId()] = Application::getRoute('Frontend', $this->getModule(), 'updateComment', array($Comment['id']));
@@ -127,11 +126,9 @@ class NewsController extends BackController {
                 $comment_user_url_a[$Comment->getId()] = Application::getRoute('Frontend', 'User', 'show', array($user_id));
             else
                 $comment_user_url_a[$Comment->getId()] = null;
+            $comment_write_access_a[$Comment['id']] = (Session::isAdmin()
+                || $Comment['pseudonym'] === Session::getAttribute('pseudo'));
         }
-
-        $this->Page->addVar('comment_update_url_a', $comment_update_url_a);
-        $this->Page->addVar('comment_delete_url_a', $comment_delete_url_a);
-        $this->Page->addVar('comment_user_url_a', $comment_user_url_a);
 
         // On envoie les liens pour commenter la news
         $comment_news_url_a = [];
@@ -151,6 +148,22 @@ class NewsController extends BackController {
         $Form_builder->build();
         $Form = $Form_builder->getForm();
         $this->Page->addVar('Form', $Form);
+
+
+        /* Construction des fieldset des commentaires */
+        $Comments_page = new Page($this->App);
+        $Comments_page->setContentFile(__DIR__ . '/Views/buildComments.php');
+        $Comments_page->addVar('Comment_a', $Comment_a);
+
+        $Comments_page->addVar('comment_update_url_a', $comment_update_url_a);
+        $Comments_page->addVar('comment_delete_url_a', $comment_delete_url_a);
+        $Comments_page->addVar('comment_user_url_a', $comment_user_url_a);
+        $Comments_page->addVar('comment_write_access_a', $comment_write_access_a);
+
+
+        $comments_html = $Comments_page->getGeneratedSubView();
+        $this->Page->addVar('comments_html', $comments_html);
+        
     }
 
     /**

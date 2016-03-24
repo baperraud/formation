@@ -2,14 +2,11 @@
 /**
  * @var \Entity\News $News
  * @var \OCFram\Form $Form
- * @var \Entity\Comment[] $Comment_a
  * @var array $comment_news_url_a
- * @var array $comment_update_url_a
- * @var array $comment_delete_url_a
- * @var array $comment_user_url_a
  * @var string $news_user_url
  * @var array $json_comments_url_a
  * @var string $nombre_commentaires
+ * @var string $comments_html
  */
 
 use OCFram\Session;
@@ -44,32 +41,10 @@ use OCFram\Session;
 
 <div id="comments_container" data-load="<?= $json_comments_url_a['load'] ?>" data-get_deleted="<?= $json_comments_url_a['deleted'] ?>" data-limit="<?= $nombre_commentaires ?>">
 
-    <?php if (empty($Comment_a)): ?>
+    <?php if ($comments_html == ''): ?>
         <p id="no_comment_alert">Aucun commentaire n'a encore été posté. Soyez le premier à en laisser un !</p>
     <?php else: ?>
-        <?php foreach ($Comment_a as $Comment): ?>
-            <fieldset id="<?= 'commentaire-' . $Comment['id'] ?>" data-id="<?= $Comment['id'] ?>">
-                <legend>
-                    Posté par <strong>
-                        <?php
-                        // Si l'auteur du commentaire est un membre
-                        if (!empty($comment_user_url_a[$Comment['id']])) {
-                            echo '<a href=', $comment_user_url_a[$Comment['id']], '>', htmlspecialchars($Comment['pseudonym']), '</a>';
-                        } else {
-                            echo htmlspecialchars($Comment['pseudonym']), ' (visiteur)';
-                        }
-                        ?></strong>
-                    le <?= $Comment['Date']->format('d/m/Y à H\hi') ?>
-                    <?php if (Session::isAdmin()
-                        || $Comment['pseudonym'] === Session::getAttribute('pseudo')
-                    ): ?> -
-                        <a href=<?= $comment_update_url_a[$Comment['id']] ?>>Modifier</a> |
-                        <a href=<?= $comment_delete_url_a[$Comment['id']] ?>>Supprimer</a>
-                    <?php endif; ?>
-                </legend>
-                <p class="overflow_hidden"><?= htmlspecialchars($Comment['contenu']) ?></p>
-            </fieldset>
-        <?php endforeach; ?>
+        <?= $comments_html ?>
     <?php endif; ?>
 
 </div>
