@@ -13,8 +13,10 @@ $(document).ready(function () {
     //    $("#insert_comment_form_container_top").find("input[type='submit']").trigger( "click" );
     //}, 5000);
 
-    /* Actions relatives aux requêtes AJAX en cours :
-     logo de chargement... */
+
+    /*
+     Actions relatives aux requêtes AJAX en cours : logo de chargement...
+     */
     //noinspection JSUnusedGlobalSymbols,JSUnusedGlobalSymbols,JSUnusedGlobalSymbols
     $(document).on({
         ajaxStart: function () {
@@ -141,7 +143,6 @@ $(document).ready(function () {
                 }
 
                 removeFlash();
-                post_comment_lock = false;
             });
 
         // En cas d'erreur
@@ -149,7 +150,11 @@ $(document).ready(function () {
         jqXHR.fail(function () {
             //noinspection JSUnresolvedFunction
             $.notify("Erreur de l'ajout du commentaire,\nveuillez réessayer", "error");
+        });
 
+        //noinspection JSCheckFunctionSignatures
+        jqXHR.always(function () {
+            // On déverrouille le posting de commentaires
             post_comment_lock = false;
         });
     });
@@ -379,7 +384,7 @@ function news_loadCommentsUntilOneFound(id) {
             news_generateOldComments(data);
             /* Si l'on a renvoyé moins de 15 commentaires,
              alors il n'y en a plus à charger */
-            if (data.comments.length < $comments_container.data('limit'))
+            if (data.comments_count < $comments_container.data('limit'))
                 $load_active = false;
         });
 
