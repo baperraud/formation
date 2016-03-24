@@ -44,7 +44,7 @@ $(document).ready(function () {
         timeout: REFRESH_TIMOUT
     });
 
-    // Paramètres par défaut pour les notifications
+    /* Paramètres par défaut pour les notifications */
     //noinspection JSUnresolvedVariable
     $.notify.defaults({
         className: "success",
@@ -89,59 +89,64 @@ $(document).ready(function () {
                 last_comment: $comments_container.find('fieldset:first').data('id')
             });
 
-        /* En cas de réussite */
+        /*
+         En cas de réussite
+         */
         //noinspection JSCheckFunctionSignatures
-        jqXHR.done(
-            /**
-             * Fonction qui génère les nouveaux commentaires ayant été postés
-             * depuis le chargement de la page
-             * @param data.code Vaut 1 si le formulaire contenait des erreurs
-             * @param data.error_a Le tableau des erreurs
-             * @param data.content_a.comments_html Les fieldsets des commentaires en html
-             */
-            function (data) {
-                console.log(data);
-                // Le commentaire n'a pas été enregistré en BDD
-                if (data.code == 1) {
-                    $this.find('p.error').remove();
-                    for (var i = 0; i < data.error_a.length; i++) {
-                        $("[name='" + data.error_a[i].name + "']", $this).after(
-                            $('<p></p>').addClass("error").text(data.error_a[i].message)
-                        );
-                    }
-                    removeFlash();
+        /**
+         * Fonction qui génère les nouveaux commentaires ayant été postés
+         * depuis le chargement de la page
+         * @param data.code Vaut 1 si le formulaire contenait des erreurs
+         * @param data.error_a Le tableau des erreurs
+         * @param data.content_a.comments_html Les fieldsets des commentaires en html
+         */
+        jqXHR.done(function (data) {
+            console.log(data);
+            // Le commentaire n'a pas été enregistré en BDD
+            if (data.code == 1) {
+                $this.find('p.error').remove();
+                for (var i = 0; i < data.error_a.length; i++) {
+                    $("[name='" + data.error_a[i].name + "']", $this).after(
+                        $('<p></p>').addClass("error").text(data.error_a[i].message)
+                    );
                 }
-                // Le commentaire a bien été enregistré en BDD
-                else {
-                    // On clean les formulaires et les messages d'erreur
-                    $('.insert_comment_form').each(function () {
-                        this.reset();
-                    });
-                    $this.find('p.error').remove();
+            }
+            // Le commentaire a bien été enregistré en BDD
+            else {
+                // On clean les formulaires et les messages d'erreur
+                $('.insert_comment_form').each(function () {
+                    this.reset();
+                });
+                $this.find('p.error').remove();
 
-                    // On retire le message 'Aucun commentaire...' si c'est le 1er
-                    if (!$comments_container.find('fieldset').length)
-                        $('#no_comment_alert').hide();
-
-
-                    // On force un rafraichissement
-                    news_refreshComments(true, true);
+                // On retire le message 'Aucun commentaire...' si nécessaire
+                if (!$comments_container.find('fieldset').length)
+                    $('#no_comment_alert').hide();
 
 
-                    ///* Envoi du commentaire via websocket */
-                    //web_socket.sendComment(data.content_a.comments[0]);
-                }
+                // On force un rafraichissement
+                news_refreshComments(true, true);
 
-                removeFlash();
-            });
 
-        /* En cas d'erreur */
+                ///* Envoi du commentaire via websocket */
+                //web_socket.sendComment(data.content_a.comments[0]);
+            }
+
+            removeFlash();
+        });
+
+        /*
+         En cas d'erreur
+         */
         //noinspection JSCheckFunctionSignatures
         jqXHR.fail(function () {
             //noinspection JSUnresolvedFunction
             $.notify("Erreur de l'ajout du commentaire,\nveuillez réessayer", "error");
         });
 
+        /*
+         Dans tous les cas
+         */
         //noinspection JSCheckFunctionSignatures
         jqXHR.always(function () {
             post_comment_lock = false;
@@ -163,32 +168,30 @@ $(document).ready(function () {
                 load_comments_on_scroll_lock = true;
 
                 //noinspection JSCheckFunctionSignatures
-                news_loadOldComments().done(
-                    /**
-                     * Fonction qui affiche les commentaires en scrollant
-                     * @param data La réponse JSON récupérée
-                     * @param data.content_a.comments_count Le nombre de commentaires récupérés
-                     */
-                    function (data) {
-                        news_buildOldComments(data);
-                        news_stopLoadingComments(data);
+                /**
+                 * Fonction qui affiche les commentaires en scrollant
+                 * @param data La réponse JSON récupérée
+                 * @param data.content_a.comments_count Le nombre de commentaires récupérés
+                 */
 
-                        // Si l'on a chargé des commentaires
-                        if (data.content_a.comments_count) {
-                            //noinspection JSUnresolvedFunction
-                            $.notify(data.content_a.comments_count +
-                                (data.content_a.comments_count == 1 ?
-                                    " commentaire plus ancien a été chargé !" :
-                                    " commentaires plus anciens ont été chargés" ),
-                                "info");
-                        }
+                news_loadOldComments().done(function (data) {
+                    news_buildOldComments(data);
+                    news_stopLoadingComments(data);
 
-                        load_comments_on_scroll_lock = false;
-                    });
+                    // Si l'on a chargé des commentaires
+                    if (data.content_a.comments_count) {
+                        //noinspection JSUnresolvedFunction
+                        $.notify(data.content_a.comments_count +
+                            (data.content_a.comments_count == 1 ?
+                                " commentaire plus ancien a été chargé !" :
+                                " commentaires plus anciens ont été chargés" ),
+                            "info");
+                    }
+
+                    load_comments_on_scroll_lock = false;
+                });
             }
         }
-
-
     });
 
 
@@ -362,8 +365,8 @@ function news_refreshComments(forced, add) {
     var second_returned = false;
 
     /*
-    On affiche les nouveaux commentaires
-    */
+     On affiche les nouveaux commentaires
+     */
     $.post(
         $comments_container.data('load'),
         {
@@ -386,8 +389,8 @@ function news_refreshComments(forced, add) {
     );
 
     /*
-    On efface les commentaires ayant été supprimés
-    */
+     On efface les commentaires ayant été supprimés
+     */
     // On commence par récupérer les ids des commentaires actuellement construits
     var $comment_a = $comments_container.find('fieldset'),
         $comment_id_a = [];
@@ -412,7 +415,9 @@ function news_refreshComments(forced, add) {
             // On retire les commentaires qui ont été supprimés
             for (var i = 0; i < data.content_a.deleted.length; i++) {
                 var $comment_to_remove = $comments_container.find("[data-id='" + data.content_a.deleted[i] + "']");
-                $comment_to_remove.hide(300, function () { this.remove(); });
+                $comment_to_remove.hide(300, function () {
+                    this.remove();
+                });
             }
 
             if (data.content_a.deleted.length) {
