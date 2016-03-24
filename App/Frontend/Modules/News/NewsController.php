@@ -426,11 +426,21 @@ class NewsController extends BackController {
                 || $Comment['pseudonym'] === Session::getAttribute('pseudo'));
         }
 
-        $this->Page->addVar('comment_update_url_a', $comment_update_url_a);
-        $this->Page->addVar('comment_delete_url_a', $comment_delete_url_a);
-        $this->Page->addVar('comment_user_url_a', $comment_user_url_a);
-        $this->Page->addVar('comment_write_access_a', $comment_write_access_a);
+        /* Construction des fieldset des commentaires */
+        $Comments_page = new Page($this->App);
+        $Comments_page->setContentFile(__DIR__ . '/Views/buildComments.php');
+        $Comments_page->addVar('Comment_a', $Comment_a);
 
+        $Comments_page->addVar('comment_update_url_a', $comment_update_url_a);
+        $Comments_page->addVar('comment_delete_url_a', $comment_delete_url_a);
+        $Comments_page->addVar('comment_user_url_a', $comment_user_url_a);
+        $Comments_page->addVar('comment_write_access_a', $comment_write_access_a);
+
+
+        $comments_html = $Comments_page->getGeneratedSubView();
+        $comments_count = count($Comment_a);
+        $this->Page->addVar('comments_html', $comments_html);
+        $this->Page->addVar('comments_count', $comments_count);
     }
 
     /**

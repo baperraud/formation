@@ -14,7 +14,7 @@ $(document).ready(function () {
     //}, 5000);
 
     /* Actions relatives aux requêtes AJAX en cours :
-    logo de chargement... */
+     logo de chargement... */
     //noinspection JSUnusedGlobalSymbols,JSUnusedGlobalSymbols,JSUnusedGlobalSymbols
     $(document).on({
         ajaxStart: function () {
@@ -167,20 +167,26 @@ $(document).ready(function () {
                 if (news_isOnScreen($comments_container.find('fieldset:last'))) {
 
                     //noinspection JSCheckFunctionSignatures
-                    news_loadOldComments().done(function (data) {
-                        news_generateOldComments(data);
-                        news_stopLoadingComments(data);
+                    news_loadOldComments().done(
+                        /**
+                         * Fonction qui affiche les commentaires en scrollant
+                         * @param data La réponse JSON récupérée
+                         * @param data.comments_count Le nombre de commentaires récupérés
+                         */
+                        function (data) {
+                            news_generateOldComments(data);
+                            news_stopLoadingComments(data);
 
-                        // Si l'on a chargé des commentaires
-                        if (data.comments.length) {
-                            //noinspection JSUnresolvedFunction
-                            $.notify(data.comments.length +
-                                (data.comments.length == 1 ?
-                                    " commentaire plus ancien a été chargé !" :
-                                    " commentaires plus anciens ont été chargés" ),
-                                "info");
-                        }
-                    });
+                            // Si l'on a chargé des commentaires
+                            if (data.comments_count) {
+                                //noinspection JSUnresolvedFunction
+                                $.notify(data.comments_count +
+                                    (data.comments_count == 1 ?
+                                        " commentaire plus ancien a été chargé !" :
+                                        " commentaires plus anciens ont été chargés" ),
+                                    "info");
+                            }
+                        });
                 }
             }
 
@@ -417,21 +423,23 @@ function news_loadOldCommentsWithinRange($first_comment_id, $last_comment_id) {
 /**
  * Fonction permettant de générer les anciens commentaires ayant été récupérés via AJAX
  * @param data La réponse JSON récupérée
+ * @param data.comments_html Les fieldset des commentaires en html
  * @see news_loadOldComments
  */
 function news_generateOldComments(data) {
-    // On génère les anciens commentaires
-    for (var i = 0; i < data.comments.length; i++) {
-        $comments_container.append($(news_buildCommentHTML(data.comments[i]).hide().fadeIn()));
-    }
+    //for (var i = 0; i < data.comments.length; i++) {
+    //    $comments_container.append($(news_buildCommentHTML(data.comments[i]).hide().fadeIn()));
+    //}
+    $comments_container.append($(data.comments_html).hide().fadeIn());
 }
 
 /**
  * Fonction permettant de désactiver le chargement
  * des anciens commentaires lors du scrolling
  * @param data La réponse JSON récupérée
+ * @param data.comments_count Le nombre de commentaires ayant été récupérés
  */
 function news_stopLoadingComments(data) {
-    if (data.comments.length < $comments_container.data('limit'))
+    if (data.comments_count < $comments_container.data('limit'))
         $load_active = false;
 }

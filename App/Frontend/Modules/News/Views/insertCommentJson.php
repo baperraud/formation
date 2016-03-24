@@ -1,11 +1,6 @@
 <?php
 /**
  * @var array $error_message_a
- * @var \Entity\Comment[] $Comment_a
- * @var array $comment_update_url_a
- * @var array $comment_delete_url_a
- * @var array $comment_user_url_a
- * @var array $comment_write_access_a
  * @var string $comments_html
  */
 
