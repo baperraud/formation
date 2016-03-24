@@ -3,11 +3,18 @@ var $body = $("body"),
     $window = $(window),
     $load_active = true,
     $comments_container = $("#comments_container"),
-    timer;
+    timer,
+    post_comment_lock = false;
 
 $(document).ready(function () {
 
-    // On active le logo de chargement en cas de requête AJAX en cours
+    //setTimeout(function () {
+    //    $("#insert_comment_form_container_top").find("input[type='submit']").trigger( "click" );
+    //    $("#insert_comment_form_container_top").find("input[type='submit']").trigger( "click" );
+    //}, 5000);
+
+    /* Actions relatives aux requêtes AJAX en cours :
+    logo de chargement... */
     //noinspection JSUnusedGlobalSymbols,JSUnusedGlobalSymbols,JSUnusedGlobalSymbols
     $(document).on({
         ajaxStart: function () {
@@ -15,7 +22,6 @@ $(document).ready(function () {
                 //noinspection JSUnresolvedVariable
                 if ($.active > 0) $body.addClass("loading");
             }, 250);
-
         },
         ajaxStop: function () {
             $body.removeClass("loading");
@@ -26,7 +32,7 @@ $(document).ready(function () {
     });
 
     // Délai de rafraichissement (en ms)
-    const REFRESH_TIMOUT = 5000;
+    const REFRESH_TIMOUT = 10000;
 
     // Configuration par défaut des requêtes AJAX
     $.ajaxSetup({
@@ -52,45 +58,25 @@ $(document).ready(function () {
     if (sharpPos >= 0) news_loadCommentsUntilOneFound(id);
 
 
-
-    // Instanciation d'un objet WebsocketClass avec l'URL en paramètre
-    var web_socket = new WebsocketClass('ws://localhost:11345/phpwebsocket/server.php');
-
-    // Initialisation de la connexion vers le serveur de socket
-    web_socket.initWebsocket();
-
-    //$(document).on("submit", ".insert_comment_form", function (event) {
-    //    event.preventDefault();
+    //// Instanciation d'un objet WebsocketClass avec l'URL en paramètre
+    //var web_socket = new WebsocketClass('ws://localhost:11345/phpwebsocket/server.php');
     //
-    //    web_socket.sendComment(this);
-    //
-    //});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    //// Initialisation de la connexion vers le serveur de socket
+    //web_socket.initWebsocket();
 
 
     /* Requête AJAX pour l'envoi du formulaire (poster un commentaire) */
     $(document).on("submit", ".insert_comment_form", function (event) {
+        if (post_comment_lock) return false;
+        // On verrouille le posting
+        post_comment_lock = true;
 
         event.preventDefault();
 
-        var $this = $(this), jqxhr;
+        var $this = $(this), jqXHR;
 
         // On lance la requête
-        jqxhr = $.post(
+        jqXHR = $.post(
             $this.data('ajax'),
             {
                 pseudonym: $("[name='pseudonym']", $this).val(),
@@ -101,14 +87,14 @@ $(document).ready(function () {
 
         // En cas de réussite
         //noinspection JSCheckFunctionSignatures
-        jqxhr.done(
+        jqXHR.done(
             /**
              * Fonction qui génère les nouveaux commentaires ayant été postés
              * depuis le chargement de la page
              * @param data La réponse JSON récupérée
              * @param data.errors_exists Booléan, vaut true si le formulaire contient des erreurs
              * @param data.errors Tableau contenant les erreurs de formulaire
-             * @param data.comments Tableau contenant les nouveaux commentaires à afficher
+             * @param data.comments_html Les fieldset des commentaires en html
              */
             function (data) {
                 // Le commentaire n'a pas été enregistré en BDD
@@ -117,6 +103,7 @@ $(document).ready(function () {
                     for (var i = 0; i < data.errors.length; i++) {
                         $this.append('<p class="error">' + data.errors[i] + '</p>');
                     }
+                    removeFlash();
                 }
                 // Le commentaire a bien été enregistré en BDD
                 else {
@@ -128,8 +115,8 @@ $(document).ready(function () {
                     if (!$comments_container.find('fieldset').length)
                         $('#no_comment_alert').hide();
 
+                    // On génère les nouveaux commentaires
                     //var $last_comment;
-                    //// On génère les nouveaux commentaires
                     //var $comments_a = data.comments.reverse();
                     //for (i = 0; i < $comments_a.length; i++) {
                     //    $last_comment = news_buildCommentHTML($comments_a[i]);
@@ -137,34 +124,34 @@ $(document).ready(function () {
                     //    if (!news_commentExists($last_comment.data('id')))
                     //        $comments_container.prepend($last_comment);
                     //}
-                    //
-                    //// On centre l'affichage sur le dernier commentaire inséré
-                    //centerViewportToElem($last_comment);
-                    //$last_comment.hide().show(300);
+
+                    $comments_container.prepend(data.comments_html);
+
+                    // On centre l'affichage sur le dernier commentaire inséré
+                    var $last_comment = $comments_container.find('fieldset:first');
+                    centerViewportToElem($last_comment);
+                    $last_comment.hide().show(300);
 
                     //noinspection JSUnresolvedFunction
                     $.notify("Le commentaire a bien été inséré !");
 
 
-
-
-                    /* Envoi du commentaire via websocket */
-                    web_socket.sendComment(data.comments[0]);
-
-
-
+                    ///* Envoi du commentaire via websocket */
+                    //web_socket.sendComment(data.comments[0]);
                 }
+
+                removeFlash();
+                post_comment_lock = false;
             });
 
         // En cas d'erreur
         //noinspection JSCheckFunctionSignatures
-        jqxhr.fail(function () {
+        jqXHR.fail(function () {
             //noinspection JSUnresolvedFunction
             $.notify("Erreur de l'ajout du commentaire,\nveuillez réessayer", "error");
-            jqxhr.abort();
-        });
 
-        removeFlash();
+            post_comment_lock = false;
+        });
     });
 
 

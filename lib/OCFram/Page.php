@@ -6,7 +6,7 @@ class Page extends ApplicationComponent {
     protected $vars_a = [];
     protected $format;
 
-    public function __construct(Application $App, $format) {
+    public function __construct(Application $App, $format = null) {
         parent::__construct($App);
         $this->format = $format;
     }
@@ -27,17 +27,10 @@ class Page extends ApplicationComponent {
             throw new \RuntimeException('La vue ' . $this->contentFile . ' n\'existe pas');
         }
 
-        /** @var Session $Session */
-        /** @noinspection PhpUnusedLocalVariableInspection */
-        $Session = $this->App->getSession();
-
         extract($this->vars_a);
-
-        //die('stop');
 
         /* Traitement standard -> HTML */
         if ($this->format != 'json') {
-            //die('html');
 
             ob_start();
             /** @noinspection PhpIncludeInspection */
@@ -56,6 +49,20 @@ class Page extends ApplicationComponent {
         require $this->contentFile;
         /** @var string $json */
         return $json;
+    }
+
+    public function getGeneratedSubView() {
+        if (!file_exists($this->contentFile)) {
+            throw new \RuntimeException('La sous-vue ' . $this->contentFile . ' n\'existe pas');
+        }
+
+        extract($this->vars_a);
+
+        ob_start();
+        /** @noinspection PhpIncludeInspection */
+        require $this->contentFile;
+        return ob_get_clean();
+
     }
 
     public function setContentFile($contentFile) {

@@ -13,6 +13,7 @@ use OCFram\BackController;
 use OCFram\Field;
 use OCFram\FormHandler;
 use OCFram\HTTPRequest;
+use OCFram\Page;
 use OCFram\Session;
 
 class NewsController extends BackController {
@@ -125,7 +126,7 @@ class NewsController extends BackController {
             if (!empty($user_id))
                 $comment_user_url_a[$Comment->getId()] = Application::getRoute('Frontend', 'User', 'show', array($user_id));
             else
-                $comment_user_url_a[$Comment->getId()] = NULL;
+                $comment_user_url_a[$Comment->getId()] = null;
         }
 
         $this->Page->addVar('comment_update_url_a', $comment_update_url_a);
@@ -335,28 +336,37 @@ class NewsController extends BackController {
         /* On récupère les routes de modification/suppression de commentaires
         ainsi que les id des auteurs des commentaires et si il y a droit de
         modification ou suppression */
-        $comment_update_url_a = [];
-        $comment_delete_url_a = [];
-        $comment_user_url_a = [];
+        $comment_update_url_a =
+        $comment_delete_url_a =
+        $comment_user_url_a =
         $comment_write_access_a = [];
 
         foreach ($Comment_a as $Comment) {
             $comment_update_url_a[$Comment['id']] = Application::getRoute('Frontend', $this->getModule(), 'updateComment', array($Comment['id']));
             $comment_delete_url_a[$Comment['id']] = Application::getRoute('Frontend', $this->getModule(), 'deleteComment', array($Comment['id']));
             $user_id = $CommentsManager->getUsercIdUsingCommentcId($Comment->getId());
-            $comment_user_url_a[$Comment['id']] = empty($user_id) ? NULL : Application::getRoute('Frontend', 'User', 'show', array($user_id));
+            $comment_user_url_a[$Comment['id']] = empty($user_id) ? null : Application::getRoute('Frontend', 'User', 'show', array($user_id));
             $comment_write_access_a[$Comment['id']] = (Session::isAdmin()
                 || $Comment['pseudonym'] === Session::getAttribute('pseudo'));
         }
 
-        $this->Page->addVar('comment_update_url_a', $comment_update_url_a);
-        $this->Page->addVar('comment_delete_url_a', $comment_delete_url_a);
-        $this->Page->addVar('comment_user_url_a', $comment_user_url_a);
-        $this->Page->addVar('comment_write_access_a', $comment_write_access_a);
-
 
         $this->Page->addVar('error_message_a', $error_message_a);
-        $this->Page->addVar('Comment_a', $Comment_a);
+
+
+        /* Construction des fieldset des commentaires */
+        $Comments_page = new Page($this->App);
+        $Comments_page->setContentFile(__DIR__ . '/Views/buildComments.php');
+        $Comments_page->addVar('Comment_a', $Comment_a);
+
+        $Comments_page->addVar('comment_update_url_a', $comment_update_url_a);
+        $Comments_page->addVar('comment_delete_url_a', $comment_delete_url_a);
+        $Comments_page->addVar('comment_user_url_a', $comment_user_url_a);
+        $Comments_page->addVar('comment_write_access_a', $comment_write_access_a);
+
+
+        $comments_html = $Comments_page->getGeneratedSubView();
+        $this->Page->addVar('comments_html', $comments_html);
     }
 
     /**
@@ -411,7 +421,7 @@ class NewsController extends BackController {
             $comment_update_url_a[$Comment['id']] = Application::getRoute('Frontend', $this->getModule(), 'updateComment', array($Comment['id']));
             $comment_delete_url_a[$Comment['id']] = Application::getRoute('Frontend', $this->getModule(), 'deleteComment', array($Comment['id']));
             $user_id = $CommentsManager->getUsercIdUsingCommentcId($Comment->getId());
-            $comment_user_url_a[$Comment['id']] = empty($user_id) ? NULL : Application::getRoute('Frontend', 'User', 'show', array($user_id));
+            $comment_user_url_a[$Comment['id']] = empty($user_id) ? null : Application::getRoute('Frontend', 'User', 'show', array($user_id));
             $comment_write_access_a[$Comment['id']] = (Session::isAdmin()
                 || $Comment['pseudonym'] === Session::getAttribute('pseudo'));
         }
