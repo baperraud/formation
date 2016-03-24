@@ -18,6 +18,8 @@ use OCFram\Session;
 
 class NewsController extends BackController {
 
+    const CODE_COMMENT_FORM_INVALID = 1;
+
     use GenericActionHandler;
 
     /**
@@ -332,14 +334,24 @@ class NewsController extends BackController {
 //
 //            // Envoi du mail
 //            $mail->send();
-        }
+        } else {
 
-        $error_message_a = [];
-        /** @var Field $Field */
-        foreach ($Form->getField_a() as $Field) {
-            $error_message = $Field->getError_message();
-            if (!empty($error_message))
-                $error_message_a[] = $Field->getError_message();
+            $this->Page->addVar('code', self::CODE_COMMENT_FORM_INVALID);
+
+            $error_a = [];
+            /** @var Field $Field */
+            foreach ($Form->getField_a() as $Field) {
+                $name = $Field->getName();
+                $message = $Field->getError_message();
+                if (!empty($message)) {
+                    $an_error_a = [];
+                    $an_error_a['name'] = $name;
+                    $an_error_a['message'] = $message;
+                    $error_a[] = $an_error_a;
+                }
+            }
+
+            $this->Page->addVar('error_a', $error_a);
         }
 
         /* Récupération de tous les commentaires récents */
@@ -362,9 +374,6 @@ class NewsController extends BackController {
             $comment_write_access_a[$Comment['id']] = (Session::isAdmin()
                 || $Comment['pseudonym'] === Session::getAttribute('pseudo'));
         }
-
-
-        $this->Page->addVar('error_message_a', $error_message_a);
 
 
         /* Construction des fieldset des commentaires */

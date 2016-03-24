@@ -4,15 +4,6 @@
  * @var string $comments_html
  */
 
-$json_answer = [];
+$content_a = [];
 
-// On ajoute les erreurs s'il en existe
-$json_answer['errors'] = [];
-foreach ($error_message_a as $error) {
-    $json_answer['errors'][] = $error;
-}
-$json_answer['errors_exists'] = !empty($json_answer['errors']);
-
-$json_answer['comments_html'] = $comments_html;
-
-$json = json_encode($json_answer);
+$content_a['comments_html'] = $comments_html;

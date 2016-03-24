@@ -3,11 +3,9 @@
  * @var array $comment_a
  */
 
-$json_answer = [];
+$content_a = [];
 
-$json_answer['deleted'] = [];
+$content_a['deleted'] = [];
 
 foreach ($comment_a as $deleted_comment)
-    $json_answer['deleted'][] = $deleted_comment;
-
-$json = json_encode($json_answer);
+    $content_a['deleted'][] = $deleted_comment;

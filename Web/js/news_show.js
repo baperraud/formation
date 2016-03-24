@@ -1,7 +1,7 @@
 // Initialisation des variables globales
 var $body = $("body"),
     $window = $(window),
-    $load_active = true,
+    load_active = true,
     $comments_container = $("#comments_container"),
     post_comment_lock = false,
     load_comments_on_scroll_lock = false,
@@ -9,6 +9,7 @@ var $body = $("body"),
 
 $(document).ready(function () {
 
+    // Fonction de test pour trigger deux submit (double click)
     //setTimeout(function () {
     //    $("#insert_comment_form_container_top").find("input[type='submit']").trigger( "click" );
     //    $("#insert_comment_form_container_top").find("input[type='submit']").trigger( "click" );
@@ -88,67 +89,53 @@ $(document).ready(function () {
                 last_comment: $comments_container.find('fieldset:first').data('id')
             });
 
-        // En cas de réussite
+        /* En cas de réussite */
         //noinspection JSCheckFunctionSignatures
         jqXHR.done(
             /**
              * Fonction qui génère les nouveaux commentaires ayant été postés
              * depuis le chargement de la page
-             * @param data La réponse JSON récupérée
-             * @param data.errors_exists Booléan, vaut true si le formulaire contient des erreurs
-             * @param data.errors Tableau contenant les erreurs de formulaire
-             * @param data.comments_html Les fieldsets des commentaires en html
+             * @param data.code Vaut 1 si le formulaire contenait des erreurs
+             * @param data.error_a Le tableau des erreurs
+             * @param data.content_a.comments_html Les fieldsets des commentaires en html
              */
             function (data) {
+                console.log(data);
                 // Le commentaire n'a pas été enregistré en BDD
-                if (data.errors_exists) {
-                    $this.children('p.error').remove();
-                    for (var i = 0; i < data.errors.length; i++) {
-                        $this.append('<p class="error">' + data.errors[i] + '</p>');
+                if (data.code == 1) {
+                    $this.find('p.error').remove();
+                    for (var i = 0; i < data.error_a.length; i++) {
+                        $("[name='" + data.error_a[i].name + "']", $this).after(
+                            $('<p></p>').addClass("error").text(data.error_a[i].message)
+                        );
                     }
                     removeFlash();
                 }
                 // Le commentaire a bien été enregistré en BDD
                 else {
                     // On clean les formulaires et les messages d'erreur
-                    $this[0].reset();
-                    $this.children('p.error').remove();
+                    $('.insert_comment_form').each(function () {
+                        this.reset();
+                    });
+                    $this.find('p.error').remove();
 
                     // On retire le message 'Aucun commentaire...' si c'est le 1er
                     if (!$comments_container.find('fieldset').length)
                         $('#no_comment_alert').hide();
 
-                    // On génère les nouveaux commentaires
-                    //var $last_comment;
-                    //var $comments_a = data.comments.reverse();
-                    //for (i = 0; i < $comments_a.length; i++) {
-                    //    $last_comment = news_buildCommentHTML($comments_a[i]);
-                    //    // Si le commentaire n'existe pas déjà
-                    //    if (!news_commentExists($last_comment.data('id')))
-                    //        $comments_container.prepend($last_comment);
-                    //}
 
-                    //$comments_container.prepend(data.comments_html);
-                    //
-                    //// On centre l'affichage sur le dernier commentaire inséré
-                    //var $last_comment = $comments_container.find('fieldset:first');
-                    //centerViewportToElem($last_comment);
-                    //$last_comment.hide().show(300);
-                    //
-                    ////noinspection JSUnresolvedFunction
-                    //$.notify("Le commentaire a bien été inséré !");
-
+                    // On force un rafraichissement
                     news_refreshComments(true, true);
 
 
                     ///* Envoi du commentaire via websocket */
-                    //web_socket.sendComment(data.comments[0]);
+                    //web_socket.sendComment(data.content_a.comments[0]);
                 }
 
                 removeFlash();
             });
 
-        // En cas d'erreur
+        /* En cas d'erreur */
         //noinspection JSCheckFunctionSignatures
         jqXHR.fail(function () {
             //noinspection JSUnresolvedFunction
@@ -157,7 +144,6 @@ $(document).ready(function () {
 
         //noinspection JSCheckFunctionSignatures
         jqXHR.always(function () {
-            // On déverrouille le posting de commentaires
             post_comment_lock = false;
         });
     });
@@ -167,7 +153,7 @@ $(document).ready(function () {
     $window.scroll(function () {
 
         // S'il reste des commentaires à charger
-        if ($load_active) {
+        if (load_active) {
 
             // Si le dernier commentaire chargé est visible
             if (news_isOnScreen($comments_container.find('fieldset:last'))) {
@@ -181,17 +167,17 @@ $(document).ready(function () {
                     /**
                      * Fonction qui affiche les commentaires en scrollant
                      * @param data La réponse JSON récupérée
-                     * @param data.comments_count Le nombre de commentaires récupérés
+                     * @param data.content_a.comments_count Le nombre de commentaires récupérés
                      */
                     function (data) {
                         news_buildOldComments(data);
                         news_stopLoadingComments(data);
 
                         // Si l'on a chargé des commentaires
-                        if (data.comments_count) {
+                        if (data.content_a.comments_count) {
                             //noinspection JSUnresolvedFunction
-                            $.notify(data.comments_count +
-                                (data.comments_count == 1 ?
+                            $.notify(data.content_a.comments_count +
+                                (data.content_a.comments_count == 1 ?
                                     " commentaire plus ancien a été chargé !" :
                                     " commentaires plus anciens ont été chargés" ),
                                 "info");
@@ -206,10 +192,8 @@ $(document).ready(function () {
     });
 
 
-    /* Requête AJAX de rafraichissment */
-    window.setInterval(function () {
-        news_refreshComments();
-    }, REFRESH_TIMOUT);
+    /* Requête AJAX de rafraichissement à intervalles de temps réguliers */
+    window.setInterval(news_refreshComments, REFRESH_TIMOUT);
 
 
     var $bottom_form = $('#insert_comment_form_bottom'),
@@ -248,65 +232,6 @@ function news_commentExists(id) {
     return $('#comments_container').find("[data-id='" + id + "']").length != 0;
 }
 
-///**
-// * Fonction permettant de construire la représentation HTML d'un commentaire (DOM)
-// * @param comment Le commentaire à construire
-// * @param comment.id L'id du commentaire
-// * @param comment.date La date du commentaire
-// * @param comment.contenu Le contenu du commentaire
-// * @param comment.user Le lien vers le profil du membre
-// * @param comment.pseudonym Le pseudo de l'auteur
-// * @param comment.update Le lien pour modifier le commentaire
-// * @param comment.delete Le lien pour supprimer le commentaire
-// * @param comment.owner_type Type de l'auteur du commentaire
-// *          1 si l'auteur est membre
-// *          2 si c'est un visiteur
-// * @param comment.write_access Booléan
-// *          true si l'auteur a droit de modification du commentaire
-// *          false sinon
-// * @returns {JQuery|jQuery}
-// */
-//function news_buildCommentHTML(comment) {
-//    var user = (comment.owner_type == 1) ?
-//        $('<a></a>')
-//            .attr('href', comment.user)
-//            .text(comment.pseudonym)
-//        : comment.pseudonym + ' (visiteur)';
-//
-//    var edit_button = '',
-//        delete_button = '';
-//    if (comment.write_access) {
-//        edit_button = $('<a></a>')
-//            .attr('href', comment.update)
-//            .text('Modifier');
-//        delete_button = $('<a></a>')
-//            .attr('href', comment.delete)
-//            .text('Supprimer');
-//    }
-//
-//    return $('<fieldset></fieldset>')
-//        .attr('id', 'commentaire-' + comment.id)
-//        .attr('data-id', comment.id)
-//        .append(
-//            $('<legend></legend>')
-//                .append(
-//                    'Posté par ',
-//                    $('<strong></strong>')
-//                        .append(user),
-//                    ' le ' + comment.date,
-//                    (comment.write_access) ? ' - ' : '',
-//                    edit_button,
-//                    (comment.write_access) ? ' | ' : '',
-//                    delete_button
-//                ),
-//            $('<p></p>')
-//                .addClass('overflow_hidden')
-//                .text(comment.contenu)
-//        );
-//
-//}
-
-
 /**
  * Fonction permettant de charger les commentaires jusqu'à un commentaire précis
  * @param id L'id du commentaire que l'on veut charger
@@ -326,8 +251,8 @@ function news_loadCommentsUntilOneFound(id) {
             news_buildOldComments(data);
             /* Si l'on a renvoyé moins de 15 commentaires,
              alors il n'y en a plus à charger */
-            if (data.comments_count < $comments_container.data('limit'))
-                $load_active = false;
+            if (data.content_a.comments_count < $comments_container.data('limit'))
+                load_active = false;
         });
 
         centerViewportToElem($comments_container.find('fieldset:last'));
@@ -370,30 +295,30 @@ function news_loadOldCommentsWithinRange($first_comment_id, $last_comment_id) {
 /**
  * Fonction permettant de construire d'anciens commentaires récupérés via AJAX
  * @param data La réponse JSON récupérée
- * @param data.comments_html Les fieldsets des commentaires en html
+ * @param data.content_a.comments_html Les fieldsets des commentaires en html
  * @see news_loadOldComments
  */
 function news_buildOldComments(data) {
-    $comments_container.append($(data.comments_html).hide().fadeIn());
+    $comments_container.append($(data.content_a.comments_html).hide().fadeIn());
 }
 
 /**
  * Fonction permettant de construire de nouveaux commentaires récupérés via AJAX
  * @param data La réponse JSON récupérée
- * @param data.comments_html Les fieldsets des commentaires en html
- * @param data.comments_count Le nombre de commentaires récupérés
+ * @param data.content_a.comments_html Les fieldsets des commentaires en html
+ * @param data.content_a.comments_count Le nombre de commentaires récupérés
  * @param add Booléan, vaut true si l'on a posté un commentaire
  */
 function news_buildNewComments(data, add) {
-    $comments_container.prepend($(data.comments_html).hide().fadeIn());
+    $comments_container.prepend($(data.content_a.comments_html).hide().fadeIn());
 
-    var count = data.comments_count;
+    var count = data.content_a.comments_count;
 
-    if (data.comments_count) {
+    if (data.content_a.comments_count) {
 
+        // Si l'on construit aussi un commentaire que l'on vient de poster
         if (add) {
             count--;
-
             // On centre l'affichage sur le dernier commentaire inséré
             var $last_comment = $comments_container.find('fieldset:first');
             centerViewportToElem($last_comment);
@@ -417,11 +342,11 @@ function news_buildNewComments(data, add) {
  * Fonction permettant de désactiver le chargement
  * des anciens commentaires lors du scrolling
  * @param data La réponse JSON récupérée
- * @param data.comments_count Le nombre de commentaires ayant été récupérés
+ * @param data.content_a.comments_count Le nombre de commentaires récupérés
  */
 function news_stopLoadingComments(data) {
-    if (data.comments_count < $comments_container.data('limit'))
-        $load_active = false;
+    if (data.content_a.comments_count < $comments_container.data('limit'))
+        load_active = false;
 }
 
 var _refresh_comment_counter = 0;
@@ -436,7 +361,9 @@ function news_refreshComments(forced, add) {
     var first_returned = false;
     var second_returned = false;
 
-    // On affiche les nouveaux commentaires
+    /*
+    On affiche les nouveaux commentaires
+    */
     $.post(
         $comments_container.data('load'),
         {
@@ -446,8 +373,8 @@ function news_refreshComments(forced, add) {
          * Fonction qui génère les nouveaux commentaires ayant été postés
          * depuis le chargement de la page
          * @param data La réponse JSON récupérée
-         * @param data.comments_html Les fieldsets des commentaires en html
-         * @param data.comments_count Le nombre de commentaires récupérés
+         * @param data.content_a.comments_html Les fieldsets des commentaires en html
+         * @param data.content_a.comments_count Le nombre de commentaires récupérés
          */
         function (data) {
             if (current_counter_refresh != _refresh_comment_counter) return false;
@@ -458,7 +385,10 @@ function news_refreshComments(forced, add) {
         }
     );
 
-    // On efface les commentaires ayant été supprimés
+    /*
+    On efface les commentaires ayant été supprimés
+    */
+    // On commence par récupérer les ids des commentaires actuellement construits
     var $comment_a = $comments_container.find('fieldset'),
         $comment_id_a = [];
     for (var i = 0; i < $comment_a.length; i++) {
@@ -473,23 +403,22 @@ function news_refreshComments(forced, add) {
          * Fonction permettant d'effacer du DOM les commentaires supprimés
          * depuis le chargement de la page
          * @param data La réponse JSON récupérée
-         * @param data.deleted Tableau des commentaires ayant été supprimés
+         * @param data.content_a.deleted Tableau des commentaires ayant été supprimés
          */
         function (data) {
             if (current_counter_refresh != _refresh_comment_counter) return false;
             second_returned = true;
             refresh_lock = !(first_returned && first_returned);
             // On retire les commentaires qui ont été supprimés
-            for (var i = 0; i < data.deleted.length; i++) {
-                var $comment_to_remove = $comments_container.find("[data-id='" + data.deleted[i] + "']");
-                $comment_to_remove.hide(300, function () {
-                    this.remove();
-                });
+            for (var i = 0; i < data.content_a.deleted.length; i++) {
+                var $comment_to_remove = $comments_container.find("[data-id='" + data.content_a.deleted[i] + "']");
+                $comment_to_remove.hide(300, function () { this.remove(); });
             }
 
-            if (data.deleted.length) {
+            if (data.content_a.deleted.length) {
                 //noinspection JSUnresolvedFunction
-                $.notify(data.deleted.length + (data.deleted.length == 1 ?
+                $.notify(data.content_a.deleted.length +
+                    (data.content_a.deleted.length == 1 ?
                         " commentaire vient d'être supprimé !" :
                         " commentaires viennent d'être supprimés !"),
                     "info");

@@ -40,13 +40,15 @@ class Page extends ApplicationComponent {
 
             ob_start();
             /** @noinspection PhpIncludeInspection */
-            require __DIR__ . '/../../App/' . $this->App->getName() . '/Templates/layout.php';
+            require __DIR__ . '/../../App/' . $this->App->getName() . '/Templates/layout_html.php';
             return ob_get_clean();
         }
 
         /* Traitement alternatif -> JSON */
         /** @noinspection PhpIncludeInspection */
         require $this->contentFile;
+        /** @noinspection PhpIncludeInspection */
+        require __DIR__ . '/../../App/' . $this->App->getName() . '/Templates/layout_json.php';
         /** @var string $json */
         return $json;
     }
